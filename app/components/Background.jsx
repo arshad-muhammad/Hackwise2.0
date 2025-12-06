@@ -76,13 +76,13 @@ export default function Background() {
         {/* Horizontal line with paired vertical boxes */}
         <div className="relative mt-[150px] mx-[90px]">
           {/* LEFT vertical pair */}
-          <div className="absolute top-[20px] left-[20px] flex flex-col gap-[180px]">
+          <div className="absolute top-[19px] left-[19px] flex flex-col gap-[180px]">
             <div className="w-[15px] h-[15px] bg-orange-500" />
             <div className="w-[15px] h-[15px] bg-orange-500" />
           </div>
 
           {/* RIGHT vertical pair (in front of the first) */}
-          <div className="absolute top-[20px] right-[20px] flex flex-col gap-[180px]">
+          <div className="absolute top-[19px] right-[19px] flex flex-col gap-[180px]">
             <div className="w-[15px] h-[15px] bg-orange-500" />
             <div className="w-[15px] h-[15px]  bg-orange-500" />
           </div>
