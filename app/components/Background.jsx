@@ -48,6 +48,7 @@ export default function Background() {
               rel="noopener noreferrer"
               className="block"
             >
+<<<<<<< HEAD
               <div className="group w-[50px] h-[50px] flex items-center justify-center border border-white bg-black transition-all duration-300 hover:bg-white cursor-pointer relative">
                 <i
                   className={`${icon} text-white/70 text-2xl transition-colors duration-300 group-hover:text-black relative z-10`}
@@ -55,6 +56,34 @@ export default function Background() {
               </div>
             </a>
           ))}
+=======
+              <i
+                className={`${icon} text-white/70 text-2xl
+                      transition-all duration-300
+                      group-hover:text-black`}
+              />
+            </div>
+          </a>
+        ))}
+      </div>
+
+      {/* Horizontal Lines */}
+      <div className="roll-txt top-[150px] left-[90px]">
+        <div className="absolute top-[150px] left-[90px] right-[90px] border-t border-white/15" />
+        {/* Horizontal line with paired vertical boxes */}
+        <div className="relative mt-[150px] mx-[90px]">
+          {/* LEFT vertical pair */}
+          <div className="absolute top-[19px] left-[19px] flex flex-col gap-[180px]">
+            <div className="w-[15px] h-[15px] bg-orange-500" />
+            <div className="w-[15px] h-[15px] bg-orange-500" />
+          </div>
+
+          {/* RIGHT vertical pair (in front of the first) */}
+          <div className="absolute top-[19px] right-[19px] flex flex-col gap-[180px]">
+            <div className="w-[15px] h-[15px] bg-orange-500" />
+            <div className="w-[15px] h-[15px]  bg-orange-500" />
+          </div>
+>>>>>>> 546b9ebd15959cee6da9a0ee476e450ccd706600
         </div>
 
         {/* Horizontal Lines & Orange Squares */}
