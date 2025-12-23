@@ -24,38 +24,6 @@ export default function Background() {
         </div>
 
         {/* Social Icons */}
-        <div className="absolute top-[101px] right-[41px] flex flex-col  pointer-events-auto">
-          <div className="w-[50px] h-[50px] flex items-center justify-center border border-white bg-black">
-            <i className="ri-donut-chart-fill text-white/70 text-2xl" />
-          </div>
-
-          {[
-            {
-              icon: "ri-instagram-line",
-              link: "https://www.instagram.com/spherehive?igsh=YmdwNjViZDlvcHZp",
-            },
-            { icon: "ri-global-line", link: "https://spherehive.in/" },
-            {
-              icon: "ri-linkedin-fill",
-              link: "https://www.linkedin.com/company/spherehive/",
-            },
-            { icon: "ri-twitter-x-fill", link: "https://twitter.com" },
-          ].map(({ icon, link }, i) => (
-            <a
-              key={i}
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
-            >
-              <div className="group w-[50px] h-[50px] flex items-center justify-center border border-white bg-black transition-all duration-300 hover:bg-white cursor-pointer relative">
-                <i
-                  className={`${icon} text-white/70 text-2xl transition-colors duration-300 group-hover:text-black relative z-10`}
-                />
-              </div>
-            </a>
-          ))}
-        </div>
 
         {/* Horizontal Lines & Orange Squares */}
         <div className="absolute top-[150px] left-[90px] right-[90px] border-t border-white/15" />
@@ -70,6 +38,11 @@ export default function Background() {
           <div className="w-[11px] h-[11px] bg-orange-500" />
           <div className="w-[11px] h-[11px] bg-orange-500" />
         </div>
+      </div>
+      <div className="about">
+        <div className="absolute top-190 left-[90px] right-[90px] border-t border-white/15" />
+
+        <div className="absolute top-225 left-[90px] right-[90px] border-t border-white/15" />
       </div>
     </>
   );
