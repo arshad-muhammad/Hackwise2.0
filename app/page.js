@@ -1,12 +1,14 @@
 import React from "react";
 import Home from "./Hero/page";
-import About from "./About/page";
+import AboutH from "./AboutH/page";
+import AboutSH from "./AboutSH/page";
 
 const page = () => {
   return (
     <>
       <Home />
-      <About />
+      <AboutH />
+      <AboutSH />
     </>
   );
 };

@@ -44,6 +44,11 @@ export default function Background() {
 
         <div className="absolute top-225 left-[90px] right-[90px] border-t border-white/15" />
       </div>
+      <div className="aboutSH">
+        <div className="absolute top-370 left-[90px] right-[90px] border-t border-white/15" />
+
+        <div className="absolute top-405 left-[90px] right-[90px] border-t border-white/15" />
+      </div>
     </>
   );
 }
