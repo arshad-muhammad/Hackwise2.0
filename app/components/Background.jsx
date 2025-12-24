@@ -4,7 +4,7 @@ export default function Background() {
   return (
     <>
       {/* MAIN WRAPPER */}
-      <div className="absolute w-full min-h-[500vh] bg-[#0A090F] -z-10 overflow-hidden">
+      <div className="absolute w-full min-h-[600vh] bg-[#0A090F] -z-10 overflow-hidden">
         {/* Vertical Lines */}
         <div className="absolute inset-0 px-[90px] flex justify-between pointer-events-none">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -48,6 +48,11 @@ export default function Background() {
         <div className="absolute top-370 left-[90px] right-[90px] border-t border-white/15" />
 
         <div className="absolute top-405 left-[90px] right-[90px] border-t border-white/15" />
+      </div>
+      <div className="HackFlow">
+        <div className="absolute top-600 left-[90px] right-[90px] border-t border-white/15" />
+
+        <div className="absolute top-635 left-[90px] right-[90px] border-t border-white/15" />
       </div>
     </>
   );
