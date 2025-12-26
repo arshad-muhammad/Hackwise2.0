@@ -46,7 +46,7 @@ function AboutPage() {
                         <span className="text-white font-bold mx-1">
                             KVG College of Engineering
                         </span>
-                        , this 24-hour sprint challenges you to forge solutions that don't just work—they change the game.
+                        , this 24-hour sprint challenges you to forge solutions that don't just work-they change the game.
                     </p>
 
                     <p>

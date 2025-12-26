@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Hackwise 2.0 🚀
 
-## Getting Started
+**Hackwise 2.0** is a national-level SaaS hackathon designed to empower the next generation of developers. Organized by **Sphere Hive**, this event challenges participants to build real-world SaaS products, innovate with cutting-edge technology, and compete for a substantial prize pool.
 
-First, run the development server:
+## 🌟 Vision
+"Architect the Future of SaaS. Transform Code into Global Impact."
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📅 Event Details
+- **Event Date:** January 21, 2026 (Registration Opens)
+- **Format:** Hybrid (Online + Offline Phases)
+- **Organizer:** Sphere Hive at KVG College of Engineering
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏆 Prize Pool
+- **Total Prize Pool:** ₹60,000+ & Internship Opportunities
+  - **1st Place (Champion):** ₹40,000 + Direct Job Offer + Exclusive Rewards
+  - **2nd Place (Runner Up):** ₹20,000 + Internship Offer + Exclusive Rewards
+  - **3rd Place (Second Runner Up):** Internship Offer + Exclusive Rewards
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## ✨ Key Features
+- **Bento Grid Gallery:** Showcasing highlights from previous events.
+- **Cyberpunk Aesthetic:** Dark mode UI with orange accents, glassmorphism, and angular "cut" designs.
+- **Interactive Elements:** Custom cursors, decrypted text animations, and smooth hover effects.
+- **Responsive Design:** Optimized for all devices using Tailwind CSS.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tech Stack
+- **Framework:** [Next.js](https://nextjs.org/) (React)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Animations:** [Motion](https://motion.dev/) (formerly Framer Motion), custom CSS animations
+- **Icons:** [Remix Icon](https://remixicon.com/)
 
-## Learn More
+## 🚀 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/hackwise2.0.git
+    cd hackwise2.0
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3.  **Run the development server:**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
 
-## Deploy on Vercel
+4.  **Open locally:**
+    Navigate to [http://localhost:3000](http://localhost:3000) to see the application running.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📂 Project Structure
+- `app/`: Main application source code (Next.js App Router).
+  - `Hero/`: Hero section with major CTA.
+  - `AboutSH/`: About Sphere Hive section.
+  - `Prizes/`: Prize pool details.
+  - `Gallery/`: Bento grid gallery of past events.
+  - `components/`: Reusable UI components (Navbar, Footer, etc.).
+- `public/`: Static assets (images, fonts, cursors).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🤝 Contributing
+Contributions are welcome! Please fork the repo and create a pull request for any feature enhancements or bug fixes.
+
+## 📜 License
+This project is licensed under the MIT License.
+
+---
+*Built with ❤️ by Sphere Hive Tech Team.*
