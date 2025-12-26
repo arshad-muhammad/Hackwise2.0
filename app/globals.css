@@ -2,6 +2,12 @@
 @import "remixicon/fonts/remixicon.css";
 @import "tw-animate-css";
 
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-roboto-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+}
+
 @font-face {
   font-family: "Hackwise";
   src: url("/Fonts/Font1.otf") format("opentype");
@@ -11,6 +17,28 @@
 }
 
 .font-hackwise {
-  font-family: "Hackwise", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  font-family: "Hackwise", var(--font-space-grotesk), system-ui, sans-serif;
+}
+
+/* Custom Utilities for Consistency */
+.section-container {
+  @apply w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-20 min-h-screen flex flex-col justify-center relative;
+}
+
+.heading-lg {
+  @apply font-display text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight uppercase;
+}
+
+.text-body {
+  @apply font-sans text-base md:text-lg text-white/80 leading-relaxed;
+}
+
+body {
+  background-color: #0A090F;
+  color: white;
+  cursor: url('/cursors/cursor.svg') 2 2, auto;
+}
+
+a, button, [role="button"], input, select, textarea {
+  cursor: url('/cursors/cursor.svg') 2 2, pointer;
 }
