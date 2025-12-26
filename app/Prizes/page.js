@@ -8,7 +8,7 @@ const Prizes = () => {
     {
       rank: "1st",
       title: "Champion",
-      amount: "₹40,000",
+      amount: "₹40,000 + Direct Job Offer",
       perks: ["Direct Job Offer", "Exclusive Rewards", "Goodies"],
       color: "from-yellow-400 to-yellow-600",
       glow: "bg-yellow-500/20"
@@ -16,7 +16,7 @@ const Prizes = () => {
     {
       rank: "2nd",
       title: "Runner Up",
-      amount: "₹20,000",
+      amount: "₹20,000 + Direct Internship",
       perks: ["Internship Offer", "Exclusive Rewards", "Goodies"],
       color: "from-gray-300 to-gray-500",
       glow: "bg-gray-400/20"
@@ -24,7 +24,7 @@ const Prizes = () => {
     {
       rank: "3rd",
       title: "Second Runner Up",
-      amount: "Internship",
+      amount: "Direct Internship",
       perks: ["Internship Offer", "Exclusive Rewards", "Goodies"],
       color: "from-orange-400 to-red-600", // Bronze-ish
       glow: "bg-orange-600/20"

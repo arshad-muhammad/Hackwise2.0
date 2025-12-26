@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useState } from "react";
 import Image from "next/image";
 import DecryptedText from "./DecryptedText";
@@ -51,10 +52,10 @@ const Navbar = () => {
             }}
           >
             {/* Logo */}
-            <div className="flex items-center gap-3 cursor-pointer">
+            <Link href="/" className="flex items-center gap-3 cursor-pointer">
               <div className="w-8 h-8 md:w-10 md:h-10 relative">
                 <Image
-                  src="/assets/logo.png"
+                  src="/assets/Hackloho.png"
                   alt="SphereHive Logo"
                   fill
                   className="object-contain"
@@ -63,7 +64,7 @@ const Navbar = () => {
               <span className="font-hackwise text-lg md:text-xl text-white tracking-wide">
                 HACKWISE 2.0
               </span>
-            </div>
+            </Link>
 
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-8">
@@ -76,6 +77,13 @@ const Navbar = () => {
                   {link.name}
                 </a>
               ))}
+              {/* New Accommodation Link */}
+              <Link
+                href="/Accommodation"
+                className="font-mono text-sm text-white/70 hover:text-orange-500 transition-colors uppercase tracking-wider"
+              >
+                Accommodation
+              </Link>
             </div>
 
             {/* Action Button & Mobile Menu Toggle */}
@@ -108,6 +116,13 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
+            <Link
+                href="/Accommodation"
+                onClick={() => setIsOpen(false)}
+                className="font-mono text-lg text-white/80 hover:text-orange-500 transition-colors uppercase"
+            >
+                Accommodation
+            </Link>
             <button className="w-full py-3 mt-2 border border-orange-500 bg-orange-500 text-black font-bold font-mono uppercase">
               Register Now
             </button>

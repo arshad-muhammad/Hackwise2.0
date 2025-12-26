@@ -11,6 +11,12 @@ export default function Home() {
       <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left Column: Text */}
         <div className="flex flex-col gap-6 lg:gap-8 order-2 lg:order-1">
+          <div className="inline-flex items-center gap-2 mb-[-10px]">
+             <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"/>
+             <span className="font-mono text-sm md:text-base text-orange-500 uppercase tracking-widest">
+               Hosted by <b>Sphere Hive</b>
+             </span>
+          </div>
           <h1 className="font-hackwise text-5xl md:text-7xl lg:text-8xl leading-[0.9] text-white tracking-wide uppercase">
             HACKWISE <span className="text-orange-500">2.0</span>
            

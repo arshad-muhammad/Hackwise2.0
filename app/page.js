@@ -8,6 +8,7 @@ import Prizes from "./Prizes/page";
 import Sponsors from "./Sponsors/page";
 import Gallery from "./Gallery/page";
 import TimerSection from "./components/TimerSection";
+import FAQ from "./components/FAQ";
 
 const page = () => {
   return (
@@ -21,6 +22,7 @@ const page = () => {
       <Sponsors />
       <Gallery />
       <AboutSH />
+      <FAQ />
     </>
   );
 };

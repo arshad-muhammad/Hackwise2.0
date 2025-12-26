@@ -27,7 +27,7 @@ const Footer = () => {
             <div className="md:col-span-5 flex flex-col gap-6">
                 <div className="flex items-center gap-3">
                      <div className="w-10 h-10 relative">
-                        <Image src="/assets/logo.png" alt="Logo" fill className="object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
+                        <Image src="/assets/Hackloho.png" alt="Logo" fill className="object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
                      </div>
                      <span className="font-hackwise text-2xl text-white tracking-wide">
                         HACKWISE <span className="text-orange-500">2.0</span>

@@ -53,6 +53,9 @@ function FlowPage() {
                     </p>
 
                     <div className="space-y-4 mb-6 flex-grow font-sans text-sm">
+                         <div className="mb-4 text-white/90">
+                            <span className="text-orange-500 font-bold">Eligibility:</span> Teams of 2-4 members. Open to students from any branch and any college.
+                         </div>
                          <p className="font-semibold text-orange-500 uppercase tracking-wide">Mission Brief:</p>
                          <ul className="space-y-2 text-white/70">
                             <li className="flex gap-2 items-start">
@@ -111,7 +114,7 @@ function FlowPage() {
                     </div>
 
                     <p className="text-sm text-white/80 mb-6 leading-relaxed font-sans">
-                        36 hours of adrenaline, code, and caffeine. Build, break, and rebuild your vision into reality.
+                        24 hours of adrenaline, code, and caffeine. Build, break, and rebuild your vision into reality.
                     </p>
 
                     <ul className="space-y-2 text-sm text-white/70 mb-6 font-sans">
