@@ -1,5 +1,7 @@
+"use client";
 import React from "react";
 import DecryptedText from "../components/DecryptedText";
+import { motion } from "motion/react";
 
 const Prizes = () => {
   const cardClipPath = "polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)";
@@ -31,20 +33,72 @@ const Prizes = () => {
     }
   ];
 
+  const getVariants = (index) => {
+    // 0 = Center (Champion), 1 = Left (Runner Up), 2 = Right (Second Runner Up)
+    if (index === 0) {
+      return {
+        hidden: { opacity: 0, y: -100, scale: 0.8, zIndex: 10 },
+        visible: { 
+          opacity: 1, 
+          y: 0, 
+          scale: 1, 
+          zIndex: 10,
+          transition: { type: "spring", bounce: 0.5, duration: 0.8 } 
+        }
+      };
+    }
+    if (index === 1) {
+      return {
+        hidden: { opacity: 0, x: 100, rotate: 15, scale: 0.8, zIndex: 5 },
+        visible: { 
+          opacity: 1, 
+          x: 0, 
+          rotate: 0, 
+          scale: 1, 
+          zIndex: 5,
+          transition: { type: "spring", bounce: 0.5, duration: 0.8, delay: 0.2 } 
+        }
+      };
+    }
+    if (index === 2) {
+      return {
+        hidden: { opacity: 0, x: -100, rotate: -15, scale: 0.8, zIndex: 5 },
+        visible: { 
+          opacity: 1, 
+          x: 0, 
+          rotate: 0, 
+          scale: 1, 
+          zIndex: 5,
+          transition: { type: "spring", bounce: 0.5, duration: 0.8, delay: 0.4 } 
+        }
+      };
+    }
+  };
+
   return (
-    <section id="prizes" className="section-container border-t border-white/10">
-       <div className="w-full flex justify-center mb-16">
+    <section id="prizes" className="section-container border-t border-white/10 overflow-hidden">
+       <motion.div 
+         initial={{ opacity: 0, y: -20 }}
+         whileInView={{ opacity: 1, y: 0 }}
+         viewport={{ once: false }}
+         transition={{ duration: 0.6 }}
+         className="w-full flex justify-center mb-16"
+       >
         <div className="inline-block border border-white/20 bg-[#0A090F] px-8 py-4">
           <h1 className="text-3xl md:text-5xl font-hackwise text-white uppercase tracking-wider text-center">
             Prize Pool
           </h1>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch relative">
         {prizes.map((prize, index) => (
-          <div 
+          <motion.div 
             key={index} 
+            variants={getVariants(index)}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, margin: "-50px" }}
             className={`relative w-full group flex flex-col ${index === 0 ? 'md:-mt-12 md:order-2' : index === 1 ? 'md:order-1' : 'md:order-3'}`}
           >
              <div className={`absolute inset-0 ${prize.glow} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
@@ -87,14 +141,11 @@ const Prizes = () => {
                     </div>
                 </div>
              </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-      
-      
     </section>
   );
 };
 
 export default Prizes;
-
