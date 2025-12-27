@@ -1,11 +1,14 @@
 "use client";
-import Link from "next/link";
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import DecryptedText from "./DecryptedText";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
   // Smooth scroll function
   const scrollToSection = (e, id) => {
@@ -70,32 +73,47 @@ const Navbar = () => {
               {navLinks.map((link) => (
                 <a
                   key={link.name}
-                  href={`#${link.id}`}
-                  className="font-mono text-sm text-white/70 hover:text-orange-500 transition-colors uppercase tracking-wider"
+                  href={isHomePage ? `#${link.id}` : `/#${link.id}`}
+                  className="font-mono text-sm text-white/70 hover:text-orange-500 transition-colors uppercase tracking-wider group"
                 >
-                  {link.name}
+                  <DecryptedText text={link.name} speed={30} className="group-hover:text-orange-500 transition-colors" />
                 </a>
               ))}
               {/* New Accommodation Link */}
               <Link
                 href="/accommodation"
-                className="font-mono text-sm text-white/70 hover:text-orange-500 transition-colors uppercase tracking-wider"
+                className="font-mono text-sm text-white/70 hover:text-orange-500 transition-colors uppercase tracking-wider group"
               >
-                Accommodation
+                 <DecryptedText text="Accommodation" speed={30} className="group-hover:text-orange-500 transition-colors" />
               </Link>
               <Link
                 href="/contact"
-                className="font-mono text-sm text-white/70 hover:text-orange-500 transition-colors uppercase tracking-wider"
+                className="font-mono text-sm text-white/70 hover:text-orange-500 transition-colors uppercase tracking-wider group"
               >
-                Contact
+                 <DecryptedText text="Contact" speed={30} className="group-hover:text-orange-500 transition-colors" />
               </Link>
             </div>
 
             {/* Action Button & Mobile Menu Toggle */}
             <div className="flex items-center gap-4">
-              <button className="hidden md:block px-6 py-2 border border-orange-500/50 bg-orange-500/10 hover:bg-orange-500 hover:text-black text-orange-500 font-mono text-sm transition-all duration-300 rounded-sm">
-                <DecryptedText text="Register" sequential />
-              </button>
+              <a
+                href="https://unstop.com/o/XIlFdnH?lb=yGGr6gxO&utm_medium=Share&utm_source=muhamr70994&utm_campaign=Online_coding_challenge"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:block group relative p-px bg-orange-500/50 font-mono text-sm text-orange-500 transition-all duration-300"
+                style={{
+                  clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)"
+                }}
+              >
+                <div
+                  className="w-full h-full bg-[#0A090F] px-6 py-2 flex items-center justify-center"
+                  style={{
+                    clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)"
+                  }}
+                >
+                  <DecryptedText text="Register" sequential speed={30} className="group-hover:text-orange-400 transition-colors" />
+                </div>
+              </a>
 
               {/* Mobile Menu Button */}
               <button
@@ -114,30 +132,35 @@ const Navbar = () => {
             {navLinks.map((link) => (
               <a
                 key={link.name}
-                href={`#${link.id}`}
+                href={isHomePage ? `#${link.id}` : `/#${link.id}`}
                 onClick={() => setIsOpen(false)}
-                className="font-mono text-lg text-white/80 hover:text-orange-500 transition-colors uppercase"
+                className="font-mono text-lg text-white/80 hover:text-orange-500 transition-colors uppercase group"
               >
-                {link.name}
+                <DecryptedText text={link.name} speed={30} className="group-hover:text-orange-500 transition-colors" />
               </a>
             ))}
             <Link
                 href="/accommodation"
                 onClick={() => setIsOpen(false)}
-                className="font-mono text-lg text-white/80 hover:text-orange-500 transition-colors uppercase"
+                className="font-mono text-lg text-white/80 hover:text-orange-500 transition-colors uppercase group"
             >
-                Accommodation
+                <DecryptedText text="Accommodation" speed={30} className="group-hover:text-orange-500 transition-colors" />
             </Link>
             <Link
                 href="/contact"
                 onClick={() => setIsOpen(false)}
-                className="font-mono text-lg text-white/80 hover:text-orange-500 transition-colors uppercase"
+                className="font-mono text-lg text-white/80 hover:text-orange-500 transition-colors uppercase group"
             >
-                Contact
+                <DecryptedText text="Contact" speed={30} className="group-hover:text-orange-500 transition-colors" />
             </Link>
-            <button className="w-full py-3 mt-2 border border-orange-500 bg-orange-500 text-black font-bold font-mono uppercase">
+            <a 
+              href="https://unstop.com/o/XIlFdnH?lb=yGGr6gxO&utm_medium=Share&utm_source=muhamr70994&utm_campaign=Online_coding_challenge"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 mt-2 border border-orange-500 bg-orange-500 text-black font-bold font-mono uppercase text-center block"
+            >
               Register Now
-            </button>
+            </a>
           </div>
         )}
       </div>

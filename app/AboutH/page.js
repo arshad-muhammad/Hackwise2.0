@@ -42,11 +42,7 @@ function AboutPage() {
                     </p>
 
                     <p>
-                        Powered by <span className="text-white font-bold">Sphere Hive</span> at
-                        <span className="text-white font-bold mx-1">
-                            KVG College of Engineering
-                        </span>
-                        , this 24-hour sprint challenges you to forge solutions that don't just work-they change the game.
+                        Powered by <span className="text-white font-bold">Sphere Hive</span> at <span className="text-white font-bold">KVG College of Engineering</span> on <span className="text-orange-500 font-bold">4 & 5 April 2026</span>, this 24-hour sprint challenges you to forge solutions that don't just work - they change the game.
                     </p>
 
                     <p>
@@ -59,7 +55,7 @@ function AboutPage() {
 
         {/* Right Content: Icon/Visual */}
         <div className="lg:col-span-4 flex flex-col items-center lg:items-end justify-start">
-             <div className="w-40 h-40 md:w-56 md:h-56 border border-white/20 flex items-center justify-center bg-black/40 backdrop-blur-md relative mt-8 lg:mt-0">
+             <div className="w-40 h-40 md:w-56 md:h-56 border border-white/20 flex items-center justify-center bg-black/40 backdrop-blur-md relative mt-8 lg:mt-0 group">
                   <div className="absolute top-0 right-0 w-2 h-2 bg-orange-500"/>
                   <div className="absolute bottom-0 left-0 w-2 h-2 bg-orange-500"/>
                   <img
@@ -67,6 +63,24 @@ function AboutPage() {
                     alt="Hackwise Icon"
                     className="w-24 h-24 md:w-32 md:h-32 object-contain"
                   />
+
+                  {/* Floating Date Badge - Unique Positioning */}
+                  <div className="absolute -left-8 top-1/2 -translate-y-1/2 -translate-x-1/2 -rotate-90 origin-center hidden md:flex items-center gap-4 whitespace-nowrap z-[-1]">
+                      <div className="h-px w-16 bg-linear-to-l from-orange-500 to-transparent"></div>
+                      <div className="flex flex-col items-center">
+                          <span className="font-mono text-orange-500 font-bold text-xl tracking-widest">4 & 5 APRIL</span>
+                          <span className="text-white/50 text-xs tracking-[0.5em] uppercase">2026</span>
+                      </div>
+                      <div className="h-px w-16 bg-linear-to-r from-orange-500 to-transparent"></div>
+                  </div>
+
+                  {/* Mobile/Tablet Date Badge - Bottom Overlap */}
+                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 md:hidden bg-[#0A090F] border border-orange-500/30 px-6 py-2 w-max">
+                      <div className="flex items-center gap-2">
+                          <i className="ri-calendar-event-line text-orange-500"></i>
+                          <span className="font-mono text-white font-bold text-sm tracking-widest">4 & 5 APRIL 2026</span>
+                      </div>
+                   </div>
             </div>
         </div>
 

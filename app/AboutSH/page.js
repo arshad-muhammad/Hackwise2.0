@@ -4,6 +4,75 @@ import DecryptedText from "../components/DecryptedText.jsx";
 export default function page() {
   return (
     <section className="section-container border-t border-white/10">
+
+        {/* Register CTA Section */}
+        <div className="w-full mb-24 relative group">
+            <div className="absolute inset-0 bg-orange-500/5 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
+            <div className="border border-white/10 bg-[#0A090F]/80 backdrop-blur-xl p-8 md:p-12 relative overflow-hidden">
+                {/* Cyber-lines */}
+                <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-orange-500/50 to-transparent opacity-50"></div>
+                <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-orange-500/50 to-transparent opacity-50"></div>
+                
+                <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                    <div className="space-y-4 text-center md:text-left">
+                        <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+                             <div className="w-2 h-2 bg-orange-500 animate-pulse"></div>
+                             <p className="text-orange-500 font-mono text-sm tracking-widest uppercase">Registration Open</p>
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-display font-bold text-white uppercase tracking-tight leading-none">
+                            Join The <span className="text-orange-500">Revolution</span>
+                        </h2>
+                        <p className="font-mono text-white/60 text-sm md:text-base max-w-xl">
+                            The next generation of innovation starts here. Secure your spot at Hackwise 2.0.
+                        </p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-6">
+                        <a 
+                            href="https://unstop.com/o/XIlFdnH?lb=yGGr6gxO&utm_medium=Share&utm_source=muhamr70994&utm_campaign=Online_coding_challenge"
+                            className="group/btn relative px-8 py-4 bg-orange-500 text-black font-mono font-bold text-lg hover:bg-orange-400 transition-all duration-300 shadow-[0_0_20px_rgba(249,115,22,0.3)] hover:shadow-[0_0_35px_rgba(249,115,22,0.6)] flex items-center justify-center"
+                            style={{
+                                clipPath: "polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)"
+                            }}
+                        >
+                            <span className="flex items-center gap-2">
+                                <DecryptedText text="REGISTER NOW" sequential speed={30} />
+                                <i className="ri-arrow-right-up-line group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform"></i>
+                            </span>
+                        </a>
+
+                         <a 
+                            href="https://chat.whatsapp.com/JvCxszNiFPb1Qq7H8zrftl"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group/btn relative p-px bg-orange-500/30 text-orange-500 font-mono font-bold text-lg transition-all duration-300 flex items-center justify-center"
+                            style={{
+                                clipPath: "polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)"
+                            }}
+                        >
+                            <div className="w-full h-full bg-[#0A090F] group-hover/btn:bg-orange-500/10 transition-colors duration-300 px-8 py-4 flex items-center justify-center"
+                                style={{
+                                    clipPath: "polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)"
+                                }}
+                            >
+                                <span className="flex items-center gap-2">
+                                    <DecryptedText text="WHATSAPP" sequential speed={30} />
+                                    <i className="ri-whatsapp-line group-hover/btn:scale-110 transition-transform"></i>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                {/* Decorative Corners */}
+                <div className="absolute top-0 right-0 p-3 opacity-50">
+                     <div className="w-2 h-2 bg-orange-500"></div>
+                </div>
+                <div className="absolute bottom-0 left-0 p-3 opacity-50">
+                     <div className="w-2 h-2 bg-orange-500"></div>
+                </div>
+            </div>
+        </div>
         
         {/* Header Section */}
         <div className="w-full flex justify-end mb-12">

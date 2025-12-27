@@ -108,7 +108,7 @@ const Footer = () => {
                             { icon: "ri-instagram-line", link: "https://www.instagram.com/spherehive" },
                             { icon: "ri-linkedin-fill", link: "https://www.linkedin.com/company/spherehive/" },
                             { icon: "ri-twitter-x-fill", link: "https://twitter.com" },
-                            { icon: "ri-discord-fill", link: "#" }
+                            { icon: "ri-whatsapp-line", link: "https://chat.whatsapp.com/JvCxszNiFPb1Qq7H8zrftl" }
                         ].map((social, i) => (
                             <a 
                                 key={i} 
