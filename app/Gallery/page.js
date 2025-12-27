@@ -6,45 +6,51 @@ const Gallery = () => {
   const galleryImages = [
     { 
         id: 1, 
-        title: "Hackwise 1.0", 
-        category: "Kickoff", 
+        title: "Winners", 
+        category: "Celebration", 
         size: "md:col-span-2 md:row-span-2",
-        description: "The beginning of a legacy."
+        description: "Victory achieved.",
+        src: "/assets/01.jpg"
     },
     { 
         id: 2, 
-        title: "Brainstorming", 
-        category: "Ideation", 
+        title: "Runner Up", 
+        category: "Celebration", 
         size: "md:col-span-1 md:row-span-1",
-        description: "Ideas taking shape."
+        description: "Victory achieved.",
+        src: "/assets/02.jpg"
     },
     { 
         id: 3, 
         title: "Coding Sprint", 
         category: "Development", 
         size: "md:col-span-1 md:row-span-2",
-        description: "24 hours of focus."
+        description: "24 hours of focus.",
+        src: "/assets/03.jpg"
     },
     { 
         id: 4, 
-        title: "Mentorship", 
-        category: "Guidance", 
+        title: "Venue", 
+        category: "Environment", 
         size: "md:col-span-1 md:row-span-1",
-        description: "Expert guidance."
+        description: "Great ambiance.",
+        src: "/assets/04.jpg"
     },
     { 
         id: 5, 
         title: "Final Pitch", 
         category: "Presentation", 
         size: "md:col-span-2 md:row-span-1",
-        description: "Showcasing innovation."
+        description: "Showcasing innovation.", 
+        src: "/assets/05.jpg"
     },
     { 
         id: 6, 
-        title: "Winners", 
-        category: "Celebration", 
+        title: "Mentorship", 
+        category: "Guidance", 
         size: "md:col-span-2 md:row-span-1",
-        description: "Victory achieved."
+        description: "Expert guidance.",
+        src: "/assets/06.jpg"
     },
   ];
 
@@ -59,7 +65,7 @@ const Gallery = () => {
           </h1>
         </div>
         {/* Decorative element */}
-        <div className="absolute top-1/2 right-0 w-1/3 h-[1px] bg-gradient-to-l from-white/20 to-transparent hidden md:block"></div>
+        <div className="absolute top-1/2 right-0 w-1/3 h-px bg-linear-to-l from-white/20 to-transparent hidden md:block"></div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[200px] gap-4 w-full">
@@ -68,14 +74,17 @@ const Gallery = () => {
              key={index} 
              className={`group relative overflow-hidden border border-white/10 bg-[#0A090F] hover:border-orange-500/50 transition-all duration-500 ${item.size}`}
            >
-                {/* Image Placeholder */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/5 group-hover:bg-white/10 transition-colors duration-500">
-                     <i className={`ri-image-line text-4xl text-white/20 mb-2 group-hover:text-orange-500/50 transition-colors ${item.size.includes('row-span-2') ? 'scale-150' : ''}`}></i>
-                     <span className="font-mono text-xs text-white/30 uppercase tracking-widest">{item.title}</span>
+                {/* Image */}
+                <div className="absolute inset-0">
+                    <img 
+                        src={item.src}
+                        alt={item.title}
+                        className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                    />
                 </div>
                 
                 {/* Overlay Content */}
-                <div className="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                <div className="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-linear-to-t from-black/90 via-black/50 to-transparent">
                     <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                         <p className="text-orange-500 text-xs font-mono tracking-widest uppercase mb-1">{item.category}</p>
                         <h3 className="text-white font-display text-xl uppercase mb-1">{item.title}</h3>
