@@ -35,6 +35,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://hackwise.spherehive.in"),
   title: "Hackwise 2.0 | National Level Hackathon at KVGCE",
   description:
     "Join Hackwise 2.0, a premier 24-hour hackathon organized by Sphere Hive at KVG College of Engineering. Innovate, Deploy, Disrupt. Open to students and innovators.",
