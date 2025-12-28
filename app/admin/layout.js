@@ -7,7 +7,9 @@ import {
   MessageSquare, 
   FileText, 
   Settings,
-  LogOut 
+  LogOut,
+  Users,
+  Megaphone
 } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
@@ -22,8 +24,11 @@ export default function AdminLayout({ children }) {
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
     { href: '/admin/queries', label: 'Queries', icon: MessageSquare },
+    { href: '/admin/teams', label: 'Teams', icon: Users },
+    { href: '/admin/submissions', label: 'Project Submissions', icon: FileText },
+    { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
     { href: '/admin/faq', label: 'Manage FAQ', icon: FileText },
-    { href: '/admin/logs', label: 'System Logs', icon: FileText },
+    { href: '/admin/logs', label: 'System Logs', icon: Settings },
   ];
 
   return (

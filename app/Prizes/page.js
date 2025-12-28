@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import DecryptedText from "../components/DecryptedText";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 
 const Prizes = () => {
   const cardClipPath = "polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)";

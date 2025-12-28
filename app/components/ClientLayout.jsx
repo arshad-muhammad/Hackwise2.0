@@ -7,8 +7,9 @@ import Footer from "./Footer";
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isDashboard = pathname?.startsWith("/dashboard");
 
-  if (isAdmin) {
+  if (isAdmin || isDashboard) {
     return <>{children}</>;
   }
 
