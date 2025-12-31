@@ -21,7 +21,7 @@
 
 ## ✨ Key Features
 
-- **Bento Grid Gallery:** --Showcasing highlights from previous events.
+- **Bento Grid Gallery:** Showcasing highlights from previous events.
 - **Cyberpunk Aesthetic:** Dark mode UI with orange accents, glassmorphism, and angular "cut" designs.
 - **Interactive Elements:** Custom cursors, decrypted text animations, and smooth hover effects.
 - **Responsive Design:** Optimized for all devices using Tailwind CSS.
@@ -32,34 +32,6 @@
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 - **Animations:** [Motion](https://motion.dev/) (formerly Framer Motion), custom CSS animations
 - **Icons:** [Remix Icon](https://remixicon.com/)
-
-## 🚀 Getting Started
-
-1.  **Clone the repository:**
-
-    ```bash
-    git clone https://github.com/your-username/hackwise2.0.git
-    cd hackwise2.0
-    ```
-
-2.  **Install dependencies:**
-
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
-
-3.  **Run the development server:**
-
-    ```bash
-    npm run dev
-    # or
-    yarn dev
-    ```
-
-4.  **Open locally:**
-    Navigate to [http://localhost:3000](http://localhost:3000) to see the application running.
 
 ## 📂 Project Structure
 
