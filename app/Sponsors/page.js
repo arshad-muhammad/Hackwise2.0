@@ -72,25 +72,28 @@ const Sponsors = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full">
             {/* Reward 1 */}
             <div
-              className={`${sponsorBoxBase} aspect-[3/1] p-4 sm:p-6 hover:border-yellow-500/30`}
+              className={`${sponsorBoxBase} 
+    group cursor-pointer 
+    col-span-1 sm:col-span-2 
+    w-full md:w-2/3 
+    mx-auto 
+    aspect-video 
+    p-4 sm:p-6 md:p-8 
+    relative
+    hover:border-yellow-500/30 `}
             >
+              <div className="absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity" />
+
               <img
                 src="/assets/butti-logo.png"
                 alt="Butti Logo"
-                className="max-h-16 object-contain bg-white rounded-full p-2"
+                className="max-h-30 object-contain bg-white rounded-full p-2 mx-auto"
               />
             </div>
-
-            {/* Reward 2 */}
-            <div
-              className={`${sponsorBoxBase} aspect-[3/1] p-4 sm:p-6 hover:border-yellow-500/30`}
-            >
-              <img
-                src="/assets/lovable-logo.webp"
-                alt="Lovable Logo"
-                className="max-h-16 object-contain"
-              />
-            </div>
+            {/* Reward 2 */}{" "}
+            {/* <div className={${sponsorBoxBase} aspect-[3/1] p-4 sm:p-6 hover:border-yellow-500/30} > 
+            <img src="/assets/lovable-logo.webp" alt="Lovable Logo" className="max-h-16 object-contain" /> 
+            </div> */}
           </div>
         </div>
 
