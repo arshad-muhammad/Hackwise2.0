@@ -38,7 +38,7 @@ export const metadata = {
   metadataBase: new URL("https://hackwise.spherehive.in"),
   title: "Hackwise 2.0 | National Level Hackathon at KVGCE",
   description:
-    "Join Hackwise 2.0, a premier 24-hour hackathon organized by Sphere Hive at KVG College of Engineering. Innovate, Deploy, Disrupt. Open to students and innovators.",
+    "Hackwise 2.0 is a national-level 24-hour hackathon in April 4-5, 2026 at KVG College of Engineering by Sphere Hive. Build, innovate, and compete with top student developers.",
   keywords: [
     "Hackwise",
     "Hackwise 2.0",
@@ -57,7 +57,7 @@ export const metadata = {
     "Cloud Computing",
     "Microservices",
     "API Development",
-    "Hackathon 2025",
+    "Pre Placement Hackathon",
     "Hackathon 2026",
     "Coding Competition",
     "Student Innovation",
@@ -67,6 +67,10 @@ export const metadata = {
     "Recruitment",
     "Web Development",
     "AI Hackathon",
+    "April 4",
+  "April 5",
+  "January 14",
+  "February 28",
   ],
   authors: [{ name: "Sphere Hive" }],
   creator: "Sphere Hive",
@@ -77,9 +81,9 @@ export const metadata = {
     apple: "/assets/logo.png",
   },
   openGraph: {
-    title: "Hackwise 2.0 | National Level Hackathon",
+    title: "Hackwise 2.0 | National Level Hackathon - April 4-5, 2026",
     description:
-      "Empowering the next wave of innovators. Join us at KVGCE for a 24-hour coding sprint.",
+      "Empowering the next wave of innovators. Join us at KVGCE for a 24-hour coding sprint on April 4-5, 2026.",
     siteName: "Hackwise 2.0",
     images: [
       {
@@ -94,8 +98,8 @@ export const metadata = {
   },
   youtube: {
     card: "summary_large_image",
-    title: "Hackwise 2.0",
-    description: "Empowering the next wave of innovators.",
+    title: "Hackwise 2.0 | April 4-5, 2026",
+    description: "Empowering the next wave of innovators. Online: Jan 14 - Feb 28. Finale: April 4-5, 2026.",
     images: ["/assets/Hackloho.png"],
   },
   robots: {

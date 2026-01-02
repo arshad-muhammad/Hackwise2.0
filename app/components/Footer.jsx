@@ -53,7 +53,10 @@ const Footer = () => {
                 className="w-full bg-white/5 border border-white/10 px-4 py-3 text-sm font-mono text-white focus:outline-none focus:border-orange-500/50 focus:bg-white/10 transition-all placeholder:text-white/20"
                 suppressHydrationWarning
               />
-              <button className="absolute right-1 top-1 bottom-1 px-3 bg-orange-500/10 text-orange-500 hover:bg-orange-500 hover:text-black transition-colors text-xs font-mono border border-orange-500/20">
+              <button
+                suppressHydrationWarning
+                className="absolute right-1 top-1 bottom-1 px-3 bg-orange-500/10 text-orange-500 hover:bg-orange-500 hover:text-black transition-colors text-xs font-mono border border-orange-500/20"
+              >
                 SUBMIT
               </button>
             </div>

@@ -8,6 +8,7 @@ import DecryptedText from "../components/DecryptedText";
 const comingSoonItems = [
   { id: 1, img: "/assets/Media-logo.png", link: "https://www.instagram.com/summarise_app" },
   { id: 2, img: "/assets/Spectra-logo.png", link: "https://instagram.com/spectra.kvgce" },
+  { id: 3, img: "/assets/savishkar.jpg", link: "https://savishkarindia.org/" },
 ];
 
 const SponsorCard = ({ href, imgSrc, imgAlt, className, imgClassName }) => {
@@ -105,7 +106,7 @@ const Sponsors = () => {
           {/* Middle Tier: Rewards */}
           <div className="w-full max-w-5xl flex flex-col items-center mt-2">
             <SectionHeader title="Reward Sponsors" colorClass="text-yellow-400" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 w-full">
               <SponsorCard
                 href="https://butti.in/"
                 imgSrc="/assets/butti-logo.png"
@@ -113,20 +114,14 @@ const Sponsors = () => {
                 className="h-24 sm:h-28 p-4"
                 imgClassName="max-h-full max-w-[70%] bg-white/90 rounded-full px-2 py-1"
               />
-              <SponsorCard
-                href="https://lovable.dev/"
-                imgSrc="/assets/lovable-logo.webp"
-                imgAlt="Lovable"
-                className="h-24 sm:h-28 p-4"
-                imgClassName="max-h-full max-w-[70%]"
-            />
+              
           </div>
         </div>
 
           {/* Bottom Tier: Media Partners */}
           <div className="w-full max-w-5xl flex flex-col items-center mt-2">
             <SectionHeader title="Media Partners" colorClass="text-gray-400" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
               {comingSoonItems.map((item) => (
                 <SponsorCard
                   key={item.id}

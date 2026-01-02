@@ -52,6 +52,9 @@ function FlowPage() {
                   <p className="text-sm text-white/60 font-sans">
                     Online Screening
                   </p>
+                  <p className="text-xs text-orange-500 font-mono mt-1">
+                    14 Jan 2026 - 28 Feb 2026
+                  </p>
                 </div>
               </div>
 
@@ -84,9 +87,13 @@ function FlowPage() {
               </div>
 
               <div className="text-xs text-white/50 mb-8 font-sans border-t border-white/10 pt-4">
+                <div className="mb-2">
+                  <span className="text-orange-400">Evaluation & Results:</span>{" "}
+                  First 2 weeks of March
+                </div>
                 Evaluated by{" "}
                 <span className="text-white">Dyashin Technosoft</span>.<br />
-                Top 30 teams shortlisted.
+                Top teams shortlisted.
               </div>
 
               <a
@@ -146,6 +153,9 @@ function FlowPage() {
                   </h2>
                   <p className="text-sm text-white/60 font-sans">
                     KVGCE Campus
+                  </p>
+                  <p className="text-xs text-blue-500 font-mono mt-1">
+                    4 & 5 April 2026
                   </p>
                 </div>
               </div>

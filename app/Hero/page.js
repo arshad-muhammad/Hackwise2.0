@@ -24,7 +24,7 @@ export default function Home() {
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-6">
                 <p className="text-white/80 font-mono text-lg md:text-xl border-l-4 border-orange-500 pl-4">
-                  Build real SaaS products. Win ₹40,000. Get hired.
+                  Build real SaaS products. Win Prize Pool of ₹60,000. Get hired.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <a
