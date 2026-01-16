@@ -181,12 +181,12 @@ function FlowPage() {
               </ul>
 
               <div className="space-y-3 mb-8 grow font-sans text-sm border-t border-white/10 pt-4">
-                {/* <div className="mb-4 text-white/90">
+                <div className="mb-4 text-white/90">
                   <span className="text-orange-500 font-bold">
                     Registration Fee:
                   </span>{" "}
                   ₹500 per team (Only for shortlisted teams).
-                </div> */}
+                </div>
                 <p className="font-semibold text-white uppercase tracking-wide">
                   Rewards:
                 </p>
