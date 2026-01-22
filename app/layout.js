@@ -91,7 +91,7 @@ export const metadata = {
   icons: {
     icon: "/assets/logo.ico",
     shortcut: "/assets/logo.ico",
-    apple: "/assets/logo.png",
+    apple: "/assets/Hackloho.png",
   },
   openGraph: {
     title: "Hackwise 2.0 | National Level Hackathon - April 4-5, 2026",
