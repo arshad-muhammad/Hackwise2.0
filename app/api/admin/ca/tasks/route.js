@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { verifySession } from '@/lib/auth';
+import { sendTaskAssignmentEmail } from '@/lib/email';
 
 // GET: Fetch all tasks
 export async function GET(request) {
@@ -102,11 +103,22 @@ export async function POST(request) {
 
     const taskId = result.insertId;
 
-    // Assign task to CAs
+    // Get task details for email
+    const taskDetails = {
+      title,
+      description,
+      deadline,
+      task_type,
+      points_on_completion: points_on_completion || 5,
+      bonus_points_early: bonus_points_early || 0,
+    };
+
+    // Assign task to CAs and send emails
+    let caIdsToEmail = [];
     if (assign_to_all) {
-      // Get all approved CAs
+      // Get all approved CAs with their details
       const [approvedCAs] = await pool.query(
-        'SELECT id FROM `hw-ca-applications` WHERE status = "APPROVED"'
+        'SELECT id, name, email FROM `hw-ca-applications` WHERE status = "APPROVED"'
       );
 
       // Assign to all
@@ -117,15 +129,46 @@ export async function POST(request) {
            VALUES ?`,
           [assignments]
         );
+        caIdsToEmail = approvedCAs;
       }
     } else if (assigned_ca_ids && Array.isArray(assigned_ca_ids) && assigned_ca_ids.length > 0) {
-      // Assign to selected CAs
-      const assignments = assigned_ca_ids.map((caId) => [taskId, caId]);
-      await pool.query(
-        `INSERT INTO \`hw-ca-task-assignments\` (task_id, ca_id)
-         VALUES ?`,
-        [assignments]
+      // Get selected CAs with their details
+      const placeholders = assigned_ca_ids.map(() => '?').join(',');
+      const [selectedCAs] = await pool.query(
+        `SELECT id, name, email FROM \`hw-ca-applications\` WHERE id IN (${placeholders}) AND status = "APPROVED"`,
+        assigned_ca_ids
       );
+
+      // Assign to selected CAs
+      if (selectedCAs.length > 0) {
+        const assignments = selectedCAs.map((ca) => [taskId, ca.id]);
+        await pool.query(
+          `INSERT INTO \`hw-ca-task-assignments\` (task_id, ca_id)
+           VALUES ?`,
+          [assignments]
+        );
+        caIdsToEmail = selectedCAs;
+      }
+    }
+
+    // Send emails to assigned CAs (async, don't block response)
+    if (caIdsToEmail.length > 0) {
+      Promise.all(
+        caIdsToEmail.map((ca) =>
+          sendTaskAssignmentEmail(ca.email, ca.name, taskDetails).catch((error) => {
+            console.error(`Failed to send email to ${ca.email}:`, error);
+            // Log email failures
+            pool.query(
+              'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
+              [
+                'WARN',
+                'Task Assignment Email Failed',
+                JSON.stringify({ ca_id: ca.id, email: ca.email, task_id: taskId, error: error.message }),
+              ]
+            ).catch(console.error);
+          })
+        )
+      ).catch(console.error);
     }
 
     // Log task creation
@@ -134,7 +177,7 @@ export async function POST(request) {
       [
         'INFO',
         'CA Task Created',
-        JSON.stringify({ id: taskId, title, task_type }),
+        JSON.stringify({ id: taskId, title, task_type, emails_sent: caIdsToEmail.length }),
       ]
     ).catch(console.error);
 

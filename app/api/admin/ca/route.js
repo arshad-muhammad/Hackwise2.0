@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { verifySession } from '@/lib/auth';
+import { sendCAApprovalEmail } from '@/lib/email';
 
 // Helper function to generate unique CA code
 async function generateCACode(collegeAbbreviation) {
@@ -190,11 +191,32 @@ export async function POST(request) {
         ]
       ).catch(console.error);
 
+      // Send approval email
+      const emailResult = await sendCAApprovalEmail(
+        application.email,
+        application.name,
+        caCode
+      );
+
+      if (!emailResult.success) {
+        console.error('Failed to send approval email:', emailResult.error);
+        // Don't fail the approval if email fails, but log it
+        pool.query(
+          'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
+          [
+            'WARN',
+            'CA Approval Email Failed',
+            JSON.stringify({ id, email: application.email, error: emailResult.error }),
+          ]
+        ).catch(console.error);
+      }
+
       return NextResponse.json({
         success: true,
         ca_code: caCode,
         referral_link: referralLink,
         message: 'Application approved successfully',
+        email_sent: emailResult.success,
       });
     } else if (action === 'reject') {
       // Update application to rejected
