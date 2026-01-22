@@ -68,9 +68,22 @@ export const metadata = {
     "Web Development",
     "AI Hackathon",
     "April 4",
-  "April 5",
-  "January 14",
-  "February 28",
+    "April 5",
+    "January 14",
+    "February 28",
+    "Campus Ambassador",
+    "CA Program",
+    "Student Ambassador",
+    "Hackathon Registration",
+    "Team Registration",
+    "National Hackathon India",
+    "College Hackathon",
+    "Engineering Hackathon",
+    "Tech Competition India",
+    "Programming Contest",
+    "Code Competition",
+    "Developer Competition",
+    "Student Hackathon India",
   ],
   authors: [{ name: "Sphere Hive" }],
   creator: "Sphere Hive",
@@ -96,7 +109,7 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
-  youtube: {
+  twitter: {
     card: "summary_large_image",
     title: "Hackwise 2.0 | April 4-5, 2026",
     description: "Empowering the next wave of innovators. Online: Jan 14 - Feb 28. Finale: April 4-5, 2026.",
@@ -105,6 +118,18 @@ export const metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    yandex: process.env.YANDEX_VERIFICATION,
+    bing: process.env.BING_VERIFICATION,
   },
 };
 

@@ -9,7 +9,8 @@ import {
   Settings,
   LogOut,
   Users,
-  Megaphone
+  Megaphone,
+  UserCheck
 } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
@@ -25,6 +26,9 @@ export default function AdminLayout({ children }) {
     { href: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
     { href: '/admin/queries', label: 'Queries', icon: MessageSquare },
     { href: '/admin/teams', label: 'Teams', icon: Users },
+    { href: '/admin/ca', label: 'Campus Ambassadors', icon: UserCheck },
+    { href: '/admin/ca/tasks', label: 'CA Tasks', icon: FileText },
+    { href: '/admin/ca/analytics', label: 'CA Analytics', icon: BarChart2 },
     { href: '/admin/submissions', label: 'Project Submissions', icon: FileText },
     { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
     { href: '/admin/faq', label: 'Manage FAQ', icon: FileText },

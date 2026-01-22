@@ -25,7 +25,6 @@ const Navbar = () => {
     { name: "Flow", id: "flow" },
     { name: "Prizes", id: "prizes" },
     { name: "Sponsors", id: "sponsors" },
-    { name: "FAQ", id: "faq" },
   ];
 
   return (
@@ -83,6 +82,16 @@ const Navbar = () => {
                   />
                 </a>
               ))}
+              <Link
+                href="/campus-ambassador"
+                className="font-mono text-sm text-white/70 hover:text-orange-500 transition-colors uppercase tracking-wider group"
+              >
+                <DecryptedText
+                  text="Campus Ambassador"
+                  speed={30}
+                  className="group-hover:text-orange-500 transition-colors"
+                />
+              </Link>
               {/* New Accommodation Link */}
               <Link
                 href="/accommodation"
@@ -157,6 +166,17 @@ const Navbar = () => {
                 />
               </a>
             ))}
+            <Link
+              href="/campus-ambassador"
+              onClick={() => setIsOpen(false)}
+              className="font-mono text-lg text-white/80 hover:text-orange-500 transition-colors uppercase group"
+            >
+              <DecryptedText
+                text="Campus Ambassador"
+                speed={30}
+                className="group-hover:text-orange-500 transition-colors"
+              />
+            </Link>
             <Link
               href="/accommodation"
               onClick={() => setIsOpen(false)}
