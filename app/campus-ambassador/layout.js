@@ -34,7 +34,7 @@ export const metadata = {
     siteName: "Hackwise 2.0",
     images: [
       {
-        url: "/assets/Hackloho.png",
+        url: "/assets/HACKWISE2.0-CA.png",
         width: 1200,
         height: 630,
         alt: "Hackwise 2.0 Campus Ambassador Program",
@@ -47,7 +47,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Campus Ambassador Program | Hackwise 2.0",
     description: "Join as a Campus Ambassador for Hackwise 2.0. Earn rewards, LORs, cash prizes, and lead Sphere Hive clubs!",
-    images: ["/assets/Hackloho.png"],
+    images: ["/assets/HACKWISE2.0-CA.png"],
   },
   alternates: {
     canonical: "https://hackwise.spherehive.in/campus-ambassador",
