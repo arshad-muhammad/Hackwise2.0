@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function RegistrationSuccessPage() {
+function RegistrationSuccessContent() {
   const searchParams = useSearchParams();
   const teamName = searchParams.get('team');
 
@@ -84,6 +85,18 @@ export default function RegistrationSuccessPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function RegistrationSuccessPage() {
+  return (
+    <Suspense fallback={
+      <section className="section-container border-t border-white/10 pb-32">
+        <div className="text-center text-white/60 font-mono">Loading...</div>
+      </section>
+    }>
+      <RegistrationSuccessContent />
+    </Suspense>
   );
 }
 
