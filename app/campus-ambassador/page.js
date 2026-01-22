@@ -180,7 +180,7 @@ export default function CampusAmbassadorPage() {
   };
 
   return (
-    <section className="section-container border-t border-white/10 pb-32 pt-32 md:pt-40 relative overflow-hidden">
+    <section className="section-container border-t border-white/10 pb-16 sm:pb-24 md:pb-32 pt-32 md:pt-40 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -216,10 +216,10 @@ export default function CampusAmbassadorPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full flex justify-center mb-12 mt-8 md:mt-12 relative z-10"
+        className="w-full flex justify-center mb-8 md:mb-12 mt-8 md:mt-12 relative z-10 px-4"
       >
-        <div className="inline-block border border-white/20 bg-[#0A090F] px-8 py-4 relative">
-          <h1 className="text-3xl md:text-5xl font-hackwise text-white uppercase tracking-wider text-center">
+        <div className="inline-block border border-white/20 bg-[#0A090F] px-4 py-3 md:px-8 md:py-4 relative max-w-full">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-hackwise text-white uppercase tracking-wider text-center pr-16 md:pr-0">
             Campus Ambassador Program
           </h1>
           <motion.button
@@ -227,18 +227,19 @@ export default function CampusAmbassadorPage() {
               setShowLogin(true);
               setShowForm(false);
             }}
-            className="absolute -top-2 -right-2 px-4 py-2 bg-orange-500 text-black font-mono font-bold text-sm hover:bg-orange-600 transition-colors flex items-center gap-2 uppercase"
+            className="absolute -top-2 -right-2 md:-right-2 px-2 py-1.5 md:px-4 md:py-2 bg-orange-500 text-black font-mono font-bold text-xs md:text-sm hover:bg-orange-600 transition-colors flex items-center gap-1 md:gap-2 uppercase"
             style={{ clipPath: btnClipPath }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <i className="ri-login-box-line text-base" />
-            CA Login
+            <i className="ri-login-box-line text-sm md:text-base" />
+            <span className="hidden sm:inline">CA Login</span>
+            <span className="sm:hidden">Login</span>
           </motion.button>
         </div>
       </motion.div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10 px-4 md:px-6">
         {/* Login Modal */}
         <AnimatePresence>
           {showLogin && (
@@ -254,7 +255,7 @@ export default function CampusAmbassadorPage() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-[#0A090F] border border-white/10 p-8 rounded-3xl w-full max-w-md"
+                className="bg-[#0A090F] border border-white/10 p-6 sm:p-8 rounded-3xl w-full max-w-md mx-4"
                 style={{ clipPath: cardClipPath }}
               >
                 <div className="flex justify-between items-center mb-6">
@@ -283,13 +284,13 @@ export default function CampusAmbassadorPage() {
                     style={{ clipPath: btnClipPath }}
                   />
                   <div
-                    className="relative bg-[#0A090F] m-[1px] py-4 text-center transition-all duration-300"
+                    className="relative bg-[#0A090F] m-px py-4 text-center transition-all duration-300"
                     style={{ clipPath: btnClipPath }}
                   >
                     <div className="absolute inset-0 bg-white/5 group-hover:bg-orange-500/10 transition-colors duration-300" />
-                    <span className="relative text-white font-sans font-bold text-lg uppercase tracking-wide flex items-center justify-center gap-2">
+                    <span className="relative text-white font-sans font-bold text-sm sm:text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-2">
                       Go to Login Page
-                      <i className="ri-arrow-right-line text-xl" />
+                      <i className="ri-arrow-right-line text-lg sm:text-xl" />
                     </span>
                   </div>
                 </motion.button>
@@ -307,7 +308,7 @@ export default function CampusAmbassadorPage() {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="space-y-12"
+              className="space-y-8 sm:space-y-10 md:space-y-12"
             >
               {/* Hero Card */}
               <motion.div
@@ -320,23 +321,23 @@ export default function CampusAmbassadorPage() {
                     className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
                     style={{ clipPath: cardClipPath }}
                   />
-                  <div className="relative bg-[#0A090F] p-8 md:p-12" style={{ clipPath: cardClipPath }}>
+                  <div className="relative bg-[#0A090F] p-6 md:p-8 lg:p-12" style={{ clipPath: cardClipPath }}>
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.2 }}
-                      className="flex items-center gap-4 mb-6"
+                      className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6"
                     >
                       <motion.div
-                        className="w-16 h-16 rounded-lg bg-orange-500 flex items-center justify-center text-black font-bold text-2xl font-hackwise"
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-orange-500 flex items-center justify-center text-black font-bold text-xl sm:text-2xl font-hackwise flex-shrink-0"
                         whileHover={{ rotate: 360, scale: 1.1 }}
                         transition={{ duration: 0.5 }}
                       >
                         CA
                       </motion.div>
                       <div>
-                        <h2 className="text-3xl font-hackwise text-white uppercase">Become a Campus Ambassador</h2>
-                        <p className="text-sm text-white/60 font-sans">Represent Hackwise 2.0 at your college</p>
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-hackwise text-white uppercase">Become a Campus Ambassador</h2>
+                        <p className="text-xs sm:text-sm text-white/60 font-sans">Represent Hackwise 2.0 at your college</p>
                       </div>
                     </motion.div>
 
@@ -344,7 +345,7 @@ export default function CampusAmbassadorPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
-                      className="text-lg text-white/80 font-sans mb-8 leading-relaxed"
+                      className="text-sm sm:text-base md:text-lg text-white/80 font-sans mb-6 md:mb-8 leading-relaxed"
                     >
                       Join our elite team of Campus Ambassadors and help spread the word about Hackwise 2.0! 
                       Earn rewards, build your network, and gain valuable leadership experience while promoting 
@@ -357,7 +358,7 @@ export default function CampusAmbassadorPage() {
               {/* Benefits Grid */}
               <motion.div
                 variants={itemVariants}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6"
               >
                 {benefits.map((benefit, index) => {
                   const colorClasses = {
@@ -380,16 +381,16 @@ export default function CampusAmbassadorPage() {
                           className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
                           style={{ clipPath: cardClipPath }}
                         />
-                        <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
+                        <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
                           <motion.div
-                            className={`w-12 h-12 rounded-lg ${colors.bg} flex items-center justify-center mb-4`}
+                            className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg ${colors.bg} flex items-center justify-center mb-3 sm:mb-4`}
                             whileHover={{ rotate: 360 }}
                             transition={{ duration: 0.5 }}
                           >
-                            <i className={`${benefit.icon} ${colors.text} text-2xl`} />
+                            <i className={`${benefit.icon} ${colors.text} text-xl sm:text-2xl`} />
                           </motion.div>
-                          <h3 className="text-xl font-hackwise text-white uppercase mb-2">{benefit.title}</h3>
-                          <p className="text-white/70 font-sans text-sm">{benefit.description}</p>
+                          <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase mb-2">{benefit.title}</h3>
+                          <p className="text-white/70 font-sans text-xs sm:text-sm leading-relaxed">{benefit.description}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -400,7 +401,7 @@ export default function CampusAmbassadorPage() {
               {/* Role & Performance Section */}
               <motion.div
                 variants={itemVariants}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 md:gap-6"
               >
                 {/* Your Role */}
                 <motion.div
@@ -413,12 +414,12 @@ export default function CampusAmbassadorPage() {
                       className="absolute inset-0 bg-white/20 group-hover:bg-blue-500/50 transition-colors duration-300"
                       style={{ clipPath: cardClipPath }}
                     />
-                    <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
-                      <div className="flex items-center gap-3 mb-4">
-                        <i className="ri-focus-3-line text-blue-500 text-2xl" />
-                        <h3 className="text-xl font-hackwise text-white uppercase">Your Role</h3>
+                    <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+                      <div className="flex items-center gap-2 sm:gap-3 mb-4">
+                        <i className="ri-focus-3-line text-blue-500 text-xl sm:text-2xl flex-shrink-0" />
+                        <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase">Your Role</h3>
                       </div>
-                      <ul className="space-y-3 text-white/70 font-sans text-sm">
+                      <ul className="space-y-2 sm:space-y-3 text-white/70 font-sans text-xs sm:text-sm">
                         {[
                           "Promote Hackwise 2.0 through social media and campus events",
                           "Share your unique referral link to track registrations",
@@ -432,7 +433,7 @@ export default function CampusAmbassadorPage() {
                             transition={{ delay: 0.4 + i * 0.1 }}
                             className="flex gap-2 items-start"
                           >
-                            <i className="ri-checkbox-circle-fill text-orange-500 mt-0.5 flex-shrink-0 text-base" />
+                            <i className="ri-checkbox-circle-fill text-orange-500 mt-0.5 shrink-0 text-base" />
                             <span>{item}</span>
                           </motion.li>
                         ))}
@@ -452,12 +453,12 @@ export default function CampusAmbassadorPage() {
                       className="absolute inset-0 bg-white/20 group-hover:bg-green-500/50 transition-colors duration-300"
                       style={{ clipPath: cardClipPath }}
                     />
-                    <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
-                      <div className="flex items-center gap-3 mb-4">
-                        <i className="ri-line-chart-fill text-green-500 text-2xl" />
-                        <h3 className="text-xl font-hackwise text-white uppercase">Performance Scoring</h3>
+                    <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+                      <div className="flex items-center gap-2 sm:gap-3 mb-4">
+                        <i className="ri-line-chart-fill text-green-500 text-xl sm:text-2xl flex-shrink-0" />
+                        <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase">Performance Scoring</h3>
                       </div>
-                      <ul className="space-y-3 text-white/70 font-sans text-sm">
+                      <ul className="space-y-2 sm:space-y-3 text-white/70 font-sans text-xs sm:text-sm">
                         {[
                           "Verified registrations through your referral link",
                           "Completed and approved tasks",
@@ -471,7 +472,7 @@ export default function CampusAmbassadorPage() {
                             transition={{ delay: 0.5 + i * 0.1 }}
                             className="flex gap-2 items-start"
                           >
-                            <i className="ri-flashlight-fill text-orange-500 mt-0.5 flex-shrink-0 text-base" />
+                            <i className="ri-flashlight-fill text-orange-500 mt-0.5 shrink-0 text-base" />
                             <span>{item}</span>
                           </motion.li>
                         ))}
@@ -497,13 +498,13 @@ export default function CampusAmbassadorPage() {
                     style={{ clipPath: btnClipPath }}
                   />
                   <div
-                    className="relative bg-[#0A090F] m-[1px] py-4 text-center transition-all duration-300"
+                    className="relative bg-[#0A090F] m-px py-4 text-center transition-all duration-300"
                     style={{ clipPath: btnClipPath }}
                   >
                     <div className="absolute inset-0 bg-white/5 group-hover:bg-orange-500/10 transition-colors duration-300" />
-                    <span className="relative text-white font-sans font-bold text-lg uppercase tracking-wide flex items-center justify-center gap-2">
+                    <span className="relative text-white font-sans font-bold text-sm sm:text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-2">
                       Apply Now
-                      <i className="ri-arrow-right-line text-xl" />
+                      <i className="ri-arrow-right-line text-lg sm:text-xl" />
                     </span>
                   </div>
                 </motion.button>
@@ -524,34 +525,34 @@ export default function CampusAmbassadorPage() {
                   className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
                   style={{ clipPath: cardClipPath }}
                 />
-                <div className="relative bg-[#0A090F] p-8 md:p-12" style={{ clipPath: cardClipPath }}>
-                  <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-hackwise text-white uppercase">Application Form</h2>
+                <div className="relative bg-[#0A090F] p-4 sm:p-6 md:p-8 lg:p-12" style={{ clipPath: cardClipPath }}>
+                  <div className="flex items-center justify-between mb-6 md:mb-8">
+                    <h2 className="text-xl sm:text-2xl font-hackwise text-white uppercase">Application Form</h2>
                     <motion.button
                       onClick={() => setShowForm(false)}
-                      className="text-white/60 hover:text-white transition-colors"
+                      className="text-white/60 hover:text-white transition-colors flex-shrink-0"
                       whileHover={{ rotate: 90 }}
                       whileTap={{ scale: 0.9 }}
                     >
-                      <i className="ri-close-line text-2xl" />
+                      <i className="ri-close-line text-xl sm:text-2xl" />
                     </motion.button>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                     <AnimatePresence>
                       {error && (
                         <motion.div
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="p-4 bg-red-500/10 border-l-4 border-red-500 text-red-500 text-sm font-mono"
+                          className="p-3 sm:p-4 bg-red-500/10 border-l-4 border-red-500 text-red-500 text-xs sm:text-sm font-mono"
                         >
                           {error}
                         </motion.div>
                       )}
                     </AnimatePresence>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       {[
                         { name: "name", label: "Full Name", type: "text", required: true, placeholder: "Enter your full name" },
                         { name: "email", label: "Email", type: "email", required: true, placeholder: "your.email@example.com" },
@@ -567,7 +568,7 @@ export default function CampusAmbassadorPage() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.05 }}
                         >
-                          <label className="block text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
+                          <label className="block text-xs sm:text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
                             {field.label} {field.required && <span className="text-red-500">*</span>}
                           </label>
                           {field.type === "select" ? (
@@ -575,7 +576,7 @@ export default function CampusAmbassadorPage() {
                               name={field.name}
                               value={formData[field.name]}
                               onChange={handleChange}
-                              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-sans focus:outline-none focus:border-orange-500/50 transition-colors"
+                              className="w-full bg-white/5 border border-white/10 px-3 sm:px-4 py-2 sm:py-3 text-white font-sans text-sm sm:text-base focus:outline-none focus:border-orange-500/50 transition-colors"
                             >
                               {field.options.map(opt => (
                                 <option key={opt} value={opt}>{opt || "Select year"}</option>
@@ -589,7 +590,7 @@ export default function CampusAmbassadorPage() {
                               onChange={handleChange}
                               required={field.required}
                               maxLength={field.maxLength}
-                              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-sans focus:outline-none focus:border-orange-500/50 transition-colors"
+                              className="w-full bg-white/5 border border-white/10 px-3 sm:px-4 py-2 sm:py-3 text-white font-sans text-sm sm:text-base focus:outline-none focus:border-orange-500/50 transition-colors"
                               placeholder={field.placeholder}
                               style={field.name === "college_abbreviation" ? { textTransform: "uppercase" } : {}}
                             />
@@ -606,7 +607,7 @@ export default function CampusAmbassadorPage() {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
                     >
-                      <label className="block text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
+                      <label className="block text-xs sm:text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
                         Why are you interested in becoming a Campus Ambassador? <span className="text-red-500">*</span>
                       </label>
                       <textarea
@@ -615,7 +616,7 @@ export default function CampusAmbassadorPage() {
                         onChange={handleChange}
                         required
                         rows={4}
-                        className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-sans focus:outline-none focus:border-orange-500/50 transition-colors resize-none"
+                        className="w-full bg-white/5 border border-white/10 px-3 sm:px-4 py-2 sm:py-3 text-white font-sans text-sm sm:text-base focus:outline-none focus:border-orange-500/50 transition-colors resize-none"
                         placeholder="Tell us why you want to be a CA..."
                       />
                     </motion.div>
@@ -625,7 +626,7 @@ export default function CampusAmbassadorPage() {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
                     >
-                      <label className="block text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
+                      <label className="block text-xs sm:text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
                         Previous Experience (Optional)
                       </label>
                       <textarea
@@ -633,7 +634,7 @@ export default function CampusAmbassadorPage() {
                         value={formData.previous_experience}
                         onChange={handleChange}
                         rows={3}
-                        className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-sans focus:outline-none focus:border-orange-500/50 transition-colors resize-none"
+                        className="w-full bg-white/5 border border-white/10 px-3 sm:px-4 py-2 sm:py-3 text-white font-sans text-sm sm:text-base focus:outline-none focus:border-orange-500/50 transition-colors resize-none"
                         placeholder="Any previous ambassador/marketing experience..."
                       />
                     </motion.div>
@@ -643,10 +644,10 @@ export default function CampusAmbassadorPage() {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.6 }}
                     >
-                      <label className="block text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
+                      <label className="block text-xs sm:text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
                         Social Media Links (Optional)
                       </label>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                         {["instagram", "linkedin", "twitter"].map((social) => (
                           <input
                             key={social}
@@ -654,7 +655,7 @@ export default function CampusAmbassadorPage() {
                             name={social}
                             value={formData[social]}
                             onChange={handleChange}
-                            className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-sans focus:outline-none focus:border-orange-500/50 transition-colors text-sm"
+                            className="w-full bg-white/5 border border-white/10 px-3 sm:px-4 py-2 sm:py-3 text-white font-sans focus:outline-none focus:border-orange-500/50 transition-colors text-xs sm:text-sm"
                             placeholder={`${social.charAt(0).toUpperCase() + social.slice(1)} URL`}
                           />
                         ))}
@@ -667,16 +668,16 @@ export default function CampusAmbassadorPage() {
                       transition={{ delay: 0.7 }}
                       className="pt-4 border-t border-white/10"
                     >
-                      <p className="text-sm text-white/60 font-sans mb-4">
+                      <p className="text-xs sm:text-sm text-white/60 font-sans mb-3 sm:mb-4">
                         Create a password for your CA dashboard access. You'll use your CA code and this password to login.
                       </p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         {[
                           { name: "password", label: "Password", placeholder: "Minimum 6 characters" },
                           { name: "confirmPassword", label: "Confirm Password", placeholder: "Re-enter password" },
                         ].map((field) => (
                           <div key={field.name}>
-                            <label className="block text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
+                            <label className="block text-xs sm:text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
                               {field.label} <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -686,7 +687,7 @@ export default function CampusAmbassadorPage() {
                               onChange={handleChange}
                               required
                               minLength={6}
-                              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-sans focus:outline-none focus:border-orange-500/50 transition-colors"
+                              className="w-full bg-white/5 border border-white/10 px-3 sm:px-4 py-2 sm:py-3 text-white font-sans text-sm sm:text-base focus:outline-none focus:border-orange-500/50 transition-colors"
                               placeholder={field.placeholder}
                             />
                           </div>
@@ -712,11 +713,11 @@ export default function CampusAmbassadorPage() {
                           style={{ clipPath: btnClipPath }}
                         />
                         <div
-                          className="relative bg-[#0A090F] m-[1px] py-4 text-center transition-all duration-300"
+                          className="relative bg-[#0A090F] m-px py-4 text-center transition-all duration-300"
                           style={{ clipPath: btnClipPath }}
                         >
                           <div className="absolute inset-0 bg-white/5 group-hover:bg-orange-500/10 transition-colors duration-300" />
-                          <span className="relative text-white font-sans font-bold text-lg uppercase tracking-wide">
+                          <span className="relative text-white font-sans font-bold text-sm sm:text-base md:text-lg uppercase tracking-wide">
                             {isSubmitting ? "Submitting..." : "Submit Application"}
                           </span>
                         </div>
