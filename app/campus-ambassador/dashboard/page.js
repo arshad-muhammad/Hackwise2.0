@@ -84,18 +84,18 @@ export default function CADashboard() {
     <section className="section-container border-t border-white/10 pb-32">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-3xl md:text-4xl font-hackwise text-white uppercase tracking-wider mb-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-hackwise text-white uppercase tracking-wider mb-2">
               CA Dashboard
             </h1>
-            <p className="text-white/60 font-mono text-sm">
+            <p className="text-white/60 font-mono text-xs sm:text-sm">
               Welcome, <span className="text-orange-500 font-bold">{ca.name}</span> ({ca.ca_code})
             </p>
           </div>
           <button
             onClick={handleLogout}
-            className="px-6 py-2 bg-red-500/20 text-red-400 border border-red-500/30 font-mono text-sm hover:bg-red-500/30 transition-colors uppercase"
+            className="px-4 sm:px-6 py-2 bg-red-500/20 text-red-400 border border-red-500/30 font-mono text-xs sm:text-sm hover:bg-red-500/30 transition-colors uppercase self-start sm:self-auto"
             style={{ clipPath: btnClipPath }}
           >
             <i className="ri-logout-box-line inline mr-2 text-base" />
@@ -104,7 +104,7 @@ export default function CADashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <StatCard
           label="Performance Score"
           value={ca.performance_score || 0}
@@ -140,33 +140,35 @@ export default function CADashboard() {
                 className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
                 style={{ clipPath: cardClipPath }}
               />
-              <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
-                <h3 className="text-lg font-hackwise text-white uppercase mb-4">Your Referral Link</h3>
-                <div className="flex items-center gap-2">
+              <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+                <h3 className="text-base sm:text-lg font-hackwise text-white uppercase mb-3 sm:mb-4">Your Referral Link</h3>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-3 sm:mb-0">
                   <input
                     type="text"
                     value={ca.referral_link}
                     readOnly
-                    className="flex-1 bg-white/5 border border-white/10 px-4 py-2 text-white font-mono text-sm"
+                    className="flex-1 bg-white/5 border border-white/10 px-3 sm:px-4 py-2 text-white font-mono text-xs sm:text-sm truncate"
                   />
-                  <button
-                    onClick={() => copyToClipboard(ca.referral_link)}
-                    className="px-4 py-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 hover:bg-orange-500/30 transition-colors"
-                    title="Copy link"
-                  >
-                    <i className="ri-file-copy-line text-lg" />
-                  </button>
-                  <a
-                    href={ca.referral_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-colors"
-                    title="Open link"
-                  >
-                    <i className="ri-external-link-line text-lg" />
-                  </a>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => copyToClipboard(ca.referral_link)}
+                      className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 hover:bg-orange-500/30 transition-colors"
+                      title="Copy link"
+                    >
+                      <i className="ri-file-copy-line text-base sm:text-lg" />
+                    </button>
+                    <a
+                      href={ca.referral_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-colors text-center"
+                      title="Open link"
+                    >
+                      <i className="ri-external-link-line text-base sm:text-lg" />
+                    </a>
+                  </div>
                 </div>
-                <p className="text-xs text-white/50 mt-2 font-sans">
+                <p className="text-xs text-white/50 mt-2 font-sans hidden sm:block">
                   Share this link to track registrations. Each verified registration increases your performance score.
                 </p>
               </div>
@@ -175,27 +177,28 @@ export default function CADashboard() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-white/10">
+        <div className="flex gap-1 sm:gap-2 mb-4 sm:mb-6 border-b border-white/10 overflow-x-auto">
           {tabs.map((tab) => {
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 font-mono text-sm uppercase transition-colors border-b-2 ${
+                className={`px-3 sm:px-6 py-2 sm:py-3 font-mono text-xs sm:text-sm uppercase transition-colors border-b-2 whitespace-nowrap flex-shrink-0 ${
                   activeTab === tab.id
                     ? 'border-orange-500 text-orange-500'
                     : 'border-transparent text-white/60 hover:text-white'
                 }`}
               >
-                <i className={`${tab.icon} inline mr-2 text-base`} />
-                {tab.label}
+                <i className={`${tab.icon} inline mr-1 sm:mr-2 text-sm sm:text-base`} />
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
               </button>
             );
           })}
         </div>
 
         {/* Tab Content */}
-        <div className="min-h-[400px]">
+        <div className="min-h-[300px] sm:min-h-[400px]">
           {activeTab === 'overview' && (
             <OverviewTab ca={ca} registrations={registrations} tasks={tasks} />
           )}
@@ -223,13 +226,13 @@ function StatCard({ label, value, icon, color }) {
   };
 
   return (
-    <div className={`p-6 border rounded-lg ${colors[color]} backdrop-blur-sm transition-transform hover:scale-[1.02]`}>
+    <div className={`p-4 sm:p-6 border rounded-lg ${colors[color]} backdrop-blur-sm transition-transform hover:scale-[1.02]`}>
       <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-mono uppercase tracking-wider opacity-80 mb-1">{label}</p>
-          <h3 className="text-3xl font-mono font-bold">{value}</h3>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs sm:text-sm font-mono uppercase tracking-wider opacity-80 mb-1 truncate">{label}</p>
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-mono font-bold break-words">{value}</h3>
         </div>
-        <div className="text-2xl">
+        <div className="text-xl sm:text-2xl ml-2 flex-shrink-0">
           <i className={icon} />
         </div>
       </div>
@@ -241,8 +244,8 @@ function OverviewTab({ ca, registrations, tasks }) {
   const cardClipPath = "polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)";
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div className="relative group">
           <div className="absolute inset-0 bg-blue-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative p-px" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
@@ -250,9 +253,9 @@ function OverviewTab({ ca, registrations, tasks }) {
               className="absolute inset-0 bg-white/20 group-hover:bg-blue-500/50 transition-colors duration-300"
               style={{ clipPath: cardClipPath }}
             />
-            <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
-              <h3 className="text-xl font-hackwise text-white uppercase mb-4 flex items-center gap-2">
-                <i className="ri-group-line text-blue-500 text-2xl" />
+            <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+              <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase mb-3 sm:mb-4 flex items-center gap-2">
+                <i className="ri-group-line text-blue-500 text-xl sm:text-2xl" />
                 Registrations Summary
               </h3>
               <div className="space-y-2">
@@ -278,9 +281,9 @@ function OverviewTab({ ca, registrations, tasks }) {
               className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
               style={{ clipPath: cardClipPath }}
             />
-            <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
-              <h3 className="text-xl font-hackwise text-white uppercase mb-4 flex items-center gap-2">
-                <i className="ri-file-text-line text-orange-500 text-2xl" />
+            <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+              <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase mb-3 sm:mb-4 flex items-center gap-2">
+                <i className="ri-file-text-line text-orange-500 text-xl sm:text-2xl" />
                 Tasks Summary
               </h3>
               <div className="space-y-2">
@@ -314,14 +317,14 @@ function OverviewTab({ ca, registrations, tasks }) {
               className="absolute inset-0 bg-white/20 group-hover:bg-green-500/50 transition-colors duration-300"
               style={{ clipPath: cardClipPath }}
             />
-            <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
+            <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
               <div className="flex items-center gap-3">
-                <i className="ri-trophy-fill text-yellow-500 text-3xl" />
-                <div>
-                  <h3 className="text-xl font-hackwise text-white uppercase">
+                <i className="ri-trophy-fill text-yellow-500 text-2xl sm:text-3xl flex-shrink-0" />
+                <div className="min-w-0">
+                  <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase break-words">
                     Organising Team Candidate
                   </h3>
-                  <p className="text-white/60 font-sans text-sm mt-1">
+                  <p className="text-white/60 font-sans text-xs sm:text-sm mt-1 break-words">
                     Congratulations! You're eligible for the Hackwise 2.0 Organising Team selection.
                   </p>
                 </div>
@@ -355,18 +358,18 @@ function RegistrationsTab({ registrations }) {
               className="absolute inset-0 bg-white/20 group-hover:bg-blue-500/50 transition-colors duration-300"
               style={{ clipPath: cardClipPath }}
             />
-            <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-xl font-hackwise text-white uppercase mb-2">{reg.team_name}</h3>
-                  <div className="flex gap-4 text-sm text-white/60 font-sans">
+            <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase mb-2 truncate">{reg.team_name}</h3>
+                  <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-white/60 font-sans">
                     <span>Members: {reg.member_count}</span>
-                    <span>•</span>
+                    <span className="hidden sm:inline">•</span>
                     <span>{new Date(reg.registration_date).toLocaleDateString()}</span>
                   </div>
                 </div>
                 <span
-                  className={`px-3 py-1 rounded text-xs font-bold ${
+                  className={`px-3 py-1 rounded text-xs font-bold self-start sm:self-auto ${
                     reg.is_verified
                       ? 'bg-green-500/20 text-green-400 border border-green-500/30'
                       : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
@@ -464,24 +467,24 @@ function TasksTab({ tasks, onRefresh }) {
               className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
               style={{ clipPath: cardClipPath }}
             />
-            <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-hackwise text-white uppercase mb-2">{task.title}</h3>
-                  <p className="text-white/70 font-sans text-sm mb-2">{task.description}</p>
-                  <div className="flex gap-4 text-xs text-white/60 font-mono">
+            <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase mb-2 break-words">{task.title}</h3>
+                  <p className="text-white/70 font-sans text-xs sm:text-sm mb-2 break-words">{task.description}</p>
+                  <div className="flex flex-wrap gap-2 sm:gap-4 text-xs text-white/60 font-mono">
                     <span>Type: {task.task_type}</span>
-                    <span>•</span>
+                    <span className="hidden sm:inline">•</span>
                     <span>Points: {task.points_on_completion}</span>
                     {task.is_early_submission && (
                       <>
-                        <span>•</span>
+                        <span className="hidden sm:inline">•</span>
                         <span className="text-green-400">+{task.bonus_points_early} early bonus</span>
                       </>
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-row sm:flex-col items-start sm:items-end gap-2">
                   <span
                     className={`px-3 py-1 rounded text-xs font-bold ${
                       task.submission_status === 'APPROVED'
@@ -540,8 +543,8 @@ function TasksTab({ tasks, onRefresh }) {
       {/* Submission Modal */}
       {selectedTask && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0A090F] border border-white/10 p-8 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-            <h2 className="text-2xl font-hackwise text-white uppercase mb-6">
+          <div className="bg-[#0A090F] border border-white/10 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-hackwise text-white uppercase mb-4 sm:mb-6 break-words">
               Submit: {selectedTask.title}
             </h2>
 
@@ -587,20 +590,20 @@ function TasksTab({ tasks, onRefresh }) {
                 </div>
               )}
 
-              <div className="flex justify-end gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
                 <button
                   onClick={() => {
                     setSelectedTask(null);
                     setSubmissionData({ submission_text: '', file: null, screenshot: null });
                   }}
-                  className="px-6 py-2 text-white/60 hover:text-white font-mono uppercase"
+                  className="px-4 sm:px-6 py-2 text-white/60 hover:text-white font-mono text-xs sm:text-sm uppercase order-2 sm:order-1"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleSubmit(selectedTask.id)}
                   disabled={submitting}
-                  className="px-6 py-2 bg-orange-500 text-black font-mono font-bold hover:bg-orange-600 transition-colors uppercase disabled:opacity-50"
+                  className="px-4 sm:px-6 py-2 bg-orange-500 text-black font-mono font-bold hover:bg-orange-600 transition-colors text-xs sm:text-sm uppercase disabled:opacity-50 order-1 sm:order-2"
                   style={{ clipPath: btnClipPath }}
                 >
                   {submitting ? 'Submitting...' : 'Submit'}
@@ -653,30 +656,30 @@ function LeaderboardTab({ leaderboard, currentCaCode }) {
                 }`}
                 style={{ clipPath: cardClipPath }}
               />
-              <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 flex items-center justify-center">
+              <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0">
                       {getRankIcon(rank)}
                     </div>
-                    <div>
-                      <h3 className="text-lg font-hackwise text-white uppercase">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base sm:text-lg font-hackwise text-white uppercase truncate">
                         {ca.name} {isCurrent && <span className="text-orange-500">(You)</span>}
                       </h3>
-                      <p className="text-sm text-white/60 font-mono">{ca.ca_code}</p>
+                      <p className="text-xs sm:text-sm text-white/60 font-mono truncate">{ca.ca_code}</p>
                     </div>
                   </div>
-                  <div className="flex gap-6 text-sm">
+                  <div className="flex gap-4 sm:gap-6 text-sm justify-between sm:justify-end">
                     <div className="text-center">
-                      <div className="text-orange-500 font-bold text-lg">{ca.performance_score}</div>
+                      <div className="text-orange-500 font-bold text-base sm:text-lg">{ca.performance_score}</div>
                       <div className="text-white/60 text-xs">Score</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-blue-400 font-bold text-lg">{ca.verified_registrations}</div>
+                      <div className="text-blue-400 font-bold text-base sm:text-lg">{ca.verified_registrations}</div>
                       <div className="text-white/60 text-xs">Regs</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-green-400 font-bold text-lg">{ca.approved_tasks}</div>
+                      <div className="text-green-400 font-bold text-base sm:text-lg">{ca.approved_tasks}</div>
                       <div className="text-white/60 text-xs">Tasks</div>
                     </div>
                   </div>
