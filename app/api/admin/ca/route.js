@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { verifySession } from '@/lib/auth';
-import { sendCAApprovalEmail } from '@/lib/email';
 
 // Helper function to generate unique CA code
 async function generateCACode(collegeAbbreviation) {
@@ -191,50 +190,18 @@ export async function POST(request) {
         ]
       ).catch(console.error);
 
-      // Send approval email
-      console.log('[CA APPROVAL] Triggering approval email...', {
+      console.log('[CA APPROVAL] CA approved successfully', {
         ca_id: id,
         email: application.email,
         name: application.name,
         ca_code: caCode
       });
-      
-      const emailResult = await sendCAApprovalEmail(
-        application.email,
-        application.name,
-        caCode
-      );
-
-      if (!emailResult.success) {
-        console.error('[CA APPROVAL] ❌ Failed to send approval email:', emailResult.error);
-        console.error('[CA APPROVAL] Email error details:', {
-          ca_id: id,
-          email: application.email,
-          error: emailResult.error
-        });
-        // Don't fail the approval if email fails, but log it
-        pool.query(
-          'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
-          [
-            'WARN',
-            'CA Approval Email Failed',
-            JSON.stringify({ id, email: application.email, error: emailResult.error }),
-          ]
-        ).catch(console.error);
-      } else {
-        console.log('[CA APPROVAL] ✅ Approval email sent successfully!', {
-          ca_id: id,
-          email: application.email,
-          email_id: emailResult.data?.id
-        });
-      }
 
       return NextResponse.json({
         success: true,
         ca_code: caCode,
         referral_link: referralLink,
         message: 'Application approved successfully',
-        email_sent: emailResult.success,
       });
     } else if (action === 'reject') {
       // Update application to rejected
