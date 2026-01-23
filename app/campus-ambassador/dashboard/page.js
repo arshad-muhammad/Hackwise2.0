@@ -31,6 +31,13 @@ export default function CADashboard() {
     }
   };
 
+  // If leaderboard is hidden and user is on leaderboard tab, switch to overview
+  useEffect(() => {
+    if (dashboardData && dashboardData.leaderboard_visible === false && activeTab === 'leaderboard') {
+      setActiveTab('overview');
+    }
+  }, [dashboardData, activeTab]);
+
   const handleLogout = async () => {
     try {
       await fetch('/api/ca/logout', { method: 'POST' });
@@ -72,13 +79,6 @@ export default function CADashboard() {
     { id: 'tasks', label: 'Tasks', icon: 'ri-file-text-line' },
     ...(leaderboard_visible !== false ? [{ id: 'leaderboard', label: 'Leaderboard', icon: 'ri-trophy-line' }] : []),
   ];
-
-  // If leaderboard is hidden and user is on leaderboard tab, switch to overview
-  useEffect(() => {
-    if (leaderboard_visible === false && activeTab === 'leaderboard') {
-      setActiveTab('overview');
-    }
-  }, [leaderboard_visible, activeTab]);
 
   return (
     <section className="section-container border-t border-white/10 pb-32">
