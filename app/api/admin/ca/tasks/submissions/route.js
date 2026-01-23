@@ -145,19 +145,27 @@ export async function PUT(request) {
         [submission.ca_id]
       );
 
-      // Recalculate performance score (basic calculation)
-      // This is a simplified version - you may want to enhance this
+      // Recalculate performance score using actual points awarded (includes early submission bonus)
       const [caData] = await pool.query(
-        `SELECT verified_registrations, approved_tasks
+        `SELECT verified_registrations
          FROM \`hw-ca-applications\`
          WHERE id = ?`,
         [submission.ca_id]
       );
 
+      // Get sum of all points awarded from approved task submissions (includes early bonus)
+      const [taskPoints] = await pool.query(
+        `SELECT COALESCE(SUM(points_awarded), 0) as total_task_points
+         FROM \`hw-ca-task-submissions\`
+         WHERE ca_id = ? AND status = 'APPROVED'`,
+        [submission.ca_id]
+      );
+
       if (caData.length > 0) {
         const ca = caData[0];
-        // Simple scoring: 10 points per verified registration + 5 points per approved task
-        const performanceScore = (ca.verified_registrations * 10) + (ca.approved_tasks * 5);
+        const totalTaskPoints = taskPoints[0]?.total_task_points || 0;
+        // Scoring: 10 points per verified registration + actual points from approved tasks (including early bonus)
+        const performanceScore = (ca.verified_registrations * 10) + totalTaskPoints;
         
         await pool.query(
           `UPDATE \`hw-ca-applications\`
