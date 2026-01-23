@@ -118,7 +118,7 @@ export async function POST(request) {
     if (assign_to_all) {
       // Get all approved CAs with their details
       const [approvedCAs] = await pool.query(
-        'SELECT id, name, email FROM `hw-ca-applications` WHERE status = "APPROVED"'
+        'SELECT id, name, email, ca_code FROM `hw-ca-applications` WHERE status = "APPROVED"'
       );
 
       // Assign to all
@@ -135,7 +135,7 @@ export async function POST(request) {
       // Get selected CAs with their details
       const placeholders = assigned_ca_ids.map(() => '?').join(',');
       const [selectedCAs] = await pool.query(
-        `SELECT id, name, email FROM \`hw-ca-applications\` WHERE id IN (${placeholders}) AND status = "APPROVED"`,
+        `SELECT id, name, email, ca_code FROM \`hw-ca-applications\` WHERE id IN (${placeholders}) AND status = "APPROVED"`,
         assigned_ca_ids
       );
 
@@ -159,35 +159,130 @@ export async function POST(request) {
         recipients_count: caIdsToEmail.length,
         recipients: caIdsToEmail.map(ca => ({ id: ca.id, email: ca.email, name: ca.name }))
       });
+
+      // Log email sending start
+      pool.query(
+        'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
+        [
+          'INFO',
+          'Task Assignment Emails - Sending Started',
+          JSON.stringify({ 
+            task_id: taskId, 
+            task_title: title, 
+            recipients_count: caIdsToEmail.length,
+            recipients: caIdsToEmail.map(ca => ({ id: ca.id, email: ca.email, name: ca.name }))
+          }),
+        ]
+      ).catch(console.error);
       
-      Promise.all(
-        caIdsToEmail.map((ca) =>
-          sendTaskAssignmentEmail(ca.email, ca.name, { ...taskDetails, id: taskId }).catch((error) => {
-            console.error(`[TASK CREATION] ❌ Failed to send email to ${ca.email}:`, error);
-            console.error(`[TASK CREATION] Error details:`, {
-              ca_id: ca.id,
-              email: ca.email,
-              task_id: taskId,
-              error: error.message
-            });
-            // Log email failures
+      // Send emails sequentially to respect rate limit (2 req/s)
+      const results = [];
+      for (const ca of caIdsToEmail) {
+        try {
+          const result = await sendTaskAssignmentEmail(ca.email, ca.name, { ...taskDetails, id: taskId });
+          
+          if (result.success) {
+            // Log successful email send
+            pool.query(
+              'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
+              [
+                'INFO',
+                'Task Assignment Email Sent',
+                JSON.stringify({ 
+                  ca_id: ca.id, 
+                  ca_code: ca.ca_code || 'N/A',
+                  email: ca.email, 
+                  name: ca.name,
+                  task_id: taskId, 
+                  task_title: title,
+                  email_id: result.data?.id 
+                }),
+              ]
+            ).catch(console.error);
+            console.log(`[TASK CREATION] ✅ Email sent successfully to ${ca.email}`);
+          } else {
+            // Log email failure
             pool.query(
               'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
               [
                 'WARN',
                 'Task Assignment Email Failed',
-                JSON.stringify({ ca_id: ca.id, email: ca.email, task_id: taskId, error: error.message }),
+                JSON.stringify({ 
+                  ca_id: ca.id, 
+                  email: ca.email, 
+                  name: ca.name,
+                  task_id: taskId, 
+                  task_title: title,
+                  error: result.error 
+                }),
               ]
             ).catch(console.error);
-          })
-        )
-      ).then((results) => {
-        const successCount = results.filter(r => r?.success).length;
-        const failCount = results.length - successCount;
-        console.log(`[TASK CREATION] Email sending completed: ${successCount} succeeded, ${failCount} failed`);
-      }).catch(console.error);
+            console.error(`[TASK CREATION] ❌ Failed to send email to ${ca.email}:`, result.error);
+          }
+          results.push(result);
+        } catch (error) {
+          console.error(`[TASK CREATION] ❌ Exception sending email to ${ca.email}:`, error);
+          console.error(`[TASK CREATION] Error details:`, {
+            ca_id: ca.id,
+            email: ca.email,
+            task_id: taskId,
+            error: error.message
+          });
+          // Log email failures
+          pool.query(
+            'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
+            [
+              'WARN',
+              'Task Assignment Email Failed',
+              JSON.stringify({ 
+                ca_id: ca.id, 
+                email: ca.email, 
+                name: ca.name,
+                task_id: taskId, 
+                task_title: title,
+                error: error.message 
+              }),
+            ]
+          ).catch(console.error);
+          results.push({ success: false, error: error.message });
+        }
+      }
+
+      const successCount = results.filter(r => r?.success).length;
+      const failCount = results.length - successCount;
+      console.log(`[TASK CREATION] Email sending completed: ${successCount} succeeded, ${failCount} failed`);
+      
+      // Log email sending summary
+      pool.query(
+        'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
+        [
+          'INFO',
+          'Task Assignment Emails - Sending Completed',
+          JSON.stringify({ 
+            task_id: taskId, 
+            task_title: title, 
+            total_recipients: results.length,
+            success_count: successCount, 
+            fail_count: failCount 
+          }),
+        ]
+      ).catch(console.error);
     } else {
       console.log('[TASK CREATION] No CAs to email (task created but not assigned)');
+      
+      // Log that no emails were sent
+      pool.query(
+        'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
+        [
+          'INFO',
+          'Task Created - No Emails Sent',
+          JSON.stringify({ 
+            task_id: taskId, 
+            task_title: title, 
+            reason: 'Task created but not assigned to any CAs' 
+          }),
+        ]
+      ).catch(console.error);
     }
 
     // Log task creation
