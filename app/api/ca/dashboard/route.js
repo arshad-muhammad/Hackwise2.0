@@ -81,6 +81,22 @@ export async function GET(request) {
       [ca.performance_score, ca.performance_score, ca.verified_registrations]
     );
 
+    // Get leaderboard visibility setting
+    let leaderboardVisible = true; // Default to visible
+    try {
+      const [settings] = await pool.query(
+        `SELECT setting_value 
+         FROM \`hw-settings\` 
+         WHERE setting_key = 'ca_leaderboard_visible'`
+      );
+      if (settings.length > 0) {
+        leaderboardVisible = settings[0].setting_value === '1' || settings[0].setting_value === 'true';
+      }
+    } catch (error) {
+      // If table doesn't exist, use default
+      console.log('Settings table not found, using default leaderboard visibility');
+    }
+
     return NextResponse.json({
       ca: {
         id: ca.id,
@@ -96,8 +112,9 @@ export async function GET(request) {
       },
       registrations,
       tasks,
-      leaderboard,
-      current_rank: currentRank[0]?.rank || null,
+      leaderboard: leaderboardVisible ? leaderboard : [],
+      current_rank: leaderboardVisible ? (currentRank[0]?.rank || null) : null,
+      leaderboard_visible: leaderboardVisible,
     });
   } catch (error) {
     console.error('Error fetching CA dashboard:', error);

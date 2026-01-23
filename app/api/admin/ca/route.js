@@ -192,6 +192,13 @@ export async function POST(request) {
       ).catch(console.error);
 
       // Send approval email
+      console.log('[CA APPROVAL] Triggering approval email...', {
+        ca_id: id,
+        email: application.email,
+        name: application.name,
+        ca_code: caCode
+      });
+      
       const emailResult = await sendCAApprovalEmail(
         application.email,
         application.name,
@@ -199,7 +206,12 @@ export async function POST(request) {
       );
 
       if (!emailResult.success) {
-        console.error('Failed to send approval email:', emailResult.error);
+        console.error('[CA APPROVAL] ❌ Failed to send approval email:', emailResult.error);
+        console.error('[CA APPROVAL] Email error details:', {
+          ca_id: id,
+          email: application.email,
+          error: emailResult.error
+        });
         // Don't fail the approval if email fails, but log it
         pool.query(
           'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
@@ -209,6 +221,12 @@ export async function POST(request) {
             JSON.stringify({ id, email: application.email, error: emailResult.error }),
           ]
         ).catch(console.error);
+      } else {
+        console.log('[CA APPROVAL] ✅ Approval email sent successfully!', {
+          ca_id: id,
+          email: application.email,
+          email_id: emailResult.data?.id
+        });
       }
 
       return NextResponse.json({

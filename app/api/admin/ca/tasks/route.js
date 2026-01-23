@@ -153,10 +153,23 @@ export async function POST(request) {
 
     // Send emails to assigned CAs (async, don't block response)
     if (caIdsToEmail.length > 0) {
+      console.log('[TASK CREATION] Sending task assignment emails...', {
+        task_id: taskId,
+        task_title: title,
+        recipients_count: caIdsToEmail.length,
+        recipients: caIdsToEmail.map(ca => ({ id: ca.id, email: ca.email, name: ca.name }))
+      });
+      
       Promise.all(
         caIdsToEmail.map((ca) =>
-          sendTaskAssignmentEmail(ca.email, ca.name, taskDetails).catch((error) => {
-            console.error(`Failed to send email to ${ca.email}:`, error);
+          sendTaskAssignmentEmail(ca.email, ca.name, { ...taskDetails, id: taskId }).catch((error) => {
+            console.error(`[TASK CREATION] ❌ Failed to send email to ${ca.email}:`, error);
+            console.error(`[TASK CREATION] Error details:`, {
+              ca_id: ca.id,
+              email: ca.email,
+              task_id: taskId,
+              error: error.message
+            });
             // Log email failures
             pool.query(
               'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
@@ -168,7 +181,13 @@ export async function POST(request) {
             ).catch(console.error);
           })
         )
-      ).catch(console.error);
+      ).then((results) => {
+        const successCount = results.filter(r => r?.success).length;
+        const failCount = results.length - successCount;
+        console.log(`[TASK CREATION] Email sending completed: ${successCount} succeeded, ${failCount} failed`);
+      }).catch(console.error);
+    } else {
+      console.log('[TASK CREATION] No CAs to email (task created but not assigned)');
     }
 
     // Log task creation

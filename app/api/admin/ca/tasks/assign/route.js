@@ -86,10 +86,23 @@ export async function POST(request) {
 
     // Send emails to assigned CAs (async, don't block response)
     if (caDetailsToEmail.length > 0) {
+      console.log('[TASK ASSIGNMENT] Sending task assignment emails...', {
+        task_id: task_id,
+        task_title: task.title,
+        recipients_count: caDetailsToEmail.length,
+        recipients: caDetailsToEmail.map(ca => ({ id: ca.id, email: ca.email, name: ca.name }))
+      });
+      
       Promise.all(
         caDetailsToEmail.map((ca) =>
-          sendTaskAssignmentEmail(ca.email, ca.name, taskDetails).catch((error) => {
-            console.error(`Failed to send email to ${ca.email}:`, error);
+          sendTaskAssignmentEmail(ca.email, ca.name, { ...taskDetails, id: task_id }).catch((error) => {
+            console.error(`[TASK ASSIGNMENT] ❌ Failed to send email to ${ca.email}:`, error);
+            console.error(`[TASK ASSIGNMENT] Error details:`, {
+              ca_id: ca.id,
+              email: ca.email,
+              task_id: task_id,
+              error: error.message
+            });
             // Log email failures
             pool.query(
               'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
@@ -101,7 +114,13 @@ export async function POST(request) {
             ).catch(console.error);
           })
         )
-      ).catch(console.error);
+      ).then((results) => {
+        const successCount = results.filter(r => r?.success).length;
+        const failCount = results.length - successCount;
+        console.log(`[TASK ASSIGNMENT] Email sending completed: ${successCount} succeeded, ${failCount} failed`);
+      }).catch(console.error);
+    } else {
+      console.log('[TASK ASSIGNMENT] No CAs to email');
     }
 
     return NextResponse.json({

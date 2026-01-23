@@ -64,14 +64,21 @@ export default function CADashboard() {
     );
   }
 
-  const { ca, registrations, tasks, leaderboard, current_rank } = dashboardData;
+  const { ca, registrations, tasks, leaderboard, current_rank, leaderboard_visible } = dashboardData;
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: 'ri-dashboard-line' },
     { id: 'registrations', label: 'Registrations', icon: 'ri-group-line' },
     { id: 'tasks', label: 'Tasks', icon: 'ri-file-text-line' },
-    { id: 'leaderboard', label: 'Leaderboard', icon: 'ri-trophy-line' },
+    ...(leaderboard_visible !== false ? [{ id: 'leaderboard', label: 'Leaderboard', icon: 'ri-trophy-line' }] : []),
   ];
+
+  // If leaderboard is hidden and user is on leaderboard tab, switch to overview
+  useEffect(() => {
+    if (leaderboard_visible === false && activeTab === 'leaderboard') {
+      setActiveTab('overview');
+    }
+  }, [leaderboard_visible, activeTab]);
 
   return (
     <section className="section-container border-t border-white/10 pb-32">

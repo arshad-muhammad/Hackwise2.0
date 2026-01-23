@@ -15,10 +15,47 @@ import {
 export default function CAAnalyticsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [leaderboardVisible, setLeaderboardVisible] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchAnalytics();
+    fetchSettings();
   }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch('/api/admin/ca/settings');
+      const settings = await res.json();
+      setLeaderboardVisible(settings.ca_leaderboard_visible);
+    } catch (error) {
+      console.error('Failed to fetch settings:', error);
+    }
+  };
+
+  const handleToggleLeaderboard = async (value) => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/admin/ca/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ca_leaderboard_visible: value }),
+      });
+
+      if (res.ok) {
+        setLeaderboardVisible(value);
+        alert(`Leaderboard ${value ? 'enabled' : 'disabled'} for CA dashboard`);
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to update setting');
+      }
+    } catch (error) {
+      console.error('Error updating setting:', error);
+      alert('Error updating setting');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const fetchAnalytics = async () => {
     try {
@@ -73,6 +110,47 @@ export default function CAAnalyticsPage() {
           <Download size={18} />
           Export All Registrations
         </button>
+      </div>
+
+      {/* Leaderboard Visibility Toggle */}
+      <div className="relative group">
+        <div className="absolute inset-0 bg-orange-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative p-px" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
+          <div
+            className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
+            style={{ clipPath: cardClipPath }}
+          />
+          <div className="relative bg-[#0A090F] p-6" style={{ clipPath: cardClipPath }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-hackwise text-white uppercase mb-2">
+                  Leaderboard Visibility
+                </h3>
+                <p className="text-white/60 font-mono text-sm">
+                  Control whether the leaderboard tab is visible in CA dashboard
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className={`font-mono text-sm ${leaderboardVisible ? 'text-green-400' : 'text-red-400'}`}>
+                  {leaderboardVisible ? 'Visible' : 'Hidden'}
+                </span>
+                <button
+                  onClick={() => handleToggleLeaderboard(!leaderboardVisible)}
+                  disabled={saving}
+                  className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors ${
+                    leaderboardVisible ? 'bg-green-500' : 'bg-gray-600'
+                  } ${saving ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      leaderboardVisible ? 'translate-x-9' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Overall Stats */}
