@@ -145,14 +145,39 @@ export async function PUT(request) {
         [submission.ca_id]
       );
 
-      // Recalculate performance score using actual points awarded (includes early submission bonus)
-      const [caData] = await pool.query(
-        `SELECT verified_registrations
-         FROM \`hw-ca-applications\`
-         WHERE id = ?`,
+      // Recalculate verified_registrations based on unique teams (not individual participants)
+      // Count unique teams from hw-participant-registrations (direct registrations)
+      // Using TRIM to handle empty strings and ensuring team_name is not empty
+      const [directTeams] = await pool.query(
+        `SELECT COUNT(DISTINCT team_name) as team_count
+         FROM \`hw-participant-registrations\`
+         WHERE ca_id = ? AND is_verified = 1 AND team_name IS NOT NULL AND TRIM(team_name) != ''`,
         [submission.ca_id]
       );
 
+      // Count unique teams from hw-ca-registrations (Unstop imports)
+      const [unstopTeams] = await pool.query(
+        `SELECT COUNT(DISTINCT team_name) as team_count
+         FROM \`hw-ca-registrations\`
+         WHERE ca_id = ? AND is_verified = 1 AND is_self_registration = 0 AND team_name IS NOT NULL AND TRIM(team_name) != ''`,
+        [submission.ca_id]
+      );
+
+      const directTeamCount = parseInt(directTeams[0]?.team_count || 0, 10);
+      const unstopTeamCount = parseInt(unstopTeams[0]?.team_count || 0, 10);
+      const totalTeams = directTeamCount + unstopTeamCount;
+
+      console.log(`[CA Score Calc - Task] CA ID: ${submission.ca_id}, Direct Teams: ${directTeamCount}, Unstop Teams: ${unstopTeamCount}, Total Teams: ${totalTeams}`);
+
+      // Update verified_registrations count (should be number of unique teams)
+      await pool.query(
+        `UPDATE \`hw-ca-applications\`
+         SET verified_registrations = ?
+         WHERE id = ?`,
+        [totalTeams, submission.ca_id]
+      );
+
+      // Recalculate performance score (10 points per team + task points)
       // Get sum of all points awarded from approved task submissions (includes early bonus)
       const [taskPoints] = await pool.query(
         `SELECT COALESCE(SUM(points_awarded), 0) as total_task_points
@@ -161,19 +186,18 @@ export async function PUT(request) {
         [submission.ca_id]
       );
 
-      if (caData.length > 0) {
-        const ca = caData[0];
-        const totalTaskPoints = taskPoints[0]?.total_task_points || 0;
-        // Scoring: 10 points per verified registration + actual points from approved tasks (including early bonus)
-        const performanceScore = (ca.verified_registrations * 10) + totalTaskPoints;
-        
-        await pool.query(
-          `UPDATE \`hw-ca-applications\`
-           SET performance_score = ?
-           WHERE id = ?`,
-          [performanceScore, submission.ca_id]
-        );
-      }
+      const totalTaskPoints = parseInt(taskPoints[0]?.total_task_points || 0, 10);
+      // Scoring: 10 points per team + actual points from approved tasks (including early bonus)
+      const performanceScore = (totalTeams * 10) + totalTaskPoints;
+      
+      console.log(`[CA Score Calc - Task] CA ID: ${submission.ca_id}, Total Teams: ${totalTeams}, Task Points: ${totalTaskPoints}, Performance Score: ${performanceScore}`);
+      
+      await pool.query(
+        `UPDATE \`hw-ca-applications\`
+         SET performance_score = ?
+         WHERE id = ?`,
+        [performanceScore, submission.ca_id]
+      );
     }
 
     // Log the review

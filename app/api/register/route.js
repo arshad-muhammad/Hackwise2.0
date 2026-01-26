@@ -123,13 +123,60 @@ export async function POST(request) {
         );
       }
 
-      // Update CA verified_registrations count if CA code was provided
+      // Update CA verified_registrations count and performance score if CA code was provided
       if (caId) {
+        // Recalculate verified_registrations based on unique teams (not individual participants)
+        // Count unique teams from hw-participant-registrations (direct registrations)
+        // Using TRIM to handle empty strings and ensuring team_name is not empty
+        const [directTeams] = await connection.query(
+          `SELECT COUNT(DISTINCT team_name) as team_count
+           FROM \`hw-participant-registrations\`
+           WHERE ca_id = ? AND is_verified = 1 AND team_name IS NOT NULL AND TRIM(team_name) != ''`,
+          [caId]
+        );
+
+        // Count unique teams from hw-ca-registrations (Unstop imports)
+        const [unstopTeams] = await connection.query(
+          `SELECT COUNT(DISTINCT team_name) as team_count
+           FROM \`hw-ca-registrations\`
+           WHERE ca_id = ? AND is_verified = 1 AND is_self_registration = 0 AND team_name IS NOT NULL AND TRIM(team_name) != ''`,
+          [caId]
+        );
+
+        const directTeamCount = parseInt(directTeams[0]?.team_count || 0, 10);
+        const unstopTeamCount = parseInt(unstopTeams[0]?.team_count || 0, 10);
+        const totalTeams = directTeamCount + unstopTeamCount;
+
+        console.log(`[CA Score Calc] CA ID: ${caId}, Direct Teams: ${directTeamCount}, Unstop Teams: ${unstopTeamCount}, Total Teams: ${totalTeams}`);
+
+        // Update verified_registrations count (should be number of unique teams)
         await connection.query(
           `UPDATE \`hw-ca-applications\`
-           SET verified_registrations = verified_registrations + 1
+           SET verified_registrations = ?
            WHERE id = ?`,
+          [totalTeams, caId]
+        );
+
+        // Recalculate performance score (10 points per team + task points)
+        // Get sum of all points awarded from approved task submissions (includes early bonus)
+        const [taskPoints] = await connection.query(
+          `SELECT COALESCE(SUM(points_awarded), 0) as total_task_points
+           FROM \`hw-ca-task-submissions\`
+           WHERE ca_id = ? AND status = 'APPROVED'`,
           [caId]
+        );
+
+        const totalTaskPoints = parseInt(taskPoints[0]?.total_task_points || 0, 10);
+        // Scoring: 10 points per team + actual points from approved tasks (including early bonus)
+        const performanceScore = (totalTeams * 10) + totalTaskPoints;
+        
+        console.log(`[CA Score Calc] CA ID: ${caId}, Total Teams: ${totalTeams}, Task Points: ${totalTaskPoints}, Performance Score: ${performanceScore}`);
+        
+        await connection.query(
+          `UPDATE \`hw-ca-applications\`
+           SET performance_score = ?
+           WHERE id = ?`,
+          [performanceScore, caId]
         );
       }
 

@@ -219,6 +219,7 @@ function RegistrationForm() {
                     <input
                       type="text"
                       value={teamData.ca_code}
+                      readOnly={!!caCode}
                       onChange={(e) => setTeamData({ ...teamData, ca_code: e.target.value.toUpperCase().trim() })}
                       className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/50 transition-colors uppercase"
                       placeholder="KVGCE001"

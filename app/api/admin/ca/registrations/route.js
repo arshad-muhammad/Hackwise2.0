@@ -137,12 +137,15 @@ export async function POST(request) {
           }
         }
 
+        // Auto-verify if CA code is valid and not self-registration
+        const shouldAutoVerify = caId && !reg.is_self_registration;
+
         // Insert registration
         await pool.query(
           `INSERT INTO \`hw-ca-registrations\`
            (ca_id, ca_code, participant_name, participant_email, participant_phone,
             team_name, unstop_registration_id, registration_date, is_verified, is_self_registration)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, FALSE, ?)`,
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             caId,
             ca_code || null,
@@ -152,9 +155,66 @@ export async function POST(request) {
             team_name || null,
             unstop_registration_id,
             registration_date ? new Date(registration_date) : null,
+            shouldAutoVerify ? 1 : 0, // Auto-verify if valid CA and not self-registration
             reg.is_self_registration || false,
           ]
         );
+
+        // If auto-verified, recalculate CA performance based on unique teams
+        if (shouldAutoVerify && caId) {
+          // Count unique teams from hw-participant-registrations (direct registrations)
+          // Using TRIM to handle empty strings and ensuring team_name is not empty
+          const [directTeams] = await pool.query(
+            `SELECT COUNT(DISTINCT team_name) as team_count
+             FROM \`hw-participant-registrations\`
+             WHERE ca_id = ? AND is_verified = 1 AND team_name IS NOT NULL AND TRIM(team_name) != ''`,
+            [caId]
+          );
+
+          // Count unique teams from hw-ca-registrations (Unstop imports)
+          const [unstopTeams] = await pool.query(
+            `SELECT COUNT(DISTINCT team_name) as team_count
+             FROM \`hw-ca-registrations\`
+             WHERE ca_id = ? AND is_verified = 1 AND is_self_registration = 0 AND team_name IS NOT NULL AND TRIM(team_name) != ''`,
+            [caId]
+          );
+
+          const directTeamCount = parseInt(directTeams[0]?.team_count || 0, 10);
+          const unstopTeamCount = parseInt(unstopTeams[0]?.team_count || 0, 10);
+          const totalTeams = directTeamCount + unstopTeamCount;
+
+          console.log(`[CA Score Calc - Import] CA ID: ${caId}, Direct Teams: ${directTeamCount}, Unstop Teams: ${unstopTeamCount}, Total Teams: ${totalTeams}`);
+
+          // Update verified_registrations count (should be number of unique teams)
+          await pool.query(
+            `UPDATE \`hw-ca-applications\`
+             SET verified_registrations = ?
+             WHERE id = ?`,
+            [totalTeams, caId]
+          );
+
+          // Recalculate performance score (10 points per team + task points)
+          // Get sum of all points awarded from approved task submissions (includes early bonus)
+          const [taskPoints] = await pool.query(
+            `SELECT COALESCE(SUM(points_awarded), 0) as total_task_points
+             FROM \`hw-ca-task-submissions\`
+             WHERE ca_id = ? AND status = 'APPROVED'`,
+            [caId]
+          );
+
+          const totalTaskPoints = parseInt(taskPoints[0]?.total_task_points || 0, 10);
+          // Scoring: 10 points per team + actual points from approved tasks (including early bonus)
+          const performanceScore = (totalTeams * 10) + totalTaskPoints;
+          
+          console.log(`[CA Score Calc - Import] CA ID: ${caId}, Total Teams: ${totalTeams}, Task Points: ${totalTaskPoints}, Performance Score: ${performanceScore}`);
+          
+          await pool.query(
+            `UPDATE \`hw-ca-applications\`
+             SET performance_score = ?
+             WHERE id = ?`,
+            [performanceScore, caId]
+          );
+        }
 
         results.imported++;
       } catch (error) {
@@ -242,24 +302,59 @@ export async function PUT(request) {
     );
 
     // Update CA performance metrics if verification status changed
-    if (registration.ca_id && is_verified && !wasVerified && !isSelfRegistration) {
-      // Increment verified_registrations count
-      await pool.query(
-        `UPDATE \`hw-ca-applications\`
-         SET verified_registrations = verified_registrations + 1
-         WHERE id = ?`,
+    if (registration.ca_id && !isSelfRegistration) {
+      // Recalculate verified_registrations based on unique teams (not individual participants)
+      // Count unique teams from hw-participant-registrations (direct registrations)
+      // Using TRIM to handle empty strings and ensuring team_name is not empty
+      const [directTeams] = await pool.query(
+        `SELECT COUNT(DISTINCT team_name) as team_count
+         FROM \`hw-participant-registrations\`
+         WHERE ca_id = ? AND is_verified = 1 AND team_name IS NOT NULL AND TRIM(team_name) != ''`,
         [registration.ca_id]
       );
 
-      // Recalculate performance score (will be implemented in STEP 9)
-      // For now, just update the count
-    } else if (registration.ca_id && !is_verified && wasVerified && !isSelfRegistration) {
-      // Decrement if unverifying
+      // Count unique teams from hw-ca-registrations (Unstop imports)
+      const [unstopTeams] = await pool.query(
+        `SELECT COUNT(DISTINCT team_name) as team_count
+         FROM \`hw-ca-registrations\`
+         WHERE ca_id = ? AND is_verified = 1 AND is_self_registration = 0 AND team_name IS NOT NULL AND TRIM(team_name) != ''`,
+        [registration.ca_id]
+      );
+
+      const directTeamCount = parseInt(directTeams[0]?.team_count || 0, 10);
+      const unstopTeamCount = parseInt(unstopTeams[0]?.team_count || 0, 10);
+      const totalTeams = directTeamCount + unstopTeamCount;
+
+      console.log(`[CA Score Calc - Verify] CA ID: ${registration.ca_id}, Direct Teams: ${directTeamCount}, Unstop Teams: ${unstopTeamCount}, Total Teams: ${totalTeams}`);
+
+      // Update verified_registrations count (should be number of unique teams)
       await pool.query(
         `UPDATE \`hw-ca-applications\`
-         SET verified_registrations = GREATEST(verified_registrations - 1, 0)
+         SET verified_registrations = ?
          WHERE id = ?`,
+        [totalTeams, registration.ca_id]
+      );
+
+      // Recalculate performance score (10 points per team + task points)
+      // Get sum of all points awarded from approved task submissions (includes early bonus)
+      const [taskPoints] = await pool.query(
+        `SELECT COALESCE(SUM(points_awarded), 0) as total_task_points
+         FROM \`hw-ca-task-submissions\`
+         WHERE ca_id = ? AND status = 'APPROVED'`,
         [registration.ca_id]
+      );
+
+      const totalTaskPoints = parseInt(taskPoints[0]?.total_task_points || 0, 10);
+      // Scoring: 10 points per team + actual points from approved tasks (including early bonus)
+      const performanceScore = (totalTeams * 10) + totalTaskPoints;
+      
+      console.log(`[CA Score Calc - Verify] CA ID: ${registration.ca_id}, Total Teams: ${totalTeams}, Task Points: ${totalTaskPoints}, Performance Score: ${performanceScore}`);
+      
+      await pool.query(
+        `UPDATE \`hw-ca-applications\`
+         SET performance_score = ?
+         WHERE id = ?`,
+        [performanceScore, registration.ca_id]
       );
     }
 
