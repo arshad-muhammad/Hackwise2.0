@@ -156,7 +156,7 @@ export default function page() {
 
         <div className="relative aspect-21/9 w-full overflow-hidden">
           <img
-            src="/assets/group-photo-placeholder.jpg" // Replace with actual image path
+            src="/assets/group-photo-placeholder.jpeg" // Replace with actual image path
             alt="Sphere Hive Team"
             className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out scale-100 group-hover:scale-105"
           />

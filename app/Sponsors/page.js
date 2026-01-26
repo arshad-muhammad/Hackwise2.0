@@ -103,6 +103,20 @@ const Sponsors = () => {
           </div>
         </div>
 
+          {/* Silver Sponsor */}
+          <div className="w-full max-w-5xl flex flex-col items-center mt-2">
+            <SectionHeader title="Silver Sponsor" colorClass="text-gray-300" />
+            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 w-full">
+              <SponsorCard
+                href="https://lovable.dev/"
+                imgSrc="/assets/lovable-logo.webp"
+                imgAlt="Lovable"
+                className="h-24 sm:h-28 p-4"
+                imgClassName="max-h-full max-w-[40%]"
+              />
+            </div>
+          </div>
+
           {/* Middle Tier: Rewards */}
           <div className="w-full max-w-5xl flex flex-col items-center mt-2">
             <SectionHeader title="Reward Sponsors" colorClass="text-yellow-400" />
@@ -117,6 +131,20 @@ const Sponsors = () => {
               
           </div>
         </div>
+
+          {/* Domain Sponsor */}
+          <div className="w-full max-w-5xl flex flex-col items-center mt-2">
+            <SectionHeader title="Domain Sponsor" colorClass="text-purple-400" />
+            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 w-full">
+              <SponsorCard
+                href="https://gen.xyz/"
+                imgSrc="/assets/xyz-logo-color.png"
+                imgAlt="Gen.xyz"
+                className="h-24 sm:h-28 p-4"
+                imgClassName="max-h-full max-w-[70%]"
+              />
+            </div>
+          </div>
 
           {/* Bottom Tier: Media Partners */}
           <div className="w-full max-w-5xl flex flex-col items-center mt-2">

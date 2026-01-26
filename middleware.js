@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { verifySession, verifyTeamSession } from './lib/auth';
+import { verifySession, verifyTeamSession, verifyCASession } from './lib/auth';
 
 export async function middleware(request) {
   const path = request.nextUrl.pathname;
@@ -46,6 +46,32 @@ export async function middleware(request) {
     }
   }
 
+  // CA Dashboard Routes
+  if (path.startsWith('/campus-ambassador') || path.startsWith('/api/ca')) {
+    // Allow public CA routes (application, login)
+    if (
+      path === '/campus-ambassador' ||
+      path === '/campus-ambassador/login' ||
+      path === '/campus-ambassador/success' ||
+      path === '/api/ca/apply' ||
+      path === '/api/ca/login' ||
+      path.startsWith('/api/ca/redirect')
+    ) {
+      return NextResponse.next();
+    }
+
+    const token = request.cookies.get('ca_session')?.value;
+    const caSession = token ? await verifyCASession(token) : null;
+
+    if (!caSession) {
+      if (path.startsWith('/api/')) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      const loginUrl = new URL('/campus-ambassador/login', request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   return NextResponse.next();
 }
 
@@ -54,6 +80,8 @@ export const config = {
     '/admin/:path*', 
     '/api/admin/:path*',
     '/dashboard/:path*',
-    '/api/team/:path*'
+    '/api/team/:path*',
+    '/campus-ambassador/:path*',
+    '/api/ca/:path*'
   ],
 };
