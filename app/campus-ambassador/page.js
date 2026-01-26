@@ -41,7 +41,14 @@ export default function CampusAmbassadorPage() {
     setError("");
 
     // Validation
-    if (!formData.name || !formData.email || !formData.phone || !formData.college || !formData.why_interested || !formData.password) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.college ||
+      !formData.why_interested ||
+      !formData.password
+    ) {
       setError("Please fill in all required fields");
       setIsSubmitting(false);
       return;
@@ -103,7 +110,9 @@ export default function CampusAmbassadorPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push(`/campus-ambassador/success?email=${encodeURIComponent(formData.email)}`);
+        router.push(
+          `/campus-ambassador/success?email=${encodeURIComponent(formData.email)}`,
+        );
       } else {
         setError(data.error || "Application failed. Please try again.");
       }
@@ -115,8 +124,10 @@ export default function CampusAmbassadorPage() {
     }
   };
 
-  const cardClipPath = "polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)";
-  const btnClipPath = "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)";
+  const cardClipPath =
+    "polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)";
+  const btnClipPath =
+    "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)";
 
   const benefits = [
     {
@@ -140,7 +151,8 @@ export default function CampusAmbassadorPage() {
     {
       icon: "ri-building-fill",
       title: "Sphere Hive Club Leadership",
-      description: "Open and lead Sphere Hive club at your college as President, backed by Sphere Hive",
+      description:
+        "Open and lead Sphere Hive club at your college as President, backed by Sphere Hive",
       color: "green",
     },
     {
@@ -222,20 +234,6 @@ export default function CampusAmbassadorPage() {
           <h1 className="text-2xl sm:text-3xl md:text-5xl font-hackwise text-white uppercase tracking-wider text-center pr-16 md:pr-0">
             Campus Ambassador Program
           </h1>
-          <motion.button
-            onClick={() => {
-              setShowLogin(true);
-              setShowForm(false);
-            }}
-            className="absolute -top-2 -right-2 md:-right-2 px-2 py-1.5 md:px-4 md:py-2 bg-orange-500 text-black font-mono font-bold text-xs md:text-sm hover:bg-orange-600 transition-colors flex items-center gap-1 md:gap-2 uppercase"
-            style={{ clipPath: btnClipPath }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <i className="ri-login-box-line text-sm md:text-base" />
-            <span className="hidden sm:inline">CA Login</span>
-            <span className="sm:hidden">Login</span>
-          </motion.button>
         </div>
       </motion.div>
 
@@ -258,8 +256,10 @@ export default function CampusAmbassadorPage() {
                 className="bg-[#0A090F] border border-white/10 p-6 sm:p-8 rounded-3xl w-full max-w-md mx-4"
                 style={{ clipPath: cardClipPath }}
               >
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-hackwise text-white uppercase">CA Login</h2>
+                <div className="flex justify-between items-center mb-6 ">
+                  <h2 className="text-2xl font-hackwise text-white uppercase">
+                    CA Login
+                  </h2>
                   <button
                     onClick={() => setShowLogin(false)}
                     className="text-white/60 hover:text-white transition-colors"
@@ -311,17 +311,20 @@ export default function CampusAmbassadorPage() {
               className="space-y-8 sm:space-y-10 md:space-y-12"
             >
               {/* Hero Card */}
-              <motion.div
-                variants={itemVariants}
-                className="relative group"
-              >
+              <motion.div variants={itemVariants} className="relative group">
                 <div className="absolute inset-0 bg-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative p-px" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
+                <div
+                  className="relative p-px"
+                  style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}
+                >
                   <div
                     className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
                     style={{ clipPath: cardClipPath }}
                   />
-                  <div className="relative bg-[#0A090F] p-6 md:p-8 lg:p-12" style={{ clipPath: cardClipPath }}>
+                  <div
+                    className="relative bg-[#0A090F] p-6 md:p-8 lg:p-12"
+                    style={{ clipPath: cardClipPath }}
+                  >
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -336,8 +339,12 @@ export default function CampusAmbassadorPage() {
                         CA
                       </motion.div>
                       <div>
-                        <h2 className="text-xl sm:text-2xl md:text-3xl font-hackwise text-white uppercase">Become a Campus Ambassador</h2>
-                        <p className="text-xs sm:text-sm text-white/60 font-sans">Represent Hackwise 2.0 at your college</p>
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-hackwise text-white uppercase">
+                          Become a Campus Ambassador
+                        </h2>
+                        <p className="text-xs sm:text-sm text-white/60 font-sans">
+                          Represent Hackwise 2.0 at your college
+                        </p>
                       </div>
                     </motion.div>
 
@@ -347,10 +354,26 @@ export default function CampusAmbassadorPage() {
                       transition={{ delay: 0.3 }}
                       className="text-sm sm:text-base md:text-lg text-white/80 font-sans mb-6 md:mb-8 leading-relaxed"
                     >
-                      Join our elite team of Campus Ambassadors and help spread the word about Hackwise 2.0! 
-                      Earn rewards, build your network, and gain valuable leadership experience while promoting 
-                      one of the most exciting hackathons in the country.
+                      Join our elite team of Campus Ambassadors and help spread
+                      the word about Hackwise 2.0! Earn rewards, build your
+                      network, and gain valuable leadership experience while
+                      promoting one of the most exciting hackathons in the
+                      country.
                     </motion.p>
+                    <motion.button
+                      onClick={() => {
+                        setShowLogin(true);
+                        setShowForm(false);
+                      }}
+                      className="top-[300px] right-70 z-[9999] px-2 py-1.5 md:px-4 md:py-2 bg-orange-500 text-black font-mono font-bold text-xs md:text-sm  transition-colors flex items-center gap-1 uppercase"
+                      style={{ clipPath: btnClipPath }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <i className="ri-login-box-line text-sm md:text-base" />
+                      <span className="hidden sm:inline">CA Login</span>
+                      <span className="sm:hidden">Login</span>
+                    </motion.button>
                   </div>
                 </div>
               </motion.div>
@@ -362,35 +385,72 @@ export default function CampusAmbassadorPage() {
               >
                 {benefits.map((benefit, index) => {
                   const colorClasses = {
-                    yellow: { bg: "bg-yellow-500/20", text: "text-yellow-500", hover: "bg-yellow-500/30" },
-                    orange: { bg: "bg-orange-500/20", text: "text-orange-500", hover: "bg-orange-500/30" },
-                    blue: { bg: "bg-blue-500/20", text: "text-blue-500", hover: "bg-blue-500/30" },
-                    green: { bg: "bg-green-500/20", text: "text-green-500", hover: "bg-green-500/30" },
-                    purple: { bg: "bg-purple-500/20", text: "text-purple-500", hover: "bg-purple-500/30" },
+                    yellow: {
+                      bg: "bg-yellow-500/20",
+                      text: "text-yellow-500",
+                      hover: "bg-yellow-500/30",
+                    },
+                    orange: {
+                      bg: "bg-orange-500/20",
+                      text: "text-orange-500",
+                      hover: "bg-orange-500/30",
+                    },
+                    blue: {
+                      bg: "bg-blue-500/20",
+                      text: "text-blue-500",
+                      hover: "bg-blue-500/30",
+                    },
+                    green: {
+                      bg: "bg-green-500/20",
+                      text: "text-green-500",
+                      hover: "bg-green-500/30",
+                    },
+                    purple: {
+                      bg: "bg-purple-500/20",
+                      text: "text-purple-500",
+                      hover: "bg-purple-500/30",
+                    },
                   };
-                  const colors = colorClasses[benefit.color] || colorClasses.orange;
+                  const colors =
+                    colorClasses[benefit.color] || colorClasses.orange;
                   return (
                     <motion.div
                       key={index}
                       whileHover={{ y: -5, scale: 1.02 }}
                       className="relative group"
                     >
-                      <div className={`absolute inset-0 ${colors.bg} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                      <div className="relative p-px" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
+                      <div
+                        className={`absolute inset-0 ${colors.bg} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                      />
+                      <div
+                        className="relative p-px"
+                        style={{
+                          filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))",
+                        }}
+                      >
                         <div
                           className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
                           style={{ clipPath: cardClipPath }}
                         />
-                        <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+                        <div
+                          className="relative bg-[#0A090F] p-4 sm:p-6"
+                          style={{ clipPath: cardClipPath }}
+                        >
                           <motion.div
                             className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg ${colors.bg} flex items-center justify-center mb-3 sm:mb-4`}
                             whileHover={{ rotate: 360 }}
                             transition={{ duration: 0.5 }}
                           >
-                            <i className={`${benefit.icon} ${colors.text} text-xl sm:text-2xl`} />
+                            <i
+                              className={`${benefit.icon} ${colors.text} text-xl sm:text-2xl`}
+                            />
                           </motion.div>
-                          <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase mb-2">{benefit.title}</h3>
-                          <p className="text-white/70 font-sans text-xs sm:text-sm leading-relaxed">{benefit.description}</p>
+                          <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase mb-2">
+                            {benefit.title}
+                          </h3>
+                          <p className="text-white/70 font-sans text-xs sm:text-sm leading-relaxed">
+                            {benefit.description}
+                          </p>
                         </div>
                       </div>
                     </motion.div>
@@ -409,15 +469,23 @@ export default function CampusAmbassadorPage() {
                   className="relative group"
                 >
                   <div className="absolute inset-0 bg-blue-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative p-px" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
+                  <div
+                    className="relative p-px"
+                    style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}
+                  >
                     <div
                       className="absolute inset-0 bg-white/20 group-hover:bg-blue-500/50 transition-colors duration-300"
                       style={{ clipPath: cardClipPath }}
                     />
-                    <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+                    <div
+                      className="relative bg-[#0A090F] p-4 sm:p-6"
+                      style={{ clipPath: cardClipPath }}
+                    >
                       <div className="flex items-center gap-2 sm:gap-3 mb-4">
                         <i className="ri-focus-3-line text-blue-500 text-xl sm:text-2xl flex-shrink-0" />
-                        <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase">Your Role</h3>
+                        <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase">
+                          Your Role
+                        </h3>
                       </div>
                       <ul className="space-y-2 sm:space-y-3 text-white/70 font-sans text-xs sm:text-sm">
                         {[
@@ -448,15 +516,23 @@ export default function CampusAmbassadorPage() {
                   className="relative group"
                 >
                   <div className="absolute inset-0 bg-green-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative p-px" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
+                  <div
+                    className="relative p-px"
+                    style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}
+                  >
                     <div
                       className="absolute inset-0 bg-white/20 group-hover:bg-green-500/50 transition-colors duration-300"
                       style={{ clipPath: cardClipPath }}
                     />
-                    <div className="relative bg-[#0A090F] p-4 sm:p-6" style={{ clipPath: cardClipPath }}>
+                    <div
+                      className="relative bg-[#0A090F] p-4 sm:p-6"
+                      style={{ clipPath: cardClipPath }}
+                    >
                       <div className="flex items-center gap-2 sm:gap-3 mb-4">
                         <i className="ri-line-chart-fill text-green-500 text-xl sm:text-2xl flex-shrink-0" />
-                        <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase">Performance Scoring</h3>
+                        <h3 className="text-lg sm:text-xl font-hackwise text-white uppercase">
+                          Performance Scoring
+                        </h3>
                       </div>
                       <ul className="space-y-2 sm:space-y-3 text-white/70 font-sans text-xs sm:text-sm">
                         {[
@@ -520,14 +596,22 @@ export default function CampusAmbassadorPage() {
               className="relative group"
             >
               <div className="absolute inset-0 bg-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative p-px" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
+              <div
+                className="relative p-px"
+                style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}
+              >
                 <div
                   className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
                   style={{ clipPath: cardClipPath }}
                 />
-                <div className="relative bg-[#0A090F] p-4 sm:p-6 md:p-8 lg:p-12" style={{ clipPath: cardClipPath }}>
+                <div
+                  className="relative bg-[#0A090F] p-4 sm:p-6 md:p-8 lg:p-12"
+                  style={{ clipPath: cardClipPath }}
+                >
                   <div className="flex items-center justify-between mb-6 md:mb-8">
-                    <h2 className="text-xl sm:text-2xl font-hackwise text-white uppercase">Application Form</h2>
+                    <h2 className="text-xl sm:text-2xl font-hackwise text-white uppercase">
+                      Application Form
+                    </h2>
                     <motion.button
                       onClick={() => setShowForm(false)}
                       className="text-white/60 hover:text-white transition-colors flex-shrink-0"
@@ -538,7 +622,10 @@ export default function CampusAmbassadorPage() {
                     </motion.button>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="space-y-4 sm:space-y-6"
+                  >
                     <AnimatePresence>
                       {error && (
                         <motion.div
@@ -554,13 +641,60 @@ export default function CampusAmbassadorPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       {[
-                        { name: "name", label: "Full Name", type: "text", required: true, placeholder: "Enter your full name" },
-                        { name: "email", label: "Email", type: "email", required: true, placeholder: "your.email@example.com" },
-                        { name: "phone", label: "Phone Number", type: "tel", required: true, placeholder: "10-digit phone number" },
-                        { name: "year", label: "Year of Study", type: "select", options: ["", "1st Year", "2nd Year", "3rd Year", "4th Year", "Post Graduate"] },
-                        { name: "college", label: "College Name", type: "text", required: true, placeholder: "Full college name" },
-                        { name: "college_abbreviation", label: "College Abbreviation", type: "text", placeholder: "KVGCE", maxLength: 20 },
-                        { name: "branch", label: "Branch", type: "text", placeholder: "Computer Science, ECE, etc." },
+                        {
+                          name: "name",
+                          label: "Full Name",
+                          type: "text",
+                          required: true,
+                          placeholder: "Enter your full name",
+                        },
+                        {
+                          name: "email",
+                          label: "Email",
+                          type: "email",
+                          required: true,
+                          placeholder: "your.email@example.com",
+                        },
+                        {
+                          name: "phone",
+                          label: "Phone Number",
+                          type: "tel",
+                          required: true,
+                          placeholder: "10-digit phone number",
+                        },
+                        {
+                          name: "year",
+                          label: "Year of Study",
+                          type: "select",
+                          options: [
+                            "",
+                            "1st Year",
+                            "2nd Year",
+                            "3rd Year",
+                            "4th Year",
+                            "Post Graduate",
+                          ],
+                        },
+                        {
+                          name: "college",
+                          label: "College Name",
+                          type: "text",
+                          required: true,
+                          placeholder: "Full college name",
+                        },
+                        {
+                          name: "college_abbreviation",
+                          label: "College Abbreviation",
+                          type: "text",
+                          placeholder: "KVGCE",
+                          maxLength: 20,
+                        },
+                        {
+                          name: "branch",
+                          label: "Branch",
+                          type: "text",
+                          placeholder: "Computer Science, ECE, etc.",
+                        },
                       ].map((field, index) => (
                         <motion.div
                           key={field.name}
@@ -569,7 +703,10 @@ export default function CampusAmbassadorPage() {
                           transition={{ delay: index * 0.05 }}
                         >
                           <label className="block text-xs sm:text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
-                            {field.label} {field.required && <span className="text-red-500">*</span>}
+                            {field.label}{" "}
+                            {field.required && (
+                              <span className="text-red-500">*</span>
+                            )}
                           </label>
                           {field.type === "select" ? (
                             <select
@@ -578,8 +715,10 @@ export default function CampusAmbassadorPage() {
                               onChange={handleChange}
                               className="w-full bg-white/5 border border-white/10 px-3 sm:px-4 py-2 sm:py-3 text-white font-sans text-sm sm:text-base focus:outline-none focus:border-orange-500/50 transition-colors"
                             >
-                              {field.options.map(opt => (
-                                <option key={opt} value={opt}>{opt || "Select year"}</option>
+                              {field.options.map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt || "Select year"}
+                                </option>
                               ))}
                             </select>
                           ) : (
@@ -592,11 +731,17 @@ export default function CampusAmbassadorPage() {
                               maxLength={field.maxLength}
                               className="w-full bg-white/5 border border-white/10 px-3 sm:px-4 py-2 sm:py-3 text-white font-sans text-sm sm:text-base focus:outline-none focus:border-orange-500/50 transition-colors"
                               placeholder={field.placeholder}
-                              style={field.name === "college_abbreviation" ? { textTransform: "uppercase" } : {}}
+                              style={
+                                field.name === "college_abbreviation"
+                                  ? { textTransform: "uppercase" }
+                                  : {}
+                              }
                             />
                           )}
                           {field.name === "college_abbreviation" && (
-                            <p className="text-xs text-white/50 mt-1">Used for CA code generation (e.g., KVGCE001)</p>
+                            <p className="text-xs text-white/50 mt-1">
+                              Used for CA code generation (e.g., KVGCE001)
+                            </p>
                           )}
                         </motion.div>
                       ))}
@@ -608,7 +753,8 @@ export default function CampusAmbassadorPage() {
                       transition={{ delay: 0.4 }}
                     >
                       <label className="block text-xs sm:text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
-                        Why are you interested in becoming a Campus Ambassador? <span className="text-red-500">*</span>
+                        Why are you interested in becoming a Campus Ambassador?{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         name="why_interested"
@@ -669,16 +815,26 @@ export default function CampusAmbassadorPage() {
                       className="pt-4 border-t border-white/10"
                     >
                       <p className="text-xs sm:text-sm text-white/60 font-sans mb-3 sm:mb-4">
-                        Create a password for your CA dashboard access. You'll use your CA code and this password to login.
+                        Create a password for your CA dashboard access. You'll
+                        use your CA code and this password to login.
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         {[
-                          { name: "password", label: "Password", placeholder: "Minimum 6 characters" },
-                          { name: "confirmPassword", label: "Confirm Password", placeholder: "Re-enter password" },
+                          {
+                            name: "password",
+                            label: "Password",
+                            placeholder: "Minimum 6 characters",
+                          },
+                          {
+                            name: "confirmPassword",
+                            label: "Confirm Password",
+                            placeholder: "Re-enter password",
+                          },
                         ].map((field) => (
                           <div key={field.name}>
                             <label className="block text-xs sm:text-sm font-mono text-orange-500/80 mb-2 uppercase tracking-wide">
-                              {field.label} <span className="text-red-500">*</span>
+                              {field.label}{" "}
+                              <span className="text-red-500">*</span>
                             </label>
                             <input
                               type="password"
@@ -718,7 +874,9 @@ export default function CampusAmbassadorPage() {
                         >
                           <div className="absolute inset-0 bg-white/5 group-hover:bg-orange-500/10 transition-colors duration-300" />
                           <span className="relative text-white font-sans font-bold text-sm sm:text-base md:text-lg uppercase tracking-wide">
-                            {isSubmitting ? "Submitting..." : "Submit Application"}
+                            {isSubmitting
+                              ? "Submitting..."
+                              : "Submit Application"}
                           </span>
                         </div>
                       </motion.button>
