@@ -217,13 +217,20 @@ function RegistrationForm() {
                       CA Code (if referred by Campus Ambassador)
                     </label>
                     <input
-                      type="text"
-                      value={teamData.ca_code}
-                      readOnly={!!caCode}
-                      onChange={(e) => setTeamData({ ...teamData, ca_code: e.target.value.toUpperCase().trim() })}
-                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/50 transition-colors uppercase"
-                      placeholder="KVGCE001"
-                    />
+  type="text"
+  value={teamData.ca_code}
+  readOnly={!!caCode}
+  onChange={(e) =>
+    setTeamData({
+      ...teamData,
+      ca_code: e.target.value.toUpperCase().trim(),
+    })
+  }
+  className={`w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono uppercase focus:outline-none focus:border-orange-500/50 transition-colors
+    ${caCode ? 'opacity-70 cursor-not-allowed' : ''}`}
+  placeholder="KVGCE001"
+/>
+
                     <p className="text-xs text-white/50 mt-1">Leave blank if not referred by a CA</p>
                   </div>
                 </div>
