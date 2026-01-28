@@ -10,7 +10,8 @@ import {
   LogOut,
   Users,
   Megaphone,
-  UserCheck
+  UserCheck,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
@@ -32,6 +33,7 @@ export default function AdminLayout({ children }) {
     { href: '/admin/submissions', label: 'Project Submissions', icon: FileText },
     { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
     { href: '/admin/faq', label: 'Manage FAQ', icon: FileText },
+    { href: '/admin/certificates', label: 'Certificates', icon: ShieldCheck },
     { href: '/admin/logs', label: 'System Logs', icon: Settings },
   ];
 
