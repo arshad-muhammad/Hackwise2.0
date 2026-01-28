@@ -4,6 +4,19 @@ import { useState } from 'react';
 import { ShieldCheck, XCircle, Search } from 'lucide-react';
 import DecryptedText from '../components/DecryptedText.jsx';
 
+export const metadata = {
+  title: 'Verify Certificate | Hackwise 2.0',
+  description:
+    'Verify the authenticity of your Hackwise 2.0 certificate by entering the official HW2-2026-XXXX code issued by Sphere Hive.',
+  openGraph: {
+    title: 'Verify Hackwise 2.0 Certificate',
+    description:
+      'Enter your Hackwise 2.0 certificate code (HW2-2026-XXXX) to confirm if it is officially issued by the organizers.',
+    url: 'https://hackwise.spherehive.in/verify',
+    type: 'website',
+  },
+};
+
 const CARD_CLIP =
   'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)';
 const BTN_CLIP =
