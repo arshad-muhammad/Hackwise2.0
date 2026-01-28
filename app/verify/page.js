@@ -1,21 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ShieldCheck, XCircle, Search } from 'lucide-react';
 import DecryptedText from '../components/DecryptedText.jsx';
-
-export const metadata = {
-  title: 'Verify Certificate | Hackwise 2.0',
-  description:
-    'Verify the authenticity of your Hackwise 2.0 certificate by entering the official HW2-2026-XXXX code issued by Sphere Hive.',
-  openGraph: {
-    title: 'Verify Hackwise 2.0 Certificate',
-    description:
-      'Enter your Hackwise 2.0 certificate code (HW2-2026-XXXX) to confirm if it is officially issued by the organizers.',
-    url: 'https://hackwise.spherehive.in/verify',
-    type: 'website',
-  },
-};
 
 const CARD_CLIP =
   'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)';
@@ -28,20 +16,27 @@ export default function VerifyPage() {
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const searchParams = useSearchParams();
+
+  const runVerification = async (inputCode) => {
+    const raw = inputCode.trim();
+
     setStatus('loading');
     setMessage('');
     setResult(null);
 
-    if (!code.trim()) {
+    if (!raw) {
       setStatus('error');
       setMessage('Please enter a certificate code');
       return;
     }
 
+    // Normalize: allow either full code or just suffix
+    const upper = raw.toUpperCase();
+    const codeToSend = upper.startsWith('HW2-2026-') ? upper : `HW2-2026-${upper}`;
+
     try {
-      const res = await fetch(`/api/verify?code=${encodeURIComponent(code.trim())}`);
+      const res = await fetch(`/api/verify?code=${encodeURIComponent(codeToSend)}`);
       const data = await res.json();
 
       if (!res.ok || !data.valid) {
@@ -58,6 +53,21 @@ export default function VerifyPage() {
       setMessage('Something went wrong. Please try again.');
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await runVerification(code);
+  };
+
+  // Auto-fill and verify if ?code= is present in URL
+  useEffect(() => {
+    const urlCode = searchParams.get('code');
+    if (!urlCode || status !== 'idle') return;
+
+    setCode(urlCode);
+    runVerification(urlCode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, status]);
 
   const normalizedPreview =
     code.trim() === ''
