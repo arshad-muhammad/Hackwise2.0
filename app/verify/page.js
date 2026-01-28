@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ShieldCheck, XCircle, Search } from 'lucide-react';
 import DecryptedText from '../components/DecryptedText.jsx';
@@ -10,7 +10,7 @@ const CARD_CLIP =
 const BTN_CLIP =
   'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)';
 
-export default function VerifyPage() {
+function VerifyPageContent() {
   const [code, setCode] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | success | error | notfound
   const [result, setResult] = useState(null);
@@ -323,4 +323,19 @@ export default function VerifyPage() {
   );
 }
 
+export default function VerifyPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="section-container border-t border-white/10 pb-24 pt-28">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center text-white/60 font-mono">Loading verification tool...</div>
+          </div>
+        </section>
+      }
+    >
+      <VerifyPageContent />
+    </Suspense>
+  );
+}
 
