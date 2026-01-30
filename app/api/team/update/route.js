@@ -49,12 +49,34 @@ export async function PUT(request) {
 
     values.push(session.team_id);
 
+    // Get team name for logging
+    const [teamData] = await pool.query('SELECT team_name FROM `hw-teams` WHERE id = ?', [session.team_id]);
+    const teamName = teamData[0]?.team_name || 'Unnamed Team';
+
     await pool.query(
       `UPDATE \`hw-teams\` SET ${fields.join(', ')} WHERE id = ?`,
       values
     );
 
-    await logAction('INFO', `Team updated details: Team ${session.team_id}`, { team_id: session.team_id, updates: body });
+    // Check if this is a payment submission
+    if (payment_screenshot_url || transaction_id) {
+      await logAction('INFO', `Payment proof submitted: ${teamName}`, { 
+        type: 'TEAM_PAYMENT', 
+        team_id: session.team_id, 
+        team_name: teamName,
+        transaction_id: transaction_id || null,
+        payment_screenshot_url: payment_screenshot_url ? 'UPLOADED' : null,
+        status: 'PENDING_REVIEW'
+      });
+    } else {
+      // General team update
+      await logAction('INFO', `Team updated details: ${teamName}`, { 
+        type: 'TEAM_UPDATE', 
+        team_id: session.team_id, 
+        team_name: teamName,
+        updates: body 
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
