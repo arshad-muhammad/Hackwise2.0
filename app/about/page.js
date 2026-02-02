@@ -198,6 +198,7 @@ export default function AboutPage() {
               start: 'top 85%',
               end: 'top 20%',
               toggleActions: 'play none none reverse',
+              markers: false,
             },
           });
 
