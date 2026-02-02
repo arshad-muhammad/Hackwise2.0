@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import { existsSync } from 'fs';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 
 export async function POST(request) {
   try {
@@ -25,80 +22,31 @@ export async function POST(request) {
       return NextResponse.json({ error: 'File size too large. Maximum size is 10MB.' }, { status: 400 });
     }
 
+    // Check if Cloudinary is configured
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      return NextResponse.json({ 
+        error: 'Cloudinary is not configured. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.' 
+      }, { status: 500 });
+    }
+
+    // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create unique filename
-    const filename = `${uuidv4()}${path.extname(file.name)}`;
-    
-    // Check if we're in a serverless environment
-    const isVercel = process.env.VERCEL === '1';
-    const isProduction = process.env.NODE_ENV === 'production';
-    
-    // In serverless environments (like Vercel), filesystem is read-only
-    // We need to use /tmp or return base64, or use external storage
-    let uploadDir, filepath, url;
+    // Upload to Cloudinary
+    const result = await uploadToCloudinary(buffer, 'hackwise-committee');
 
-    if (isVercel || isProduction) {
-      // In serverless environments, try to write to /tmp
-      // Note: Files in /tmp are ephemeral and won't persist across deployments
-      // For production, consider using cloud storage (S3, Cloudinary, Vercel Blob, etc.)
-      uploadDir = '/tmp';
-      filepath = path.join(uploadDir, filename);
-      
-      try {
-        // Ensure /tmp directory exists
-        if (!existsSync(uploadDir)) {
-          await mkdir(uploadDir, { recursive: true });
-        }
-        await writeFile(filepath, buffer);
-        // In serverless, we can't reliably serve from /tmp
-        // Return base64 as fallback, but recommend cloud storage
-        const base64 = buffer.toString('base64');
-        const dataUrl = `data:${file.type};base64,${base64}`;
-        return NextResponse.json({ 
-          url: dataUrl,
-          isBase64: true,
-          message: 'File uploaded as base64. For production, consider using cloud storage.'
-        });
-      } catch (tmpError) {
-        console.error('Failed to write to /tmp:', tmpError);
-        // Fallback: return base64 directly
-        const base64 = buffer.toString('base64');
-        const dataUrl = `data:${file.type};base64,${base64}`;
-        return NextResponse.json({ 
-          url: dataUrl,
-          isBase64: true,
-          message: 'File uploaded as base64 (filesystem not writable). Consider using cloud storage for production.'
-        });
-      }
-    } else {
-      // Development: use public/uploads
-      uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      filepath = path.join(uploadDir, filename);
-      
-      // Ensure upload directory exists
-      if (!existsSync(uploadDir)) {
-        await mkdir(uploadDir, { recursive: true });
-      }
-      
-      await writeFile(filepath, buffer);
-      url = `/uploads/${filename}`;
-    }
-
-    return NextResponse.json({ url });
+    return NextResponse.json({ 
+      url: result.url,
+      public_id: result.public_id,
+      width: result.width,
+      height: result.height,
+      format: result.format,
+    });
   } catch (error) {
     console.error('Upload error:', error);
-    console.error('Error details:', {
-      message: error.message,
-      code: error.code,
-      errno: error.errno,
-      syscall: error.syscall,
-      path: error.path,
-    });
-    
     return NextResponse.json({ 
-      error: 'Upload failed. Please try again or contact support.',
+      error: 'Upload failed', 
       details: process.env.NODE_ENV === 'development' ? error.message : undefined 
     }, { status: 500 });
   }

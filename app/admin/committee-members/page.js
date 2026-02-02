@@ -68,20 +68,12 @@ export default function CommitteeMembersPage() {
         method: 'POST',
         body: formData,
       });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Upload failed');
-      }
+      if (!res.ok) throw new Error('Upload failed');
       const data = await res.json();
-      // Handle both regular URLs and base64 data URLs
       setForm({ ...form, image_url: data.url });
-      
-      if (data.isBase64) {
-        console.warn('Image uploaded as base64 (serverless environment). Consider using cloud storage for production.');
-      }
     } catch (error) {
       console.error('Upload error:', error);
-      alert(`Failed to upload image: ${error.message}`);
+      alert('Failed to upload image');
     }
   };
 
@@ -308,15 +300,9 @@ export default function CommitteeMembersPage() {
                 {form.image_url && (
                   <div className="mt-2 w-32 h-32 border border-white/10 overflow-hidden">
                     <img
-                      src={form.image_url.startsWith('data:') ? form.image_url : form.image_url}
+                      src={form.image_url}
                       alt="Preview"
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        // If base64 fails, try as regular URL
-                        if (form.image_url.startsWith('data:')) {
-                          e.target.src = form.image_url;
-                        }
-                      }}
                     />
                   </div>
                 )}
@@ -429,15 +415,9 @@ export default function CommitteeMembersPage() {
               {member.image_url && (
                 <div className="mb-4 aspect-square overflow-hidden border border-white/10">
                   <img
-                    src={member.image_url.startsWith('data:') ? member.image_url : member.image_url}
+                    src={member.image_url}
                     alt={member.name}
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      // If base64 fails, try as regular URL
-                      if (member.image_url.startsWith('data:')) {
-                        e.target.src = member.image_url;
-                      }
-                    }}
                   />
                 </div>
               )}
