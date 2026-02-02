@@ -49,6 +49,14 @@ export async function POST(request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    // Validate buffer
+    if (!buffer || buffer.length === 0) {
+      return NextResponse.json({ 
+        error: 'Invalid file: file is empty',
+        code: 'INVALID_FILE'
+      }, { status: 400 });
+    }
+
     // Upload to Cloudinary
     try {
       const result = await uploadToCloudinary(buffer, 'hackwise-committee');
