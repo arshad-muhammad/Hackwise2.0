@@ -11,7 +11,8 @@ import {
   Users,
   Megaphone,
   UserCheck,
-  ShieldCheck
+  ShieldCheck,
+  UserCircle
 } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
@@ -34,6 +35,7 @@ export default function AdminLayout({ children }) {
     { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
     { href: '/admin/faq', label: 'Manage FAQ', icon: FileText },
     { href: '/admin/certificates', label: 'Certificates', icon: ShieldCheck },
+    { href: '/admin/committee-members', label: 'Committee Members', icon: UserCircle },
     { href: '/admin/logs', label: 'System Logs', icon: Settings },
   ];
 
