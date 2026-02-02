@@ -30,22 +30,82 @@ export async function POST(request) {
 
     // Create unique filename
     const filename = `${uuidv4()}${path.extname(file.name)}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
     
-    // Ensure upload directory exists
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
+    // Check if we're in a serverless environment
+    const isVercel = process.env.VERCEL === '1';
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    // In serverless environments (like Vercel), filesystem is read-only
+    // We need to use /tmp or return base64, or use external storage
+    let uploadDir, filepath, url;
+
+    if (isVercel || isProduction) {
+      // Try /tmp first (only writable location in serverless)
+      uploadDir = '/tmp';
+      filepath = path.join(uploadDir, filename);
+      
+      try {
+        await writeFile(filepath, buffer);
+        // In serverless, we can't serve from /tmp, so return base64 data URL
+        // Or you could upload to cloud storage here
+        const base64 = buffer.toString('base64');
+        const dataUrl = `data:${file.type};base64,${base64}`;
+        return NextResponse.json({ 
+          url: dataUrl,
+          isBase64: true,
+          message: 'File uploaded as base64 (serverless environment)'
+        });
+      } catch (tmpError) {
+        console.error('Failed to write to /tmp:', tmpError);
+        // Fallback: try public/uploads (might work in some environments)
+        uploadDir = path.join(process.cwd(), 'public', 'uploads');
+        filepath = path.join(uploadDir, filename);
+        
+        try {
+          if (!existsSync(uploadDir)) {
+            await mkdir(uploadDir, { recursive: true });
+          }
+          await writeFile(filepath, buffer);
+          url = `/uploads/${filename}`;
+        } catch (publicError) {
+          console.error('Failed to write to public/uploads:', publicError);
+          // Last resort: return base64
+          const base64 = buffer.toString('base64');
+          const dataUrl = `data:${file.type};base64,${base64}`;
+          return NextResponse.json({ 
+            url: dataUrl,
+            isBase64: true,
+            message: 'File uploaded as base64 (filesystem not writable)'
+          });
+        }
+      }
+    } else {
+      // Development: use public/uploads
+      uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      filepath = path.join(uploadDir, filename);
+      
+      // Ensure upload directory exists
+      if (!existsSync(uploadDir)) {
+        await mkdir(uploadDir, { recursive: true });
+      }
+      
+      await writeFile(filepath, buffer);
+      url = `/uploads/${filename}`;
     }
-    
-    const filepath = path.join(uploadDir, filename);
 
-    await writeFile(filepath, buffer);
-
-    return NextResponse.json({ url: `/uploads/${filename}` });
+    return NextResponse.json({ url });
   } catch (error) {
     console.error('Upload error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      errno: error.errno,
+      syscall: error.syscall,
+      path: error.path,
+    });
+    
     return NextResponse.json({ 
-      error: 'Upload failed', 
+      error: 'Upload failed. Please try again or contact support.',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined 
     }, { status: 500 });
   }

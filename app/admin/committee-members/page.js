@@ -68,12 +68,20 @@ export default function CommitteeMembersPage() {
         method: 'POST',
         body: formData,
       });
-      if (!res.ok) throw new Error('Upload failed');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Upload failed');
+      }
       const data = await res.json();
+      // Handle both regular URLs and base64 data URLs
       setForm({ ...form, image_url: data.url });
+      
+      if (data.isBase64) {
+        console.warn('Image uploaded as base64 (serverless environment). Consider using cloud storage for production.');
+      }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload image');
+      alert(`Failed to upload image: ${error.message}`);
     }
   };
 
