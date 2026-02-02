@@ -40,44 +40,37 @@ export async function POST(request) {
     let uploadDir, filepath, url;
 
     if (isVercel || isProduction) {
-      // Try /tmp first (only writable location in serverless)
+      // In serverless environments, try to write to /tmp
+      // Note: Files in /tmp are ephemeral and won't persist across deployments
+      // For production, consider using cloud storage (S3, Cloudinary, Vercel Blob, etc.)
       uploadDir = '/tmp';
       filepath = path.join(uploadDir, filename);
       
       try {
+        // Ensure /tmp directory exists
+        if (!existsSync(uploadDir)) {
+          await mkdir(uploadDir, { recursive: true });
+        }
         await writeFile(filepath, buffer);
-        // In serverless, we can't serve from /tmp, so return base64 data URL
-        // Or you could upload to cloud storage here
+        // In serverless, we can't reliably serve from /tmp
+        // Return base64 as fallback, but recommend cloud storage
         const base64 = buffer.toString('base64');
         const dataUrl = `data:${file.type};base64,${base64}`;
         return NextResponse.json({ 
           url: dataUrl,
           isBase64: true,
-          message: 'File uploaded as base64 (serverless environment)'
+          message: 'File uploaded as base64. For production, consider using cloud storage.'
         });
       } catch (tmpError) {
         console.error('Failed to write to /tmp:', tmpError);
-        // Fallback: try public/uploads (might work in some environments)
-        uploadDir = path.join(process.cwd(), 'public', 'uploads');
-        filepath = path.join(uploadDir, filename);
-        
-        try {
-          if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true });
-          }
-          await writeFile(filepath, buffer);
-          url = `/uploads/${filename}`;
-        } catch (publicError) {
-          console.error('Failed to write to public/uploads:', publicError);
-          // Last resort: return base64
-          const base64 = buffer.toString('base64');
-          const dataUrl = `data:${file.type};base64,${base64}`;
-          return NextResponse.json({ 
-            url: dataUrl,
-            isBase64: true,
-            message: 'File uploaded as base64 (filesystem not writable)'
-          });
-        }
+        // Fallback: return base64 directly
+        const base64 = buffer.toString('base64');
+        const dataUrl = `data:${file.type};base64,${base64}`;
+        return NextResponse.json({ 
+          url: dataUrl,
+          isBase64: true,
+          message: 'File uploaded as base64 (filesystem not writable). Consider using cloud storage for production.'
+        });
       }
     } else {
       // Development: use public/uploads

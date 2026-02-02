@@ -151,9 +151,15 @@ export default function MemberPage() {
                 style={{ clipPath: CARD_CLIP }}
               >
                 <img
-                  src={member.image_url || '/assets/logo.png'}
+                  src={member.image_url?.startsWith('data:') ? member.image_url : (member.image_url || '/assets/logo.png')}
                   alt={member.name}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback to logo if image fails to load
+                    if (e.target.src !== '/assets/logo.png') {
+                      e.target.src = '/assets/logo.png';
+                    }
+                  }}
                 />
               </div>
             </div>

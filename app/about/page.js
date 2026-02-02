@@ -477,11 +477,17 @@ export default function AboutPage() {
                     >
                       {/* Member Image */}
                       <div className="relative aspect-square overflow-hidden">
-                        <img
-                          src={member.image_url || '/assets/logo.png'}
-                          alt={member.name}
-                          className="member-image w-full h-full object-cover"
-                        />
+                      <img
+                        src={member.image_url?.startsWith('data:') ? member.image_url : (member.image_url || '/assets/logo.png')}
+                        alt={member.name}
+                        className="member-image w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback to logo if image fails to load
+                          if (e.target.src !== '/assets/logo.png') {
+                            e.target.src = '/assets/logo.png';
+                          }
+                        }}
+                      />
                         <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent" />
                       </div>
 
