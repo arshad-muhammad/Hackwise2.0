@@ -364,6 +364,14 @@ export default function AboutPage() {
     router.push(`/member/${id}`);
   };
 
+  // Helper function to get valid image URL (reject base64)
+  const getValidImageUrl = (url) => {
+    if (!url || url.startsWith('data:')) {
+      return '/assets/logo.png';
+    }
+    return url;
+  };
+
   return (
     <section className="section-container border-t border-white/10 pb-24 pt-28">
       <div className="max-w-7xl mx-auto">
@@ -478,7 +486,7 @@ export default function AboutPage() {
                       {/* Member Image */}
                       <div className="relative aspect-square overflow-hidden">
                         <img
-                          src={member.image_url || '/assets/logo.png'}
+                          src={getValidImageUrl(member.image_url)}
                           alt={member.name}
                           className="member-image w-full h-full object-cover"
                         />

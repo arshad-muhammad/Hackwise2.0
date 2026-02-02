@@ -55,6 +55,14 @@ export default function MemberPage() {
     return () => ctx.revert();
   }, [member, loading]);
 
+  // Helper function to get valid image URL (reject base64)
+  const getValidImageUrl = (url) => {
+    if (!url || url.startsWith('data:')) {
+      return '/assets/logo.png';
+    }
+    return url;
+  };
+
   const fetchMember = async () => {
     try {
       setLoading(true);
@@ -151,7 +159,7 @@ export default function MemberPage() {
                 style={{ clipPath: CARD_CLIP }}
               >
                 <img
-                  src={member.image_url || '/assets/logo.png'}
+                  src={getValidImageUrl(member.image_url)}
                   alt={member.name}
                   className="w-full h-full object-cover"
                 />

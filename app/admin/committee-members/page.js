@@ -68,13 +68,33 @@ export default function CommitteeMembersPage() {
         method: 'POST',
         body: formData,
       });
-      if (!res.ok) throw new Error('Upload failed');
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+      
       const data = await res.json();
+      
+      // Validate that we got a proper URL (not base64)
+      if (!data.url || data.url.startsWith('data:')) {
+        throw new Error('Invalid image URL received');
+      }
+      
       setForm({ ...form, image_url: data.url });
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload image');
+      alert(`Failed to upload image: ${error.message || 'Unknown error'}`);
     }
+  };
+  
+  // Helper function to check if URL is valid (not base64)
+  const isValidImageUrl = (url) => {
+    if (!url) return false;
+    if (url.startsWith('data:')) return false; // Reject base64
+    if (url.startsWith('http://') || url.startsWith('https://')) return true;
+    if (url.startsWith('/')) return true; // Allow relative paths
+    return false;
   };
 
   const handleSubmit = async (e) => {
@@ -297,13 +317,21 @@ export default function CommitteeMembersPage() {
                     />
                   </label>
                 </div>
-                {form.image_url && (
+                {form.image_url && isValidImageUrl(form.image_url) && (
                   <div className="mt-2 w-32 h-32 border border-white/10 overflow-hidden">
                     <img
                       src={form.image_url}
                       alt="Preview"
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
                     />
+                  </div>
+                )}
+                {form.image_url && !isValidImageUrl(form.image_url) && (
+                  <div className="mt-2 p-2 bg-red-500/10 border border-red-500/50 text-red-400 text-xs">
+                    Invalid image URL. Please upload a new image.
                   </div>
                 )}
               </div>
@@ -412,13 +440,21 @@ export default function CommitteeMembersPage() {
                   </button>
                 </div>
               </div>
-              {member.image_url && (
+              {member.image_url && isValidImageUrl(member.image_url) && (
                 <div className="mb-4 aspect-square overflow-hidden border border-white/10">
                   <img
                     src={member.image_url}
                     alt={member.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
                   />
+                </div>
+              )}
+              {member.image_url && !isValidImageUrl(member.image_url) && (
+                <div className="mb-4 p-4 bg-red-500/10 border border-red-500/50 text-red-400 text-xs text-center">
+                  Invalid image URL. Please edit and upload a new image.
                 </div>
               )}
               {member.bio && (
