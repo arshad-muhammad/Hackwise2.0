@@ -23,15 +23,25 @@ export async function POST(request) {
     }
 
     // Check if Cloudinary is configured
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    const hasCloudName = !!process.env.CLOUDINARY_CLOUD_NAME;
+    const hasApiKey = !!process.env.CLOUDINARY_API_KEY;
+    const hasApiSecret = !!process.env.CLOUDINARY_API_SECRET;
+
+    if (!hasCloudName || !hasApiKey || !hasApiSecret) {
       console.error('Cloudinary configuration missing:', {
-        hasCloudName: !!process.env.CLOUDINARY_CLOUD_NAME,
-        hasApiKey: !!process.env.CLOUDINARY_API_KEY,
-        hasApiSecret: !!process.env.CLOUDINARY_API_SECRET,
+        hasCloudName,
+        hasApiKey,
+        hasApiSecret,
+        nodeEnv: process.env.NODE_ENV,
       });
       return NextResponse.json({ 
         error: 'Cloudinary is not configured. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.',
-        code: 'CLOUDINARY_NOT_CONFIGURED'
+        code: 'CLOUDINARY_NOT_CONFIGURED',
+        details: process.env.NODE_ENV === 'development' ? {
+          hasCloudName,
+          hasApiKey,
+          hasApiSecret,
+        } : undefined,
       }, { status: 500 });
     }
 
@@ -55,10 +65,24 @@ export async function POST(request) {
         format: result.format,
       });
     } catch (cloudinaryError) {
-      console.error('Cloudinary upload error:', cloudinaryError);
+      console.error('Cloudinary upload error:', {
+        message: cloudinaryError.message,
+        stack: cloudinaryError.stack,
+        name: cloudinaryError.name,
+      });
+      
+      // Provide more helpful error message
+      let errorMessage = 'Failed to upload to Cloudinary';
+      if (cloudinaryError.message) {
+        errorMessage = cloudinaryError.message;
+      }
+      
       return NextResponse.json({ 
-        error: 'Failed to upload to Cloudinary',
-        details: process.env.NODE_ENV === 'development' ? cloudinaryError.message : undefined,
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? {
+          message: cloudinaryError.message,
+          stack: cloudinaryError.stack,
+        } : 'Check server logs for details',
         code: 'CLOUDINARY_UPLOAD_FAILED'
       }, { status: 500 });
     }
