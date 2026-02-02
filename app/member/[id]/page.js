@@ -161,7 +161,7 @@ export default function MemberPage() {
                 <img
                   src={getValidImageUrl(member.image_url)}
                   alt={member.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
               </div>
             </div>

@@ -322,7 +322,7 @@ export default function CommitteeMembersPage() {
                     <img
                       src={form.image_url}
                       alt="Preview"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-top"
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}

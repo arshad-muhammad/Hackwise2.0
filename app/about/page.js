@@ -488,7 +488,7 @@ export default function AboutPage() {
                         <img
                           src={getValidImageUrl(member.image_url)}
                           alt={member.name}
-                          className="member-image w-full h-full object-cover"
+                          className="member-image w-full h-full object-cover object-top"
                         />
                         <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent" />
                       </div>
