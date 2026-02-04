@@ -149,212 +149,35 @@ export default function AboutPage() {
         }
       }
 
-      // Advanced Members grid scroll animations
+      // Simple and performant Members grid scroll animations
       if (membersGridRef.current && membersGridRef.current.children.length > 0) {
         const cards = Array.from(membersGridRef.current.children);
         
         cards.forEach((card, index) => {
-          const cardImage = card.querySelector('.member-image');
-          const imageCard = card.querySelector('[style*="clipPath"]');
-          const nameElement = card.querySelector('h3');
-          const roleElement = card.querySelector('p');
-          
-          // Set initial states - all cards from straight direction
+          // Set initial state - simple fade and slide up
           gsap.set(card, {
             opacity: 0,
-            x: 0,
-            y: 100,
-            scale: 0.7,
-            rotation: 0,
+            y: 40,
           });
-          
-          if (cardImage) {
-            gsap.set(cardImage, {
-              scale: 1.3,
-              filter: 'blur(8px) brightness(0.7)',
-            });
-          }
-          
-          if (nameElement) {
-            gsap.set(nameElement, {
-              opacity: 0,
-              y: 30,
-              scale: 0.9,
-            });
-          }
-          
-          if (roleElement) {
-            gsap.set(roleElement, {
-              opacity: 0,
-              y: 30,
-              scale: 0.9,
-            });
-          }
 
-          // Create scroll trigger timeline for each card
-          const tl = gsap.timeline({
+          // Simple scroll trigger animation - no complex effects
+          gsap.to(card, {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+            delay: index * 0.08,
             scrollTrigger: {
               trigger: card,
               start: 'top 85%',
-              end: 'top 20%',
-              toggleActions: 'play none none reverse',
-              markers: false,
+              toggleActions: 'play none none none',
             },
           });
-
-          // Card entrance animation with rotation, scale, and position
-          tl.to(card, {
-            opacity: 1,
-            x: 0,
-            y: 0,
-            scale: 1,
-            rotation: 0,
-            duration: 1.2,
-            ease: 'back.out(1.4)',
-            delay: index * 0.15,
-          })
-          // Image zoom and blur effect
-          .to(cardImage, {
-            scale: 1,
-            filter: 'blur(0px) brightness(1)',
-            duration: 1.5,
-            ease: 'power2.out',
-          }, '-=1')
-          // Name animation with scale
-          .to(nameElement, {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.8,
-            ease: 'elastic.out(1, 0.5)',
-          }, '-=0.8')
-          // Role animation
-          .to(roleElement, {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.8,
-            ease: 'power2.out',
-          }, '-=0.6');
-
-          // Parallax effect on scroll - image moves slower than card
-          if (cardImage) {
-            gsap.to(cardImage, {
-              y: -40,
-              scale: 1.1,
-              scrollTrigger: {
-                trigger: card,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: 1.5,
-              },
-            });
-          }
-
-          // Subtle scale and glow effect as card enters viewport
-          gsap.to(card, {
-            scale: 1.03,
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 75%',
-              end: 'top 25%',
-              scrub: 1,
-            },
-          });
-
-          // Name color transition on scroll
-          if (nameElement) {
-            gsap.to(nameElement, {
-              color: '#f97316',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 60%',
-                end: 'top 40%',
-                scrub: 1,
-              },
-            });
-          }
         });
       }
 
-      // Individual card hover animations
-      memberCardsRef.current.forEach((card, index) => {
-        if (!card) return;
-
-        const cardContainer = card;
-        const imageCard = cardContainer.querySelector('[style*="clipPath"]');
-        const image = cardContainer.querySelector('.member-image');
-        const overlay = cardContainer.querySelector('.member-overlay');
-        const content = cardContainer.querySelector('.member-content');
-        const nameElement = cardContainer.querySelector('h3');
-
-        // Initial state
-        gsap.set(image, { scale: 1.1 });
-        gsap.set(overlay, { opacity: 0.7 });
-        gsap.set(content, { y: 20, opacity: 0 });
-
-        // Hover animations
-        cardContainer.addEventListener('mouseenter', () => {
-          gsap.to(image, {
-            scale: 1.2,
-            duration: 0.6,
-            ease: 'power2.out',
-          });
-          gsap.to(overlay, {
-            opacity: 1,
-            duration: 0.4,
-          });
-          gsap.to(content, {
-            y: 0,
-            opacity: 1,
-            duration: 0.5,
-            ease: 'power2.out',
-          });
-          if (imageCard) {
-            gsap.to(imageCard, {
-              y: -10,
-              duration: 0.4,
-              ease: 'power2.out',
-            });
-          }
-          if (nameElement) {
-            gsap.to(nameElement, {
-              color: '#f97316',
-              duration: 0.3,
-            });
-          }
-        });
-
-        cardContainer.addEventListener('mouseleave', () => {
-          gsap.to(image, {
-            scale: 1.1,
-            duration: 0.6,
-            ease: 'power2.out',
-          });
-          gsap.to(overlay, {
-            opacity: 0.7,
-            duration: 0.4,
-          });
-          gsap.to(content, {
-            y: 20,
-            opacity: 0,
-            duration: 0.4,
-          });
-          if (imageCard) {
-            gsap.to(imageCard, {
-              y: 0,
-              duration: 0.4,
-              ease: 'power2.out',
-            });
-          }
-          if (nameElement) {
-            gsap.to(nameElement, {
-              color: '#ffffff',
-              duration: 0.3,
-            });
-          }
-        });
-      });
+      // Simple card hover animations (CSS-based for better performance)
+      // GSAP hover animations removed - using CSS transitions instead
     });
 
     return () => ctx.revert();
@@ -465,7 +288,7 @@ export default function AboutPage() {
               <div
                 key={member.id}
                 ref={(el) => (memberCardsRef.current[index] = el)}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center group"
               >
                 {/* Card Container */}
                 <div
@@ -488,13 +311,13 @@ export default function AboutPage() {
                         <img
                           src={getValidImageUrl(member.image_url)}
                           alt={member.name}
-                          className="member-image w-full h-full object-cover object-top"
+                          className="member-image w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-110"
                         />
-                        <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent" />
+                        <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100 opacity-70" />
                       </div>
 
                       {/* Member Bio and View Details - On Hover */}
-                      <div className="member-content absolute bottom-0 left-0 right-0 p-4 md:p-6 z-20">
+                      <div className="member-content absolute bottom-0 left-0 right-0 p-4 md:p-6 z-20 opacity-0 group-hover:opacity-100 translate-y-5 group-hover:translate-y-0 transition-all duration-300">
                         {member.bio && (
                           <p className="text-xs text-white/80 line-clamp-2 mb-3 drop-shadow-lg">
                             {member.bio}
