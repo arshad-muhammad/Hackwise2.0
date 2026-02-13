@@ -121,20 +121,6 @@ const Sponsors = () => {
             </div>
           </div>
 
-          {/* Silver Sponsor */}
-          <div className="w-full max-w-5xl flex flex-col items-center mt-2">
-            <SectionHeader title="Silver Sponsor" colorClass="text-gray-300" />
-            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 w-full">
-              <SponsorCard
-                href="https://lovable.dev/"
-                imgSrc="/assets/lovable-logo.webp"
-                imgAlt="Lovable"
-                className="h-24 sm:h-28 p-4"
-                imgClassName="max-h-full max-w-[40%]"
-              />
-            </div>
-          </div>
-
           {/* Creative Sponsor */}
           <div className="w-full max-w-5xl flex flex-col items-center mt-2">
             <SectionHeader
@@ -147,6 +133,20 @@ const Sponsors = () => {
                 imgSrc="/assets/NULL&VOID.png"
                 imgAlt="NULL&VOID"
                 className="h-25 sm:h-28 p-4"
+                imgClassName="max-h-full max-w-[40%]"
+              />
+            </div>
+          </div>
+
+          {/* Silver Sponsor */}
+          <div className="w-full max-w-5xl flex flex-col items-center mt-2">
+            <SectionHeader title="Silver Sponsor" colorClass="text-gray-300" />
+            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 w-full">
+              <SponsorCard
+                href="https://lovable.dev/"
+                imgSrc="/assets/lovable-logo.webp"
+                imgAlt="Lovable"
+                className="h-24 sm:h-28 p-4"
                 imgClassName="max-h-full max-w-[40%]"
               />
             </div>
