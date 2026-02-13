@@ -17,11 +17,6 @@ const comingSoonItems = [
     link: "https://instagram.com/spectra.kvgce",
   },
   { id: 3, img: "/assets/savishkar.jpg", link: "https://savishkarindia.org/" },
-  {
-    id: 4,
-    img: "/assets/NULL&VOID.png",
-    link: "https://www.behance.net/NLVDSTUDIOS",
-  },
 ];
 
 const SponsorCard = ({ href, imgSrc, imgAlt, className, imgClassName }) => {
