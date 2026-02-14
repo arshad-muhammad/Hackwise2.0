@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { ShieldCheck, XCircle, Search } from 'lucide-react';
+import { ShieldCheck, XCircle, Search, Download } from 'lucide-react';
 import DecryptedText from '../components/DecryptedText.jsx';
 
 const CARD_CLIP =
@@ -289,9 +289,23 @@ function VerifyPageContent() {
 
                     {result.template_image_url && result.template_config && (
                       <div className="mt-4 space-y-2">
-                        <p className="text-xs font-mono text-white/60 uppercase tracking-[0.25em]">
-                          Visual Certificate Preview
-                        </p>
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs font-mono text-white/60 uppercase tracking-[0.25em]">
+                            Visual Certificate Preview
+                          </p>
+                          <button
+                            onClick={() => {
+                              if (typeof window !== 'undefined' && result.code) {
+                                window.open(`/api/verify/download?code=${encodeURIComponent(result.code)}`, '_blank');
+                              }
+                            }}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-300 text-xs font-mono uppercase tracking-[0.2em] rounded transition-colors"
+                            title="Download certificate as PDF"
+                          >
+                            <Download size={12} />
+                            Download
+                          </button>
+                        </div>
                         <div className="relative border border-white/15 bg-black/40 rounded-md overflow-hidden">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img

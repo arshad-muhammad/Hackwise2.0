@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ShieldCheck, PlusCircle, RefreshCw, Edit2, Trash2, Save, X, Image as ImageIcon, Droplets, Download } from 'lucide-react';
+import { ShieldCheck, PlusCircle, RefreshCw, Edit2, Trash2, Save, X, Image as ImageIcon, Droplets, Download, FileText } from 'lucide-react';
 import DecryptedText from '../../components/DecryptedText.jsx';
 
 const CARD_CLIP =
@@ -1046,13 +1046,25 @@ export default function CertificatesAdminPage() {
                     type="button"
                     onClick={() => {
                       if (typeof window !== 'undefined') {
-                        window.open(`/api/admin/certificate-templates/export?template_id=${tpl.id}`, '_blank');
+                        window.open(`/api/admin/certificate-templates/export?template_id=${tpl.id}&format=svg`, '_blank');
                       }
                     }}
                     className="p-1.5 text-emerald-400 hover:bg-emerald-400/10 rounded transition-colors text-xs font-mono uppercase tracking-[0.2em]"
-                    title="Download all certificates using this template"
+                    title="Download all certificates as SVG files (ZIP)"
                   >
                     <Download size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        window.open(`/api/admin/certificate-templates/export?template_id=${tpl.id}&format=pdf`, '_blank');
+                      }
+                    }}
+                    className="p-1.5 text-orange-400 hover:bg-orange-400/10 rounded transition-colors text-xs font-mono uppercase tracking-[0.2em]"
+                    title="Download all certificates as single PDF (one per page)"
+                  >
+                    <FileText size={14} />
                   </button>
                   <button
                     onClick={() => handleDeleteTemplate(tpl.id)}
