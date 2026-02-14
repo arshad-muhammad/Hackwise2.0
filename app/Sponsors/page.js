@@ -6,8 +6,16 @@ import DecryptedText from "../components/DecryptedText";
 
 /* Media / Coming Soon */
 const comingSoonItems = [
-  { id: 1, img: "/assets/Media-logo.png", link: "https://www.instagram.com/summarise_app" },
-  { id: 2, img: "/assets/Spectra-logo.png", link: "https://instagram.com/spectra.kvgce" },
+  {
+    id: 1,
+    img: "/assets/Media-logo.png",
+    link: "https://www.instagram.com/summarise_app",
+  },
+  {
+    id: 2,
+    img: "/assets/Spectra-logo.png",
+    link: "https://instagram.com/spectra.kvgce",
+  },
   { id: 3, img: "/assets/savishkar.jpg", link: "https://savishkarindia.org/" },
 ];
 
@@ -42,7 +50,9 @@ const SponsorCard = ({ href, imgSrc, imgAlt, className, imgClassName }) => {
 const SectionHeader = ({ title, colorClass = "text-white" }) => (
   <div className="flex items-center gap-4 mb-4 w-full max-w-4xl px-4 md:px-0">
     <div className="h-px bg-linear-to-r from-transparent via-white/20 to-transparent flex-1" />
-    <h3 className={`font-mono text-xs sm:text-sm uppercase tracking-[0.2em] ${colorClass}`}>
+    <h3
+      className={`font-mono text-xs sm:text-sm uppercase tracking-[0.2em] ${colorClass}`}
+    >
       {title}
     </h3>
     <div className="h-px bg-linear-to-r from-transparent via-white/20 to-transparent flex-1" />
@@ -70,9 +80,9 @@ const Sponsors = () => {
             <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-orange-500/50 to-transparent" />
             <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-orange-500/50 to-transparent" />
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-hackwise text-white uppercase tracking-wider text-center">
-            Our Sponsors
-          </h1>
-        </div>
+              Our Sponsors
+            </h1>
+          </div>
         </motion.div>
 
         <div className="flex flex-col items-center gap-8 md:gap-10">
@@ -80,7 +90,10 @@ const Sponsors = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
             {/* Title Sponsor */}
             <div className="flex flex-col items-center">
-              <SectionHeader title="Title Sponsor" colorClass="text-orange-500" />
+              <SectionHeader
+                title="Title Sponsor"
+                colorClass="text-orange-500"
+              />
               <SponsorCard
                 href="https://dyashin.com/"
                 imgSrc="/assets/DyashinLogo.png"
@@ -88,7 +101,7 @@ const Sponsors = () => {
                 className="w-full h-32 sm:h-40 p-6"
                 imgClassName="max-h-full max-w-[80%]"
               />
-      </div>
+            </div>
 
             {/* Powered By */}
             <div className="flex flex-col items-center">
@@ -99,9 +112,26 @@ const Sponsors = () => {
                 imgAlt="Unstop"
                 className="w-full h-32 sm:h-40 p-6"
                 imgClassName="max-h-full max-w-[80%]"
-            />
+              />
+            </div>
           </div>
-        </div>
+
+          {/* Creative Sponsor */}
+          <div className="w-full max-w-5xl flex flex-col items-center mt-2">
+            <SectionHeader
+              title="Creative Sponsor"
+              colorClass="text-gray-300"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 w-full">
+              <SponsorCard
+                href="https://www.behance.net/NLVDSTUDIOS"
+                imgSrc="/assets/NULL&VOID.png"
+                imgAlt="NULL&VOID"
+                className="h-25 sm:h-28 p-4"
+                imgClassName="max-h-full max-w-[40%]"
+              />
+            </div>
+          </div>
 
           {/* Silver Sponsor */}
           <div className="w-full max-w-5xl flex flex-col items-center mt-2">
@@ -119,7 +149,10 @@ const Sponsors = () => {
 
           {/* Middle Tier: Rewards */}
           <div className="w-full max-w-5xl flex flex-col items-center mt-2">
-            <SectionHeader title="Reward Sponsors" colorClass="text-yellow-400" />
+            <SectionHeader
+              title="Reward Sponsors"
+              colorClass="text-yellow-400"
+            />
             <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 w-full">
               <SponsorCard
                 href="https://butti.in/"
@@ -128,13 +161,15 @@ const Sponsors = () => {
                 className="h-24 sm:h-28 p-4"
                 imgClassName="max-h-full max-w-[70%] bg-white/90 rounded-full px-2 py-1"
               />
-              
+            </div>
           </div>
-        </div>
 
           {/* Domain Sponsor */}
           <div className="w-full max-w-5xl flex flex-col items-center mt-2">
-            <SectionHeader title="Domain Sponsor" colorClass="text-purple-400" />
+            <SectionHeader
+              title="Domain Sponsor"
+              colorClass="text-purple-400"
+            />
             <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 w-full">
               <SponsorCard
                 href="https://gen.xyz/"
@@ -173,18 +208,20 @@ const Sponsors = () => {
             <p className="text-white/50 font-mono text-xs mb-4">
               &lt; WANT TO SUPPORT US? /&gt;
             </p>
-          <a
-            href="/contact"
+            <a
+              href="/contact"
               className="group relative inline-flex items-center gap-2 px-8 py-3 bg-orange-500 text-black font-mono font-bold uppercase tracking-wider transition-all duration-300 hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]"
-            style={{
-                clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)"
+              style={{
+                clipPath:
+                  "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)",
               }}
             >
               {/* Stroke Effect using pseudo-element simulation or borders */}
-              <div 
+              <div
                 className="absolute inset-px bg-black group-hover:bg-zinc-900 transition-colors duration-300 -z-10"
                 style={{
-                  clipPath: "polygon(11px 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%, 0 11px)"
+                  clipPath:
+                    "polygon(11px 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%, 0 11px)",
                 }}
               />
               <span className="relative z-10 text-orange-500 group-hover:text-orange-400 transition-colors">
