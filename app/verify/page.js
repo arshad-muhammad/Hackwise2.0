@@ -286,6 +286,92 @@ function VerifyPageContent() {
                       organizers on the official{' '}
                       <span className="text-orange-400">Hackwise 2.0</span> channels.
                     </p>
+
+                    {result.template_image_url && result.template_config && (
+                      <div className="mt-4 space-y-2">
+                        <p className="text-xs font-mono text-white/60 uppercase tracking-[0.25em]">
+                          Visual Certificate Preview
+                        </p>
+                        <div className="relative border border-white/15 bg-black/40 rounded-md overflow-hidden">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={result.template_image_url}
+                            alt="Certificate template"
+                            className="w-full h-auto block select-none pointer-events-none"
+                          />
+
+                          {['name', 'team', 'code'].map((fieldKey) => {
+                            const cfgRaw = result.template_config?.[fieldKey];
+                            if (!cfgRaw) return null;
+
+                            const text =
+                              fieldKey === 'name'
+                                ? result.recipient_name || ''
+                                : fieldKey === 'team'
+                                ? result.team_name || ''
+                                : result.code || '';
+
+                            if (!text) return null;
+
+                            const color = cfgRaw.color || '#000000';
+                            const fontSize = cfgRaw.fontSize || 18;
+                            const align = cfgRaw.align || 'left';
+
+                            const boxWidth = cfgRaw.boxWidth || 40;
+                            const boxHeight = cfgRaw.boxHeight || 10;
+
+                            let fontFamily =
+                              'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                            if (cfgRaw.fontFamily === 'monospace') {
+                              fontFamily =
+                                'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
+                            }
+
+                            // x,y in config are top-left of the drawn box
+                            const baseTop = cfgRaw.y || 0;
+                            const baseLeft = cfgRaw.x || 0;
+
+                            let leftPercent = baseLeft;
+                            if (align === 'center') {
+                              leftPercent = baseLeft + boxWidth / 2;
+                            } else if (align === 'right') {
+                              leftPercent = baseLeft + boxWidth;
+                            }
+
+                            const topPercent = baseTop + boxHeight / 2;
+
+                            let transform = 'translate(0, -50%)'; // vertical center, left-aligned
+                            if (align === 'center') {
+                              transform = 'translate(-50%, -50%)';
+                            } else if (align === 'right') {
+                              transform = 'translate(-100%, -50%)';
+                            }
+
+                            return (
+                              <div
+                                key={fieldKey}
+                                className="absolute whitespace-nowrap"
+                                style={{
+                                  top: `${topPercent}%`,
+                                  left: `${leftPercent}%`,
+                                  transform,
+                                  textAlign: align,
+                                  color,
+                                  fontSize,
+                                  fontFamily,
+                                }}
+                              >
+                                {text}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <p className="text-[10px] text-white/40 font-mono">
+                          This is a preview based on the template saved by the organizers. Printed
+                          certificates may have minor visual differences.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
 

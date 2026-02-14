@@ -5,7 +5,19 @@ import pool from '@/lib/db';
 export async function GET() {
   try {
     const [rows] = await pool.query(
-      'SELECT id, code, recipient_name, team_name, details, created_at FROM `hw-certificates` ORDER BY created_at DESC, id DESC'
+      `SELECT 
+         c.id,
+         c.code,
+         c.recipient_name,
+         c.team_name,
+         c.details,
+         c.created_at,
+         c.template_id,
+         t.name AS template_name,
+         t.type AS template_type
+       FROM \`hw-certificates\` c
+       LEFT JOIN \`hw-certificate-templates\` t ON c.template_id = t.id
+       ORDER BY c.created_at DESC, c.id DESC`
     );
     return NextResponse.json(rows || []);
   } catch (error) {
@@ -17,7 +29,7 @@ export async function GET() {
 // POST: create a new certificate code
 export async function POST(request) {
   try {
-    const { recipient_name, team_name, suffix, details } = await request.json();
+    const { recipient_name, team_name, suffix, details, template_id } = await request.json();
 
     if (!recipient_name || !suffix) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
@@ -31,8 +43,8 @@ export async function POST(request) {
     const code = `HW2-2026-${normalizedSuffix}`;
 
     await pool.query(
-      'INSERT INTO `hw-certificates` (code, recipient_name, team_name, details) VALUES (?, ?, ?, ?)',
-      [code, recipient_name, team_name || null, details || null]
+      'INSERT INTO `hw-certificates` (code, recipient_name, team_name, details, template_id) VALUES (?, ?, ?, ?, ?)',
+      [code, recipient_name, team_name || null, details || null, template_id || null]
     );
 
     return NextResponse.json({ success: true, code });
