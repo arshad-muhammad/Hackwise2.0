@@ -251,8 +251,7 @@ export default function AccommodationAdminPage() {
                 {/* Price Setting */}
                 <div className="relative p-4 bg-black/30 rounded border border-white/10">
                   <p className="text-xs font-mono text-white/60 uppercase mb-2 flex items-center gap-2">
-                    <DollarSign size={14} />
-                    Accommodation Price
+                    ₹ Accommodation Price
                   </p>
                   <div className="flex gap-2 mb-2">
                     <input

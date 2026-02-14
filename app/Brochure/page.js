@@ -35,7 +35,7 @@ const BrochurePage = () => {
               </div>
 
               <a
-                href=" https://hackwise.spherehive.in/brochure.pdf"
+                href="https://res.cloudinary.com/dimxynois/image/upload/v1771091906/Hackwise2_brochure.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 download
