@@ -38,12 +38,30 @@ export default function AccommodationContent() {
     special_requirements: '',
   });
 
-  // Calculate total price based on pricing type
-  const calculateTotalPrice = () => {
-    if (settings.pricingType === 'per_person') {
-      return settings.price * formData.total_members;
+  // Calculate number of nights
+  const calculateNights = () => {
+    if (!formData.check_in_date || !formData.check_out_date) {
+      return 0;
     }
-    return settings.price;
+    const checkIn = new Date(formData.check_in_date);
+    const checkOut = new Date(formData.check_out_date);
+    const diffTime = Math.abs(checkOut - checkIn);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 0;
+  };
+
+  // Calculate total price based on pricing type and nights
+  const calculateTotalPrice = () => {
+    const nights = calculateNights();
+    if (nights === 0) return 0;
+    
+    const pricePerNight = settings.price;
+    const totalForNights = pricePerNight * nights;
+    
+    if (settings.pricingType === 'per_person') {
+      return totalForNights * formData.total_members;
+    }
+    return totalForNights;
   };
 
   useEffect(() => {
@@ -451,16 +469,25 @@ export default function AccommodationContent() {
           {settings.price > 0 && (
             <div className="inline-flex flex-col items-center gap-2 px-6 py-3 bg-orange-500/10 border border-orange-500/30">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-white/60 uppercase">Price:</span>
+                <span className="text-xs font-mono text-white/60 uppercase">Total Price:</span>
                 <span className="text-2xl font-bold text-orange-500 font-mono">{formatPrice(calculateTotalPrice())}</span>
               </div>
-              {settings.pricingType === 'per_person' && formData.total_members > 0 && (
-                <p className="text-xs font-mono text-white/40">
-                  {formatPrice(settings.price)} × {formData.total_members} member{formData.total_members !== 1 ? 's' : ''}
-                </p>
+              {calculateNights() > 0 && (
+                <div className="text-center space-y-1">
+                  <p className="text-xs font-mono text-white/40">
+                    {formatPrice(settings.price)} per night × {calculateNights()} night{calculateNights() !== 1 ? 's' : ''}
+                    {settings.pricingType === 'per_person' && ` × ${formData.total_members} member${formData.total_members !== 1 ? 's' : ''}`}
+                  </p>
+                  {settings.pricingType === 'per_team' && (
+                    <p className="text-xs font-mono text-white/40">Per team rate</p>
+                  )}
+                </div>
               )}
-              {settings.pricingType === 'per_team' && (
-                <p className="text-xs font-mono text-white/40">Fixed price per team</p>
+              {calculateNights() === 0 && formData.check_in_date && formData.check_out_date && (
+                <p className="text-xs font-mono text-yellow-400">Please select valid check-in and check-out dates</p>
+              )}
+              {!formData.check_in_date || !formData.check_out_date && (
+                <p className="text-xs font-mono text-white/40">Select dates to see pricing</p>
               )}
             </div>
           )}
@@ -566,10 +593,14 @@ export default function AccommodationContent() {
                       min="1"
                       className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/60 placeholder:text-white/25"
                     />
-                    {settings.pricingType === 'per_person' && settings.price > 0 && formData.total_members > 0 && (
-                      <p className="text-xs font-mono text-orange-400/80">
-                        Price will be: {formatPrice(calculateTotalPrice())}
-                      </p>
+                    {settings.price > 0 && calculateNights() > 0 && (
+                      <div className="text-xs font-mono text-orange-400/80 space-y-1">
+                        <p>
+                          {calculateNights()} night{calculateNights() !== 1 ? 's' : ''} × {formatPrice(settings.price)} per night
+                          {settings.pricingType === 'per_person' && ` × ${formData.total_members} member${formData.total_members !== 1 ? 's' : ''}`}
+                        </p>
+                        <p className="font-bold">Total: {formatPrice(calculateTotalPrice())}</p>
+                      </div>
                     )}
                   </div>
 
@@ -587,6 +618,11 @@ export default function AccommodationContent() {
                       required
                       className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/60 placeholder:text-white/25"
                     />
+                    {formData.check_in_date && formData.check_out_date && calculateNights() > 0 && (
+                      <p className="text-xs font-mono text-orange-400/80">
+                        {calculateNights()} night{calculateNights() !== 1 ? 's' : ''} stay
+                      </p>
+                    )}
                   </div>
 
                   {/* Check-out Date */}
@@ -604,6 +640,11 @@ export default function AccommodationContent() {
                       min={formData.check_in_date}
                       className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/60 placeholder:text-white/25"
                     />
+                    {formData.check_in_date && formData.check_out_date && calculateNights() === 0 && (
+                      <p className="text-xs font-mono text-red-400/80">
+                        Check-out must be after check-in
+                      </p>
+                    )}
                   </div>
                 </div>
 

@@ -210,6 +210,12 @@ export async function GET(request) {
       color: darkGray,
     });
 
+    // Calculate nights
+    const checkIn = new Date(query.check_in_date);
+    const checkOut = new Date(query.check_out_date);
+    const diffTime = Math.abs(checkOut - checkIn);
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
     yPosition -= 20;
     page.drawText(`Check-in: ${new Date(query.check_in_date).toLocaleDateString('en-IN')}`, {
       x: 50,
@@ -221,6 +227,15 @@ export async function GET(request) {
 
     yPosition -= 15;
     page.drawText(`Check-out: ${new Date(query.check_out_date).toLocaleDateString('en-IN')}`, {
+      x: 50,
+      y: yPosition,
+      size: 10,
+      font: helveticaFont,
+      color: darkGray,
+    });
+
+    yPosition -= 15;
+    page.drawText(`Duration: ${nights} night${nights !== 1 ? 's' : ''}`, {
       x: 50,
       y: yPosition,
       size: 10,
@@ -268,12 +283,32 @@ export async function GET(request) {
 
     // Table Row
     const rowY = tableY - 45;
-    page.drawText('Accommodation Fee', {
+    
+    // Get pricing type from settings to show breakdown
+    const [priceSettings] = await pool.query(
+      `SELECT setting_value FROM \`hw-settings\` WHERE setting_key = 'accommodation_pricing_type'`
+    );
+    const pricingType = priceSettings.length > 0 ? priceSettings[0].setting_value : 'per_team';
+    const [priceSetting] = await pool.query(
+      `SELECT setting_value FROM \`hw-settings\` WHERE setting_key = 'accommodation_price'`
+    );
+    const pricePerNight = priceSetting.length > 0 ? parseFloat(priceSetting[0].setting_value) : 0;
+    
+    // Build description with breakdown
+    let description = `Accommodation (${nights} night${nights !== 1 ? 's' : ''})`;
+    if (pricingType === 'per_person') {
+      description += ` - ${pricePerNight.toLocaleString('en-IN')} per night × ${nights} night${nights !== 1 ? 's' : ''} × ${query.total_members} member${query.total_members !== 1 ? 's' : ''}`;
+    } else {
+      description += ` - ${pricePerNight.toLocaleString('en-IN')} per night × ${nights} night${nights !== 1 ? 's' : ''}`;
+    }
+    
+    page.drawText(description, {
       x: 60,
       y: rowY,
-      size: 10,
+      size: 9,
       font: helveticaFont,
       color: darkGray,
+      maxWidth: width - 200,
     });
 
     // Use "Rs." instead of ₹ symbol to avoid encoding issues

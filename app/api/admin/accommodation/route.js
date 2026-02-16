@@ -23,6 +23,12 @@ export async function GET(request) {
         special_requirements,
         qr_code_data,
         status,
+        payment_status,
+        amount,
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+        invoice_url,
         created_at,
         updated_at
        FROM \`hw-accommodation-queries\`
@@ -87,6 +93,66 @@ export async function PATCH(request) {
     });
   } catch (error) {
     console.error('Error updating accommodation query:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE: Delete accommodation query (Admin only)
+export async function DELETE(request) {
+  try {
+    const token = request.cookies.get('admin_session')?.value;
+    if (!token || !(await verifySession(token))) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'id is required' },
+        { status: 400 }
+      );
+    }
+
+    // Check if query exists
+    const [queries] = await pool.query(
+      `SELECT id, team_name FROM \`hw-accommodation-queries\` WHERE id = ?`,
+      [id]
+    );
+
+    if (queries.length === 0) {
+      return NextResponse.json(
+        { error: 'Accommodation query not found' },
+        { status: 404 }
+      );
+    }
+
+    // Delete the query
+    await pool.query(
+      `DELETE FROM \`hw-accommodation-queries\` WHERE id = ?`,
+      [id]
+    );
+
+    // Log the deletion
+    pool.query(
+      'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
+      [
+        'WARNING',
+        'Accommodation Query Deleted',
+        JSON.stringify({ id, team_name: queries[0].team_name }),
+      ]
+    ).catch(console.error);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Accommodation query deleted successfully',
+    });
+  } catch (error) {
+    console.error('Error deleting accommodation query:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

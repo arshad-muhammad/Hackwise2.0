@@ -66,10 +66,24 @@ export async function POST(request) {
     const basePrice = settingsMap.accommodation_price ? parseFloat(settingsMap.accommodation_price) : 0;
     const pricingType = settingsMap.accommodation_pricing_type || 'per_team';
     
-    // Calculate final price based on pricing type
+    // Calculate number of nights
+    const checkIn = new Date(check_in_date);
+    const checkOut = new Date(check_out_date);
+    const diffTime = Math.abs(checkOut - checkIn);
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (nights <= 0) {
+      return NextResponse.json(
+        { error: 'Check-out date must be after check-in date' },
+        { status: 400 }
+      );
+    }
+    
+    // Calculate final price: (price per night × nights) × (per person: members OR per team: 1)
+    const priceForNights = basePrice * nights;
     const finalPrice = pricingType === 'per_person' 
-      ? basePrice * total_members 
-      : basePrice;
+      ? priceForNights * total_members 
+      : priceForNights;
 
     // Insert accommodation query (without payment info - will be added after payment)
     const [result] = await pool.query(
@@ -107,6 +121,7 @@ export async function POST(request) {
       basePrice,
       pricingType,
       totalMembers: total_members,
+      nights,
       message: 'Accommodation query submitted successfully',
     });
   } catch (error) {

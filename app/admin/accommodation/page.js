@@ -20,7 +20,8 @@ import {
   Filter,
   X,
   CreditCard,
-  Download
+  Download,
+  Trash2
 } from 'lucide-react';
 
 // Format price in Indian Rupees
@@ -395,44 +396,61 @@ export default function AccommodationAdminPage() {
             {filteredQueries.map((query) => (
               <div 
                 key={query.id}
-                onClick={() => setSelectedQuery(query)}
-                className={`p-3 md:p-4 border rounded cursor-pointer transition-all ${
+                className={`p-3 md:p-4 border rounded transition-all ${
                   selectedQuery?.id === query.id 
                     ? 'bg-orange-500/10 border-orange-500 shadow-lg shadow-orange-500/20' 
                     : 'bg-white/5 border-white/10 hover:border-white/30 hover:bg-white/10'
                 }`}
               >
-                <div className="flex justify-between items-start mb-2">
-                  <div className="flex flex-col gap-1">
-                    <span className={`text-[10px] px-2 py-0.5 rounded font-mono uppercase border ${getStatusColor(query.status)}`}>
-                      {query.status}
-                    </span>
-                    {query.payment_status && (
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase ${
-                        query.payment_status === 'SUCCESS' 
-                          ? 'bg-green-500/20 text-green-400'
-                          : query.payment_status === 'FAILED'
-                          ? 'bg-red-500/20 text-red-400'
-                          : 'bg-yellow-500/20 text-yellow-400'
-                      }`}>
-                        {query.payment_status}
+                <div 
+                  onClick={() => setSelectedQuery(query)}
+                  className="cursor-pointer"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex flex-col gap-1">
+                      <span className={`text-[10px] px-2 py-0.5 rounded font-mono uppercase border ${getStatusColor(query.status)}`}>
+                        {query.status}
                       </span>
+                      {query.payment_status && (
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase ${
+                          query.payment_status === 'SUCCESS' 
+                            ? 'bg-green-500/20 text-green-400'
+                            : query.payment_status === 'FAILED'
+                            ? 'bg-red-500/20 text-red-400'
+                            : 'bg-yellow-500/20 text-yellow-400'
+                        }`}>
+                          {query.payment_status}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-white/40 font-mono">
+                      {new Date(query.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-white mb-1 truncate text-sm md:text-base">{query.team_name}</h4>
+                  <p className="text-xs text-white/60 truncate">{query.team_lead_name}</p>
+                  <div className="flex items-center justify-between mt-2 text-xs text-white/40">
+                    <div className="flex items-center gap-2">
+                      <Users size={12} />
+                      <span className="font-mono">{query.total_members} member{query.total_members !== 1 ? 's' : ''}</span>
+                    </div>
+                    {query.amount && (
+                      <span className="font-mono text-orange-400">{formatPrice(query.amount)}</span>
                     )}
                   </div>
-                  <span className="text-[10px] text-white/40 font-mono">
-                    {new Date(query.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                  </span>
                 </div>
-                <h4 className="font-bold text-white mb-1 truncate text-sm md:text-base">{query.team_name}</h4>
-                <p className="text-xs text-white/60 truncate">{query.team_lead_name}</p>
-                <div className="flex items-center justify-between mt-2 text-xs text-white/40">
-                  <div className="flex items-center gap-2">
-                    <Users size={12} />
-                    <span className="font-mono">{query.total_members} member{query.total_members !== 1 ? 's' : ''}</span>
-                  </div>
-                  {query.amount && (
-                    <span className="font-mono text-orange-400">{formatPrice(query.amount)}</span>
-                  )}
+                <div className="mt-2 pt-2 border-t border-white/10">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(query.id, query.team_name);
+                    }}
+                    className="w-full px-2 py-1.5 rounded font-mono text-[10px] uppercase bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors flex items-center justify-center gap-1.5"
+                    title="Delete Entry"
+                  >
+                    <Trash2 size={12} />
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
@@ -505,6 +523,14 @@ export default function AccommodationAdminPage() {
                           Reset
                         </button>
                       )}
+                      <button
+                        onClick={() => handleDelete(selectedQuery.id, selectedQuery.team_name)}
+                        className="px-3 py-2 rounded font-mono text-xs uppercase bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors flex items-center gap-2"
+                        title="Delete Entry"
+                      >
+                        <Trash2 size={14} />
+                        Delete
+                      </button>
                     </div>
                   </div>
 
@@ -570,6 +596,22 @@ export default function AccommodationAdminPage() {
                             month: 'short', 
                             year: 'numeric' 
                           })}
+                        </p>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-2 text-white/60 mb-1">
+                          <Calendar size={16} />
+                          <span className="text-xs font-mono uppercase">Duration</span>
+                        </div>
+                        <p className="text-white font-mono text-sm md:text-base">
+                          {(() => {
+                            const checkIn = new Date(selectedQuery.check_in_date);
+                            const checkOut = new Date(selectedQuery.check_out_date);
+                            const diffTime = Math.abs(checkOut - checkIn);
+                            const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            return `${nights} night${nights !== 1 ? 's' : ''}`;
+                          })()}
                         </p>
                       </div>
                     </div>
