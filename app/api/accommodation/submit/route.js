@@ -52,8 +52,7 @@ export async function POST(request) {
       );
     }
 
-    // Generate QR code data with team name in payment note
-    // Format: upi://pay?pa=UPI_ID&pn=HackWise&tn=AccommodationFee_TeamName&am=PRICE
+    // Get pricing settings
     const [priceSettings] = await pool.query(
       `SELECT setting_key, setting_value FROM \`hw-settings\` 
        WHERE setting_key IN ('accommodation_price', 'accommodation_pricing_type')`
@@ -71,18 +70,13 @@ export async function POST(request) {
     const finalPrice = pricingType === 'per_person' 
       ? basePrice * total_members 
       : basePrice;
-    
-    // Get UPI ID from environment or use default
-    const upiId = process.env.ACCOMMODATION_UPI_ID || 'muhammadarshadra2-1@okaxis';
-    const paymentNote = `AccommodationFee_${team_name.replace(/\s+/g, '_')}`;
-    const qrCodeData = `upi://pay?pa=${upiId}&pn=HackWise&tn=${encodeURIComponent(paymentNote)}&am=${finalPrice}`;
 
-    // Insert accommodation query
+    // Insert accommodation query (without payment info - will be added after payment)
     const [result] = await pool.query(
       `INSERT INTO \`hw-accommodation-queries\` 
        (team_name, team_lead_name, team_lead_email, team_lead_phone, total_members, 
-        check_in_date, check_out_date, special_requirements, qr_code_data)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        check_in_date, check_out_date, special_requirements, amount, payment_status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')`,
       [
         team_name,
         team_lead_name,
@@ -92,7 +86,7 @@ export async function POST(request) {
         check_in_date,
         check_out_date,
         special_requirements || null,
-        qrCodeData,
+        finalPrice,
       ]
     );
 
@@ -102,14 +96,13 @@ export async function POST(request) {
       [
         'INFO',
         'Accommodation Query Submitted',
-        JSON.stringify({ team_name, team_lead_email }),
+        JSON.stringify({ team_name, team_lead_email, query_id: result.insertId }),
       ]
     ).catch(console.error);
 
     return NextResponse.json({
       success: true,
       id: result.insertId,
-      qr_code_data: qrCodeData,
       price: finalPrice,
       basePrice,
       pricingType,

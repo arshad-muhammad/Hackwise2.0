@@ -137,7 +137,7 @@ function VerifyPageContent() {
                     <input
                       type="text"
                       className="w-full bg-white/5 border border-white/10 px-4 py-3 text-base text-white font-mono uppercase tracking-[0.3em] focus:outline-none focus:border-orange-500/60 placeholder:text-white/25"
-                      placeholder="HW2-2026-XXXX"
+                      placeholder="XXXX"
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
                     />

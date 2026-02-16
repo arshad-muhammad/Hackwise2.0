@@ -18,7 +18,9 @@ import {
   DollarSign,
   TrendingUp,
   Filter,
-  X
+  X,
+  CreditCard,
+  Download
 } from 'lucide-react';
 
 // Format price in Indian Rupees
@@ -401,18 +403,36 @@ export default function AccommodationAdminPage() {
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <span className={`text-[10px] px-2 py-0.5 rounded font-mono uppercase border ${getStatusColor(query.status)}`}>
-                    {query.status}
-                  </span>
+                  <div className="flex flex-col gap-1">
+                    <span className={`text-[10px] px-2 py-0.5 rounded font-mono uppercase border ${getStatusColor(query.status)}`}>
+                      {query.status}
+                    </span>
+                    {query.payment_status && (
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase ${
+                        query.payment_status === 'SUCCESS' 
+                          ? 'bg-green-500/20 text-green-400'
+                          : query.payment_status === 'FAILED'
+                          ? 'bg-red-500/20 text-red-400'
+                          : 'bg-yellow-500/20 text-yellow-400'
+                      }`}>
+                        {query.payment_status}
+                      </span>
+                    )}
+                  </div>
                   <span className="text-[10px] text-white/40 font-mono">
                     {new Date(query.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                   </span>
                 </div>
                 <h4 className="font-bold text-white mb-1 truncate text-sm md:text-base">{query.team_name}</h4>
                 <p className="text-xs text-white/60 truncate">{query.team_lead_name}</p>
-                <div className="flex items-center gap-2 mt-2 text-xs text-white/40">
-                  <Users size={12} />
-                  <span className="font-mono">{query.total_members} member{query.total_members !== 1 ? 's' : ''}</span>
+                <div className="flex items-center justify-between mt-2 text-xs text-white/40">
+                  <div className="flex items-center gap-2">
+                    <Users size={12} />
+                    <span className="font-mono">{query.total_members} member{query.total_members !== 1 ? 's' : ''}</span>
+                  </div>
+                  {query.amount && (
+                    <span className="font-mono text-orange-400">{formatPrice(query.amount)}</span>
+                  )}
                 </div>
               </div>
             ))}
@@ -558,25 +578,56 @@ export default function AccommodationAdminPage() {
                     </div>
                   )}
 
-                  {/* QR Code */}
-                  {selectedQuery.qr_code_data && (
-                    <div>
-                      <div className="flex items-center gap-2 text-white/60 mb-4">
-                        <QrCode size={16} />
-                        <span className="text-xs font-mono uppercase">Payment QR Code</span>
-                      </div>
-                      <div className="bg-white p-3 md:p-4 inline-block rounded">
-                        <img 
-                          src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(selectedQuery.qr_code_data)}`}
-                          alt="Payment QR Code"
-                          className="w-40 h-40 md:w-48 md:h-48 object-contain"
-                        />
-                      </div>
-                      <p className="text-xs font-mono text-white/40 mt-2">
-                        Team name is included in payment note when scanned
-                      </p>
+                  {/* Payment Information */}
+                  <div>
+                    <div className="flex items-center gap-2 text-white/60 mb-4">
+                      <CreditCard size={16} />
+                      <span className="text-xs font-mono uppercase">Payment Information</span>
                     </div>
-                  )}
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-xs font-mono text-white/40 uppercase mb-1">Payment Status</p>
+                        <span className={`text-xs px-3 py-1 rounded font-mono uppercase border ${
+                          selectedQuery.payment_status === 'SUCCESS' 
+                            ? 'bg-green-500/20 text-green-400 border-green-500/40'
+                            : selectedQuery.payment_status === 'FAILED'
+                            ? 'bg-red-500/20 text-red-400 border-red-500/40'
+                            : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40'
+                        }`}>
+                          {selectedQuery.payment_status || 'PENDING'}
+                        </span>
+                      </div>
+                      {selectedQuery.amount && (
+                        <div>
+                          <p className="text-xs font-mono text-white/40 uppercase mb-1">Amount</p>
+                          <p className="text-white font-mono text-lg">{formatPrice(selectedQuery.amount)}</p>
+                        </div>
+                      )}
+                      {selectedQuery.razorpay_order_id && (
+                        <div>
+                          <p className="text-xs font-mono text-white/40 uppercase mb-1">Order ID</p>
+                          <p className="text-white font-mono text-xs break-all">{selectedQuery.razorpay_order_id}</p>
+                        </div>
+                      )}
+                      {selectedQuery.razorpay_payment_id && (
+                        <div>
+                          <p className="text-xs font-mono text-white/40 uppercase mb-1">Payment ID</p>
+                          <p className="text-white font-mono text-xs break-all">{selectedQuery.razorpay_payment_id}</p>
+                        </div>
+                      )}
+                      {selectedQuery.payment_status === 'SUCCESS' && (
+                        <div className="pt-2">
+                          <button
+                            onClick={() => window.open(`/api/accommodation/invoice?id=${selectedQuery.id}`, '_blank')}
+                            className="px-4 py-2 rounded font-mono text-xs uppercase bg-orange-500 hover:bg-orange-600 text-black font-bold transition-colors flex items-center gap-2"
+                          >
+                            <Download size={14} />
+                            Download Invoice
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
                   {/* Metadata */}
                   <div className="pt-4 border-t border-white/10 text-xs font-mono text-white/40 space-y-1">

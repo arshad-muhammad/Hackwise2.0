@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import DecryptedText from "../components/DecryptedText";
-import { QrCode, CheckCircle2, Calendar, Users, Mail, Phone, FileText, Loader2 } from "lucide-react";
+import { CheckCircle2, Calendar, Users, Mail, Phone, FileText, Loader2, CreditCard, Download, XCircle } from "lucide-react";
 
 const CARD_CLIP = 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)';
 const BTN_CLIP = 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)';
@@ -20,8 +20,11 @@ export default function AccommodationContent() {
   const [settings, setSettings] = useState({ enabled: false, price: 0, pricingType: 'per_team' });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [qrData, setQrData] = useState(null);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentFailed, setPaymentFailed] = useState(false);
+  const [queryId, setQueryId] = useState(null);
   const [error, setError] = useState('');
   
   const [formData, setFormData] = useState({
@@ -45,7 +48,22 @@ export default function AccommodationContent() {
 
   useEffect(() => {
     fetchSettings();
+    loadRazorpay();
   }, []);
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
 
   const fetchSettings = async () => {
     try {
@@ -65,6 +83,7 @@ export default function AccommodationContent() {
     setSubmitting(true);
 
     try {
+      // Submit accommodation query
       const res = await fetch('/api/accommodation/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -79,16 +98,132 @@ export default function AccommodationContent() {
         return;
       }
 
-      setQrData({
-        data: data.qr_code_data,
-        price: data.price,
-      });
+      setQueryId(data.id);
       setSubmitted(true);
+      setSubmitting(false);
+
+      // Create Razorpay order and open checkout
+      await initiatePayment(data.id, data.price);
     } catch (error) {
       console.error('Error submitting:', error);
       setError('Something went wrong. Please try again.');
-    } finally {
       setSubmitting(false);
+    }
+  };
+
+  const initiatePayment = async (id, amount) => {
+    setPaymentProcessing(true);
+    setError('');
+
+    try {
+      // Wait for Razorpay to load
+      await loadRazorpay();
+
+      if (!window.Razorpay) {
+        setError('Payment gateway failed to load. Please refresh the page.');
+        setPaymentProcessing(false);
+        return;
+      }
+
+      // Create order
+      const orderRes = await fetch('/api/accommodation/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ queryId: id, amount }),
+      });
+
+      const orderData = await orderRes.json();
+
+      if (!orderRes.ok) {
+        setError(orderData.error || 'Failed to create payment order');
+        setPaymentProcessing(false);
+        return;
+      }
+
+      // Open Razorpay checkout
+      const options = {
+        key: orderData.key,
+        amount: orderData.amount * 100, // Convert to paise
+        currency: orderData.currency,
+        name: 'Hackwise 2.0',
+        description: `Accommodation Fee - ${formData.team_name}`,
+        order_id: orderData.orderId,
+        handler: async function (response) {
+          // Payment successful
+          await handlePaymentSuccess(response);
+        },
+        prefill: {
+          name: formData.team_lead_name,
+          email: formData.team_lead_email,
+          contact: formData.team_lead_phone,
+        },
+        theme: {
+          color: '#FF7A1A',
+        },
+        modal: {
+          ondismiss: async function() {
+            // Payment cancelled/failed
+            await handlePaymentFailure(orderData.orderId);
+          },
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.on('payment.failed', async function (response) {
+        await handlePaymentFailure(orderData.orderId, response.error.description);
+      });
+
+      razorpay.open();
+      setPaymentProcessing(false);
+    } catch (error) {
+      console.error('Error initiating payment:', error);
+      setError('Failed to initiate payment. Please try again.');
+      setPaymentProcessing(false);
+    }
+  };
+
+  const handlePaymentSuccess = async (response) => {
+    try {
+      const res = await fetch('/api/accommodation/payment-callback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setPaymentSuccess(true);
+        setPaymentFailed(false);
+      } else {
+        setError(data.error || 'Payment verification failed');
+        setPaymentFailed(true);
+      }
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      setError('Payment verification failed. Please contact support.');
+      setPaymentFailed(true);
+    }
+  };
+
+  const handlePaymentFailure = async (orderId, errorDescription) => {
+    try {
+      await fetch('/api/accommodation/payment-failed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          razorpay_order_id: orderId,
+          error_description: errorDescription || 'Payment cancelled by user',
+        }),
+      });
+      setPaymentFailed(true);
+      setError(errorDescription || 'Payment was cancelled or failed. Please try again.');
+    } catch (error) {
+      console.error('Error recording payment failure:', error);
     }
   };
 
@@ -98,6 +233,12 @@ export default function AccommodationContent() {
       ...prev,
       [name]: name === 'total_members' ? parseInt(value) || 1 : value,
     }));
+  };
+
+  const downloadInvoice = () => {
+    if (queryId) {
+      window.open(`/api/accommodation/invoice?id=${queryId}`, '_blank');
+    }
   };
 
   if (loading) {
@@ -159,104 +300,137 @@ export default function AccommodationContent() {
     );
   }
 
-  // Show success with QR code
-  if (submitted && qrData) {
+  // Show payment success
+  if (paymentSuccess) {
     return (
       <section className="section-container border-t border-white/10 pb-24 pt-40 md:pt-48">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-4">
-              <CheckCircle2 className="text-green-400" size={32} />
+              <CheckCircle2 className="text-green-400" size={48} />
               <h1 className="text-3xl md:text-5xl font-hackwise text-white uppercase tracking-wider">
-                Query <span className="text-orange-500">Submitted</span>
+                Payment <span className="text-green-400">Successful</span>
               </h1>
             </div>
-            <p className="text-white/60 font-mono text-sm md:text-base">
-              Your accommodation request has been received. Please scan the QR code to complete payment.
+            <p className="text-white/60 font-mono text-sm md:text-base mb-6">
+              Your accommodation request has been confirmed and payment has been received.
             </p>
+            <button
+              onClick={downloadInvoice}
+              className="relative inline-flex items-center justify-center group cursor-pointer mt-4"
+            >
+              <div
+                className="absolute inset-0 bg-orange-500/80 group-hover:bg-orange-500 transition-colors duration-300"
+                style={{ clipPath: BTN_CLIP }}
+              />
+              <div
+                className="relative m-[1px] px-6 py-3 text-center transition-all duration-300"
+                style={{ clipPath: BTN_CLIP }}
+              >
+                <span className="relative text-white font-mono font-bold text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-2">
+                  <Download size={18} />
+                  Download Invoice
+                </span>
+              </div>
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* QR Code Card */}
-            <div className="relative group">
-              <div className="absolute inset-0 bg-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
-                <div
-                  className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
-                  style={{ clipPath: CARD_CLIP }}
-                />
-                <div
-                  className="relative bg-[#0A090F] p-8 flex flex-col items-center justify-center"
-                  style={{ clipPath: CARD_CLIP }}
-                >
-                  <div className="flex items-center gap-3 mb-6">
-                    <QrCode className="text-orange-400" size={24} />
-                    <h2 className="text-xl font-hackwise text-white uppercase">Payment QR</h2>
+          <div className="relative group">
+            <div className="absolute inset-0 bg-green-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
+              <div
+                className="absolute inset-0 bg-white/20 group-hover:bg-green-500/50 transition-colors duration-300"
+                style={{ clipPath: CARD_CLIP }}
+              />
+              <div
+                className="relative bg-[#0A090F] p-8 space-y-6"
+                style={{ clipPath: CARD_CLIP }}
+              >
+                <h2 className="text-xl font-hackwise text-white uppercase mb-6">Booking Details</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-xs font-mono text-white/40 uppercase mb-1">Team Name</p>
+                    <p className="text-white font-mono">{formData.team_name}</p>
                   </div>
-                  
-                  <div className="bg-white p-6 mb-6 relative group-hover:scale-105 transition-transform duration-300">
-                    <div className="absolute inset-0 bg-orange-500 blur-xl opacity-20" />
-                    <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData.data)}`}
-                      alt="Payment QR Code"
-                      className="w-64 h-64 object-contain relative z-10"
-                    />
+                  <div>
+                    <p className="text-xs font-mono text-white/40 uppercase mb-1">Team Lead</p>
+                    <p className="text-white font-mono">{formData.team_lead_name}</p>
                   </div>
-
-                  <div className="text-center space-y-2">
-                    <p className="text-xs font-mono text-white/40 uppercase tracking-wider">Amount</p>
-                    <p className="text-2xl font-bold text-orange-500 font-mono">{formatPrice(qrData.price)}</p>
+                  <div>
+                    <p className="text-xs font-mono text-white/40 uppercase mb-1">Contact</p>
+                    <p className="text-white font-mono text-sm">{formData.team_lead_email}</p>
+                    <p className="text-white font-mono text-sm">{formData.team_lead_phone}</p>
                   </div>
-
-                  <p className="text-[10px] text-white/40 font-mono mt-4 text-center">
-                    Scan with any UPI app (GPay, PhonePe, Paytm)
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Details Card */}
-            <div className="relative group">
-              <div className="absolute inset-0 bg-blue-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
-                <div
-                  className="absolute inset-0 bg-white/20 group-hover:bg-blue-500/50 transition-colors duration-300"
-                  style={{ clipPath: CARD_CLIP }}
-                />
-                <div
-                  className="relative bg-[#0A090F] p-8 space-y-6"
-                  style={{ clipPath: CARD_CLIP }}
-                >
-                  <h2 className="text-xl font-hackwise text-white uppercase mb-6">Request Details</h2>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs font-mono text-white/40 uppercase mb-1">Team Name</p>
-                      <p className="text-white font-mono">{formData.team_name}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-mono text-white/40 uppercase mb-1">Team Lead</p>
-                      <p className="text-white font-mono">{formData.team_lead_name}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-mono text-white/40 uppercase mb-1">Contact</p>
-                      <p className="text-white font-mono text-sm">{formData.team_lead_email}</p>
-                      <p className="text-white font-mono text-sm">{formData.team_lead_phone}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-mono text-white/40 uppercase mb-1">Members</p>
-                      <p className="text-white font-mono">{formData.total_members} person(s)</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-mono text-white/40 uppercase mb-1">Check-in / Check-out</p>
-                      <p className="text-white font-mono text-sm">
-                        {new Date(formData.check_in_date).toLocaleDateString()} - {new Date(formData.check_out_date).toLocaleDateString()}
-                      </p>
-                    </div>
+                  <div>
+                    <p className="text-xs font-mono text-white/40 uppercase mb-1">Members</p>
+                    <p className="text-white font-mono">{formData.total_members} person(s)</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-mono text-white/40 uppercase mb-1">Check-in</p>
+                    <p className="text-white font-mono text-sm">
+                      {new Date(formData.check_in_date).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-mono text-white/40 uppercase mb-1">Check-out</p>
+                    <p className="text-white font-mono text-sm">
+                      {new Date(formData.check_out_date).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show payment failed
+  if (paymentFailed && submitted) {
+    return (
+      <section className="section-container border-t border-white/10 pb-24 pt-40 md:pt-48">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 mb-4">
+              <XCircle className="text-red-400" size={48} />
+              <h1 className="text-3xl md:text-5xl font-hackwise text-white uppercase tracking-wider">
+                Payment <span className="text-red-400">Failed</span>
+              </h1>
+            </div>
+            {error && (
+              <p className="text-red-400 font-mono text-sm md:text-base mb-6">
+                {error}
+              </p>
+            )}
+            <p className="text-white/60 font-mono text-sm md:text-base mb-6">
+              Your accommodation request has been saved. You can try the payment again.
+            </p>
+            <button
+              onClick={() => {
+                setPaymentFailed(false);
+                setError('');
+                if (queryId) {
+                  initiatePayment(queryId, calculateTotalPrice());
+                }
+              }}
+              className="relative inline-flex items-center justify-center group cursor-pointer mt-4"
+            >
+              <div
+                className="absolute inset-0 bg-orange-500/80 group-hover:bg-orange-500 transition-colors duration-300"
+                style={{ clipPath: BTN_CLIP }}
+              />
+              <div
+                className="relative m-[1px] px-6 py-3 text-center transition-all duration-300"
+                style={{ clipPath: BTN_CLIP }}
+              >
+                <span className="relative text-white font-mono font-bold text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-2">
+                  <CreditCard size={18} />
+                  Retry Payment
+                </span>
+              </div>
+            </button>
           </div>
         </div>
       </section>
@@ -453,7 +627,7 @@ export default function AccommodationContent() {
                 <div className="pt-4">
                   <button
                     type="submit"
-                    disabled={submitting}
+                    disabled={submitting || paymentProcessing}
                     className="relative inline-flex items-center justify-center w-full group cursor-pointer"
                   >
                     <div
@@ -465,14 +639,14 @@ export default function AccommodationContent() {
                       style={{ clipPath: BTN_CLIP }}
                     >
                       <span className="relative text-white font-mono font-bold text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-2">
-                        {submitting ? (
+                        {(submitting || paymentProcessing) ? (
                           <>
                             <Loader2 className="animate-spin" size={18} />
-                            Submitting...
+                            {paymentProcessing ? 'Processing Payment...' : 'Submitting...'}
                           </>
                         ) : (
                           <DecryptedText
-                            text="Submit Request"
+                            text="Proceed to Payment"
                             sequential
                             speed={50}
                           />
