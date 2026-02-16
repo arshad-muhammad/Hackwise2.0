@@ -469,6 +469,16 @@ export default function AccommodationAdminPage() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
+                      {selectedQuery.payment_status === 'SUCCESS' && (
+                        <button
+                          onClick={() => window.open(`/api/accommodation/invoice?id=${selectedQuery.id}`, '_blank')}
+                          className="px-3 py-2 rounded font-mono text-xs uppercase bg-orange-500 hover:bg-orange-600 text-black font-bold transition-colors flex items-center gap-2"
+                          title="Download Invoice"
+                        >
+                          <Download size={14} />
+                          Invoice
+                        </button>
+                      )}
                       {selectedQuery.status !== 'CONFIRMED' && (
                         <button
                           onClick={() => handleStatusUpdate(selectedQuery.id, 'CONFIRMED')}
@@ -615,8 +625,8 @@ export default function AccommodationAdminPage() {
                           <p className="text-white font-mono text-xs break-all">{selectedQuery.razorpay_payment_id}</p>
                         </div>
                       )}
-                      {selectedQuery.payment_status === 'SUCCESS' && (
-                        <div className="pt-2">
+                      <div className="pt-2">
+                        {selectedQuery.payment_status === 'SUCCESS' ? (
                           <button
                             onClick={() => window.open(`/api/accommodation/invoice?id=${selectedQuery.id}`, '_blank')}
                             className="px-4 py-2 rounded font-mono text-xs uppercase bg-orange-500 hover:bg-orange-600 text-black font-bold transition-colors flex items-center gap-2"
@@ -624,8 +634,19 @@ export default function AccommodationAdminPage() {
                             <Download size={14} />
                             Download Invoice
                           </button>
-                        </div>
-                      )}
+                        ) : (
+                          <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded">
+                            <p className="text-xs font-mono text-yellow-400 mb-2">
+                              Invoice will be available after successful payment
+                            </p>
+                            {selectedQuery.payment_status === 'PENDING' && selectedQuery.razorpay_order_id && (
+                              <p className="text-xs font-mono text-white/60">
+                                Order ID: {selectedQuery.razorpay_order_id}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 

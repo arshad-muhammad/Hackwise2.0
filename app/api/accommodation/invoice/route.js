@@ -276,7 +276,8 @@ export async function GET(request) {
       color: darkGray,
     });
 
-    const amountText = `₹${parseFloat(query.amount || 0).toLocaleString('en-IN')}`;
+    // Use "Rs." instead of ₹ symbol to avoid encoding issues
+    const amountText = `Rs. ${parseFloat(query.amount || 0).toLocaleString('en-IN')}`;
     const amountWidth = helveticaFont.widthOfTextAtSize(amountText, 10);
     page.drawText(amountText, {
       x: width - 60 - amountWidth,
@@ -304,7 +305,8 @@ export async function GET(request) {
       color: darkGray,
     });
 
-    const totalAmountText = `₹${parseFloat(query.amount || 0).toLocaleString('en-IN')}`;
+    // Use "Rs." instead of ₹ symbol to avoid encoding issues
+    const totalAmountText = `Rs. ${parseFloat(query.amount || 0).toLocaleString('en-IN')}`;
     const totalAmountWidth = helveticaBold.widthOfTextAtSize(totalAmountText, 14);
     page.drawText(totalAmountText, {
       x: width - 60 - totalAmountWidth,
