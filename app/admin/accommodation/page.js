@@ -160,6 +160,32 @@ export default function AccommodationAdminPage() {
     }
   };
 
+  const handleDelete = async (id, teamName) => {
+    if (!confirm(`Are you sure you want to delete the accommodation entry for "${teamName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/accommodation?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        // Clear selected query if it was deleted
+        if (selectedQuery?.id === id) {
+          setSelectedQuery(null);
+        }
+        fetchData();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete accommodation entry');
+      }
+    } catch (error) {
+      console.error('Failed to delete accommodation entry', error);
+      alert('Failed to delete accommodation entry');
+    }
+  };
+
   const filteredQueries = queries.filter(query => {
     const matchesSearch = 
       query.team_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
