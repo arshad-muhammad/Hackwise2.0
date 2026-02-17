@@ -318,23 +318,27 @@ export default function AboutPage() {
 
                   {/* Members Grid - Different layouts per committee */}
                   <div
-                    className={`grid grid-cols-1 ${
+                    className={`grid grid-cols-2 ${
                       committeeIndex % 3 === 0 
-                        ? 'md:grid-cols-2 lg:grid-cols-3' 
+                        ? 'md:grid-cols-3 lg:grid-cols-4' 
                         : committeeIndex % 3 === 1
-                        ? 'md:grid-cols-2 lg:grid-cols-4'
-                        : 'md:grid-cols-1 lg:grid-cols-2'
-                    } gap-6 md:gap-8`}
+                        ? 'md:grid-cols-4 lg:grid-cols-5'
+                        : 'md:grid-cols-2 lg:grid-cols-3'
+                    } gap-4 sm:gap-6 md:gap-8`}
                   >
                     {committee.members.map((member, memberIndex) => {
                       // Alternate card styles within each committee
                       const memberStyleIndex = (styleIndex + memberIndex) % cardStyles.length;
                       const isMemberEven = memberIndex % 2 === 0;
+                      const spanClass =
+                        memberIndex === 0 && committee.members.length > 2
+                          ? 'col-span-2 md:col-span-1'
+                          : '';
                       
                       return (
                         <div
                           key={member.id}
-                          className={`member-card flex flex-col items-center group ${
+                          className={`member-card flex flex-col items-center group ${spanClass} ${
                             committeeIndex % 3 === 2 ? 'lg:flex-row lg:items-start lg:text-left' : ''
                           }`}
                         >
@@ -425,7 +429,7 @@ export default function AboutPage() {
                   </h2>
                   <div className="w-2 h-2 bg-orange-500 animate-pulse" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
                   {unassignedMembers.map((member, index) => (
                     <div
                       key={member.id}
