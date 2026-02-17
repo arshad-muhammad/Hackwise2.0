@@ -18,7 +18,33 @@ export async function GET(request, { params }) {
     }
 
     const [members] = await pool.query(
-      `SELECT id, name, role, bio, email, linkedin_url, github_url, twitter_url, portfolio_url, image_url
+      `SELECT 
+         id,
+         name,
+         role,
+         headline,
+         location,
+         short_bio,
+         bio,
+         interests,
+         career_objective,
+         skills,
+         tech_skills,
+         soft_skills,
+         tools,
+         achievements,
+         experience,
+         projects,
+         projects_detail,
+         certifications,
+         education,
+         email,
+         linkedin_url,
+         github_url,
+         twitter_url,
+         portfolio_url,
+         resume_url,
+         image_url
        FROM \`hw-committee-members\` 
        WHERE id = ? AND is_active = TRUE`,
       [memberId]

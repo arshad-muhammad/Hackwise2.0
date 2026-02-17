@@ -23,13 +23,30 @@ export default function CommitteeMembersPage() {
   const [form, setForm] = useState({
     name: '',
     role: '',
+    headline: '',
+    location: '',
+    short_bio: '',
     bio: '',
+    interests: '',
+    career_objective: '',
+    skills: '',
+    tech_skills: '',
+    soft_skills: '',
+    tools: '',
+    achievements: '',
+    experience: '',
+    projects: '',
+    projects_detail: '',
+    certifications: '',
+    education: '',
     email: '',
     linkedin_url: '',
     github_url: '',
     twitter_url: '',
     portfolio_url: '',
+    resume_url: '',
     image_url: '',
+    edit_password: '',
     committee_id: '',
     display_order: 0,
     is_active: true,
@@ -67,13 +84,30 @@ export default function CommitteeMembersPage() {
     setForm({
       name: '',
       role: '',
+      headline: '',
+      location: '',
+      short_bio: '',
       bio: '',
+      interests: '',
+      career_objective: '',
+      skills: '',
+      tech_skills: '',
+      soft_skills: '',
+      tools: '',
+      achievements: '',
+      experience: '',
+      projects: '',
+      projects_detail: '',
+      certifications: '',
+      education: '',
       email: '',
       linkedin_url: '',
       github_url: '',
       twitter_url: '',
       portfolio_url: '',
+      resume_url: '',
       image_url: '',
+      edit_password: '',
       committee_id: '',
       display_order: 0,
       is_active: true,
@@ -218,13 +252,30 @@ export default function CommitteeMembersPage() {
     setForm({
       name: member.name || '',
       role: member.role || '',
+      headline: member.headline || '',
+      location: member.location || '',
+      short_bio: member.short_bio || '',
       bio: member.bio || '',
+      interests: member.interests || '',
+      career_objective: member.career_objective || '',
+      skills: member.skills || '',
+      tech_skills: member.tech_skills || '',
+      soft_skills: member.soft_skills || '',
+      tools: member.tools || '',
+      achievements: member.achievements || '',
+      experience: member.experience || '',
+      projects: member.projects || '',
+      projects_detail: member.projects_detail || '',
+      certifications: member.certifications || '',
+      education: member.education || '',
       email: member.email || '',
       linkedin_url: member.linkedin_url || '',
       github_url: member.github_url || '',
       twitter_url: member.twitter_url || '',
       portfolio_url: member.portfolio_url || '',
+      resume_url: member.resume_url || '',
       image_url: member.image_url || '',
+      edit_password: member.edit_password || '',
       committee_id: member.committee_id || '',
       display_order: member.display_order || 0,
       is_active: member.is_active !== undefined ? member.is_active : true,
@@ -458,11 +509,181 @@ export default function CommitteeMembersPage() {
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Headline (e.g. \"Full Stack Developer\")
+                </label>
+                <input
+                  type="text"
+                  value={form.headline}
+                  onChange={(e) => setForm({ ...form, headline: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  value={form.location}
+                  onChange={(e) => setForm({ ...form, location: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Short Bio (2–4 lines for hero section)
+                </label>
+                <textarea
+                  value={form.short_bio}
+                  onChange={(e) => setForm({ ...form, short_bio: e.target.value })}
+                  rows={2}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
                   Bio
                 </label>
                 <textarea
                   value={form.bio}
                   onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                  rows={3}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Interests
+                </label>
+                <textarea
+                  value={form.interests}
+                  onChange={(e) => setForm({ ...form, interests: e.target.value })}
+                  rows={2}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Career Objective
+                </label>
+                <textarea
+                  value={form.career_objective}
+                  onChange={(e) => setForm({ ...form, career_objective: e.target.value })}
+                  rows={2}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Skills (comma separated)
+                </label>
+                <input
+                  type="text"
+                  value={form.skills}
+                  onChange={(e) => setForm({ ...form, skills: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                    Technical Skills (name:level, comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={form.tech_skills}
+                    onChange={(e) => setForm({ ...form, tech_skills: e.target.value })}
+                    placeholder="React:Advanced, Next.js:Intermediate"
+                    className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                    Soft Skills (comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={form.soft_skills}
+                    onChange={(e) => setForm({ ...form, soft_skills: e.target.value })}
+                    placeholder="Leadership, Communication"
+                    className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                    Tools & Technologies
+                  </label>
+                  <input
+                    type="text"
+                    value={form.tools}
+                    onChange={(e) => setForm({ ...form, tools: e.target.value })}
+                    placeholder="Git, Docker, Figma"
+                    className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                  />
+                </div>
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Achievements / Highlights
+                </label>
+                <textarea
+                  value={form.achievements}
+                  onChange={(e) => setForm({ ...form, achievements: e.target.value })}
+                  rows={3}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Experience
+                </label>
+                <textarea
+                  value={form.experience}
+                  onChange={(e) => setForm({ ...form, experience: e.target.value })}
+                  rows={3}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Projects (simple list)
+                </label>
+                <textarea
+                  value={form.projects}
+                  onChange={(e) => setForm({ ...form, projects: e.target.value })}
+                  rows={3}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Detailed Projects
+                </label>
+                <textarea
+                  value={form.projects_detail}
+                  onChange={(e) => setForm({ ...form, projects_detail: e.target.value })}
+                  rows={4}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Certifications
+                </label>
+                <textarea
+                  value={form.certifications}
+                  onChange={(e) => setForm({ ...form, certifications: e.target.value })}
+                  rows={3}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Education (one per line: Institution | Degree | Duration | Score)
+                </label>
+                <textarea
+                  value={form.education}
+                  onChange={(e) => setForm({ ...form, education: e.target.value })}
                   rows={3}
                   className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
                 />
@@ -550,6 +771,17 @@ export default function CommitteeMembersPage() {
                   className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-mono focus:outline-none focus:border-orange-500/60"
                 />
               </div>
+              <div>
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Resume URL
+                </label>
+                <input
+                  type="url"
+                  value={form.resume_url}
+                  onChange={(e) => setForm({ ...form, resume_url: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-mono focus:outline-none focus:border-orange-500/60"
+                />
+              </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-mono text-white/60 uppercase mb-2">
                   Image URL
@@ -601,6 +833,18 @@ export default function CommitteeMembersPage() {
                     Invalid image URL. Please upload a new image.
                   </div>
                 )}
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Member Edit Password (for /member/id/edit)
+                </label>
+                <input
+                  type="password"
+                  value={form.edit_password}
+                  onChange={(e) => setForm({ ...form, edit_password: e.target.value })}
+                  placeholder="@ArshadIsBest (default if empty)"
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-mono focus:outline-none focus:border-orange-500/60"
+                />
               </div>
               <div className="md:col-span-2">
                 <label className="flex items-center gap-2">
