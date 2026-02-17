@@ -14,21 +14,32 @@ export async function GET(request) {
     const [settings] = await pool.query(
       `SELECT setting_key, setting_value 
        FROM \`hw-settings\` 
-       WHERE setting_key = 'ca_leaderboard_visible'`
+       WHERE setting_key IN ('ca_leaderboard_visible', 'ca_registration_closed')`
     );
 
-    const leaderboardVisible = settings.length > 0 
-      ? settings[0].setting_value === '1' || settings[0].setting_value === 'true'
+    const settingsMap = {};
+    settings.forEach(setting => {
+      settingsMap[setting.setting_key] = setting.setting_value;
+    });
+
+    const leaderboardVisible = settingsMap['ca_leaderboard_visible']
+      ? settingsMap['ca_leaderboard_visible'] === '1' || settingsMap['ca_leaderboard_visible'] === 'true'
       : true; // Default to visible
+
+    const registrationClosed = settingsMap['ca_registration_closed']
+      ? settingsMap['ca_registration_closed'] === '1' || settingsMap['ca_registration_closed'] === 'true'
+      : false; // Default to open
 
     return NextResponse.json({
       ca_leaderboard_visible: leaderboardVisible,
+      ca_registration_closed: registrationClosed,
     });
   } catch (error) {
     console.error('Error fetching CA settings:', error);
     // If table doesn't exist, return default
     return NextResponse.json({
       ca_leaderboard_visible: true,
+      ca_registration_closed: false,
     });
   }
 }
@@ -42,29 +53,35 @@ export async function PUT(request) {
     }
 
     const body = await request.json();
-    const { ca_leaderboard_visible } = body;
+    const { ca_leaderboard_visible, ca_registration_closed } = body;
 
-    if (typeof ca_leaderboard_visible !== 'boolean') {
-      return NextResponse.json(
-        { error: 'ca_leaderboard_visible must be a boolean' },
-        { status: 400 }
+    // Update leaderboard visibility if provided
+    if (typeof ca_leaderboard_visible === 'boolean') {
+      await pool.query(
+        `INSERT INTO \`hw-settings\` (setting_key, setting_value)
+         VALUES (?, ?)
+         ON DUPLICATE KEY UPDATE setting_value = ?`,
+        [
+          'ca_leaderboard_visible',
+          ca_leaderboard_visible ? '1' : '0',
+          ca_leaderboard_visible ? '1' : '0',
+        ]
       );
     }
 
-    // Settings table already exists (created in db-setup.js)
-    // Structure: setting_key (VARCHAR(50) PRIMARY KEY), setting_value (TEXT), updated_at (TIMESTAMP)
-
-    // Insert or update setting
-    await pool.query(
-      `INSERT INTO \`hw-settings\` (setting_key, setting_value)
-       VALUES (?, ?)
-       ON DUPLICATE KEY UPDATE setting_value = ?`,
-      [
-        'ca_leaderboard_visible',
-        ca_leaderboard_visible ? '1' : '0',
-        ca_leaderboard_visible ? '1' : '0',
-      ]
-    );
+    // Update registration status if provided
+    if (typeof ca_registration_closed === 'boolean') {
+      await pool.query(
+        `INSERT INTO \`hw-settings\` (setting_key, setting_value)
+         VALUES (?, ?)
+         ON DUPLICATE KEY UPDATE setting_value = ?`,
+        [
+          'ca_registration_closed',
+          ca_registration_closed ? '1' : '0',
+          ca_registration_closed ? '1' : '0',
+        ]
+      );
+    }
 
     // Log the change
     pool.query(
@@ -72,13 +89,34 @@ export async function PUT(request) {
       [
         'INFO',
         'CA Settings Updated',
-        JSON.stringify({ ca_leaderboard_visible }),
+        JSON.stringify({ ca_leaderboard_visible, ca_registration_closed }),
       ]
     ).catch(console.error);
 
+    // Fetch updated settings to return
+    const [updatedSettings] = await pool.query(
+      `SELECT setting_key, setting_value 
+       FROM \`hw-settings\` 
+       WHERE setting_key IN ('ca_leaderboard_visible', 'ca_registration_closed')`
+    );
+
+    const settingsMap = {};
+    updatedSettings.forEach(setting => {
+      settingsMap[setting.setting_key] = setting.setting_value;
+    });
+
+    const leaderboardVisible = settingsMap['ca_leaderboard_visible']
+      ? settingsMap['ca_leaderboard_visible'] === '1' || settingsMap['ca_leaderboard_visible'] === 'true'
+      : true;
+
+    const registrationClosed = settingsMap['ca_registration_closed']
+      ? settingsMap['ca_registration_closed'] === '1' || settingsMap['ca_registration_closed'] === 'true'
+      : false;
+
     return NextResponse.json({
       success: true,
-      ca_leaderboard_visible,
+      ca_leaderboard_visible: leaderboardVisible,
+      ca_registration_closed: registrationClosed,
       message: 'Settings updated successfully',
     });
   } catch (error) {

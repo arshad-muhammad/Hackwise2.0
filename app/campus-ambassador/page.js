@@ -27,6 +27,8 @@ export default function CampusAmbassadorPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [confetti, setConfetti] = useState([]);
+  const [registrationClosed, setRegistrationClosed] = useState(false);
+  const [loadingSettings, setLoadingSettings] = useState(true);
 
   const handleChange = (e) => {
     setFormData({
@@ -156,6 +158,23 @@ export default function CampusAmbassadorPage() {
       setConfetti([]);
     }, 2500);
   };
+
+  useEffect(() => {
+    const fetchRegistrationStatus = async () => {
+      try {
+        const res = await fetch('/api/ca/registration-status');
+        if (res.ok) {
+          const data = await res.json();
+          setRegistrationClosed(data.registration_closed || false);
+        }
+      } catch (error) {
+        console.error('Failed to fetch registration status:', error);
+      } finally {
+        setLoadingSettings(false);
+      }
+    };
+    fetchRegistrationStatus();
+  }, []);
 
   const cardClipPath =
     "polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)";
@@ -591,158 +610,193 @@ export default function CampusAmbassadorPage() {
                 </motion.div>
               </motion.div>
 
-              {/* Reg Closed Button */}
-              <motion.div
-                variants={itemVariants}
-                className="flex justify-center relative"
-              >
-                {/* Confetti Particles */}
-                <AnimatePresence>
-                  {confetti.map((particle) => (
-                    <motion.div
-                      key={particle.id}
-                      className="absolute pointer-events-none z-50"
-                      style={{
-                        left: '50%',
-                        top: '50%',
-                        width: particle.size,
-                        height: particle.size,
-                        backgroundColor: particle.color,
-                        borderRadius: Math.random() > 0.5 ? '50%' : '0%',
-                        boxShadow: `0 0 ${particle.size}px ${particle.color}`,
-                      }}
-                      initial={{
-                        x: 0,
-                        y: 0,
-                        opacity: 1,
-                        scale: 0,
-                        rotate: particle.rotation,
-                      }}
-                      animate={{
-                        x: particle.vx,
-                        y: [particle.vy, particle.vy + particle.gravity],
-                        opacity: [1, 1, 1, 0],
-                        scale: [0, 1.2, 1, 0.8],
-                        rotate: particle.rotation + particle.rotationSpeed * 15,
-                      }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      transition={{
-                        duration: 2.5,
-                        ease: [0.25, 0.46, 0.45, 0.94],
-                        times: [0, 0.2, 0.8, 1],
-                      }}
-                    />
-                  ))}
-                </AnimatePresence>
-
+              {/* CTA Button - Conditional based on registration status */}
+              {loadingSettings ? (
                 <motion.div
-                  className="relative w-full max-w-md block group cursor-pointer"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.6,
-                    ease: "easeOut"
-                  }}
-                  onClick={triggerConfetti}
+                  variants={itemVariants}
+                  className="flex justify-center"
                 >
-                  {/* Glowing Orange Outline Effect */}
-                  <motion.div
-                    className="absolute inset-0"
-                    style={{ clipPath: btnClipPath }}
-                    animate={{
-                      boxShadow: [
-                        "0 0 20px rgba(249, 115, 22, 0.4)",
-                        "0 0 30px rgba(249, 115, 22, 0.6)",
-                        "0 0 20px rgba(249, 115, 22, 0.4)",
-                      ],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 opacity-80" />
-                  </motion.div>
-
-                  <motion.div
-                    className="relative"
-                    initial={{ scale: 0.95 }}
-                    animate={{ scale: 1 }}
-                    transition={{ 
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 20,
-                      delay: 0.2
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {/* Orange Glowing Border */}
-                    <div
-                      className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500"
-                      style={{ clipPath: btnClipPath }}
-                    />
-                    
-                    {/* Dark Grey Background */}
-                    <div
-                      className="relative bg-gray-800 m-[2px] py-5 px-6 text-center overflow-visible"
-                      style={{ clipPath: btnClipPath }}
-                    >
-                      {/* Subtle Shimmer */}
+                  <div className="text-white/60 font-mono">Loading...</div>
+                </motion.div>
+              ) : registrationClosed ? (
+                <motion.div
+                  variants={itemVariants}
+                  className="flex justify-center relative"
+                >
+                  {/* Confetti Particles */}
+                  <AnimatePresence>
+                    {confetti.map((particle) => (
                       <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-                        animate={{
-                          x: ["-100%", "200%"],
+                        key={particle.id}
+                        className="absolute pointer-events-none z-50"
+                        style={{
+                          left: '50%',
+                          top: '50%',
+                          width: particle.size,
+                          height: particle.size,
+                          backgroundColor: particle.color,
+                          borderRadius: Math.random() > 0.5 ? '50%' : '0%',
+                          boxShadow: `0 0 ${particle.size}px ${particle.color}`,
                         }}
+                        initial={{
+                          x: 0,
+                          y: 0,
+                          opacity: 1,
+                          scale: 0,
+                          rotate: particle.rotation,
+                        }}
+                        animate={{
+                          x: particle.vx,
+                          y: [particle.vy, particle.vy + particle.gravity],
+                          opacity: [1, 1, 1, 0],
+                          scale: [0, 1.2, 1, 0.8],
+                          rotate: particle.rotation + particle.rotationSpeed * 15,
+                        }}
+                        exit={{ opacity: 0, scale: 0 }}
                         transition={{
-                          duration: 3,
-                          repeat: Infinity,
-                          repeatDelay: 2,
-                          ease: "easeInOut",
+                          duration: 2.5,
+                          ease: [0.25, 0.46, 0.45, 0.94],
+                          times: [0, 0.2, 0.8, 1],
                         }}
                       />
+                    ))}
+                  </AnimatePresence>
+
+                  <motion.div
+                    className="relative w-full max-w-md block group cursor-pointer"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      duration: 0.6,
+                      ease: "easeOut"
+                    }}
+                    onClick={triggerConfetti}
+                  >
+                    {/* Glowing Orange Outline Effect */}
+                    <motion.div
+                      className="absolute inset-0"
+                      style={{ clipPath: btnClipPath }}
+                      animate={{
+                        boxShadow: [
+                          "0 0 20px rgba(249, 115, 22, 0.4)",
+                          "0 0 30px rgba(249, 115, 22, 0.6)",
+                          "0 0 20px rgba(249, 115, 22, 0.4)",
+                        ],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 opacity-80" />
+                    </motion.div>
+
+                    <motion.div
+                      className="relative"
+                      initial={{ scale: 0.95 }}
+                      animate={{ scale: 1 }}
+                      transition={{ 
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 20,
+                        delay: 0.2
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {/* Orange Glowing Border */}
+                      <div
+                        className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500"
+                        style={{ clipPath: btnClipPath }}
+                      />
                       
-                      <motion.span 
-                        className="relative text-white font-sans font-bold text-base sm:text-lg md:text-xl uppercase tracking-wider flex items-center justify-center gap-3 z-10"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
+                      {/* Dark Grey Background */}
+                      <div
+                        className="relative bg-gray-800 m-[2px] py-5 px-6 text-center overflow-visible"
+                        style={{ clipPath: btnClipPath }}
                       >
-                        <motion.i 
-                          className="ri-checkbox-circle-fill text-orange-400 text-2xl sm:text-3xl"
-                          initial={{ scale: 0, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ 
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 15,
-                            delay: 0.4
+                        {/* Subtle Shimmer */}
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+                          animate={{
+                            x: ["-100%", "200%"],
+                          }}
+                          transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            repeatDelay: 2,
+                            ease: "easeInOut",
                           }}
                         />
-                        <motion.span
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.5, duration: 0.4 }}
+                        
+                        <motion.span 
+                          className="relative text-white font-sans font-bold text-base sm:text-lg md:text-xl uppercase tracking-wider flex items-center justify-center gap-3 z-10"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.3, duration: 0.5 }}
                         >
-                          Registration Closed
+                          <motion.i 
+                            className="ri-checkbox-circle-fill text-orange-400 text-2xl sm:text-3xl"
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ 
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 15,
+                              delay: 0.4
+                            }}
+                          />
+                          <motion.span
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.5, duration: 0.4 }}
+                          >
+                            Registration Closed
+                          </motion.span>
+                          <motion.i 
+                            className="ri-checkbox-circle-fill text-orange-400 text-2xl sm:text-3xl"
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ 
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 15,
+                              delay: 0.4
+                            }}
+                          />
                         </motion.span>
-                        <motion.i 
-                          className="ri-checkbox-circle-fill text-orange-400 text-2xl sm:text-3xl"
-                          initial={{ scale: 0, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ 
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 15,
-                            delay: 0.4
-                          }}
-                        />
-                      </motion.span>
-                    
-                    </div>
+                      </div>
+                    </motion.div>
                   </motion.div>
                 </motion.div>
-              </motion.div>
+              ) : (
+                <motion.div
+                  variants={itemVariants}
+                  className="flex justify-center"
+                >
+                  <motion.button
+                    onClick={() => setShowForm(true)}
+                    className="relative w-full max-w-md block group cursor-pointer"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div
+                      className="absolute inset-0 bg-orange-500/50 group-hover:bg-orange-500 transition-colors duration-300"
+                      style={{ clipPath: btnClipPath }}
+                    />
+                    <div
+                      className="relative bg-[#0A090F] m-px py-4 text-center transition-all duration-300"
+                      style={{ clipPath: btnClipPath }}
+                    >
+                      <div className="absolute inset-0 bg-white/5 group-hover:bg-orange-500/10 transition-colors duration-300" />
+                      <span className="relative text-white font-sans font-bold text-sm sm:text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-2">
+                        Apply Now
+                        <i className="ri-arrow-right-line text-lg sm:text-xl" />
+                      </span>
+                    </div>
+                  </motion.button>
+                </motion.div>
+              )}
             </motion.div>
           ) : (
             /* Application Form */
