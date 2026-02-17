@@ -8,9 +8,18 @@ const BTN_CLIP = 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10
 
 export default function CommitteeMembersPage() {
   const [members, setMembers] = useState([]);
+  const [committees, setCommittees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [isAddingCommittee, setIsAddingCommittee] = useState(false);
+  const [editingCommitteeId, setEditingCommitteeId] = useState(null);
+  const [committeeForm, setCommitteeForm] = useState({
+    name: '',
+    description: '',
+    display_order: 0,
+    is_active: true,
+  });
   const [form, setForm] = useState({
     name: '',
     role: '',
@@ -21,12 +30,14 @@ export default function CommitteeMembersPage() {
     twitter_url: '',
     portfolio_url: '',
     image_url: '',
+    committee_id: '',
     display_order: 0,
     is_active: true,
   });
 
   useEffect(() => {
     fetchMembers();
+    fetchCommittees();
   }, []);
 
   const fetchMembers = async () => {
@@ -42,6 +53,16 @@ export default function CommitteeMembersPage() {
     }
   };
 
+  const fetchCommittees = async () => {
+    try {
+      const res = await fetch('/api/admin/committees');
+      const data = await res.json();
+      setCommittees(data.committees || []);
+    } catch (error) {
+      console.error('Error fetching committees:', error);
+    }
+  };
+
   const resetForm = () => {
     setForm({
       name: '',
@@ -53,11 +74,78 @@ export default function CommitteeMembersPage() {
       twitter_url: '',
       portfolio_url: '',
       image_url: '',
+      committee_id: '',
       display_order: 0,
       is_active: true,
     });
     setIsAdding(false);
     setEditingId(null);
+  };
+
+  const resetCommitteeForm = () => {
+    setCommitteeForm({
+      name: '',
+      description: '',
+      display_order: 0,
+      is_active: true,
+    });
+    setIsAddingCommittee(false);
+    setEditingCommitteeId(null);
+  };
+
+  const handleCommitteeSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const url = '/api/admin/committees';
+      const method = editingCommitteeId ? 'PUT' : 'POST';
+      const body = editingCommitteeId ? { ...committeeForm, id: editingCommitteeId } : committeeForm;
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to save committee');
+      }
+
+      resetCommitteeForm();
+      fetchCommittees();
+    } catch (error) {
+      console.error('Save committee error:', error);
+      alert(error.message || 'Failed to save committee');
+    }
+  };
+
+  const handleEditCommittee = (committee) => {
+    setCommitteeForm({
+      name: committee.name || '',
+      description: committee.description || '',
+      display_order: committee.display_order || 0,
+      is_active: committee.is_active !== undefined ? committee.is_active : true,
+    });
+    setEditingCommitteeId(committee.id);
+    setIsAddingCommittee(true);
+  };
+
+  const handleDeleteCommittee = async (id) => {
+    if (!confirm('Are you sure you want to delete this committee? Members will be unassigned.')) return;
+
+    try {
+      const res = await fetch(`/api/admin/committees?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) throw new Error('Failed to delete committee');
+
+      fetchCommittees();
+      fetchMembers();
+    } catch (error) {
+      console.error('Delete committee error:', error);
+      alert('Failed to delete committee');
+    }
   };
 
   const handleImageUpload = async (file) => {
@@ -119,6 +207,7 @@ export default function CommitteeMembersPage() {
 
       resetForm();
       fetchMembers();
+      fetchCommittees();
     } catch (error) {
       console.error('Save error:', error);
       alert(error.message || 'Failed to save member');
@@ -136,6 +225,7 @@ export default function CommitteeMembersPage() {
       twitter_url: member.twitter_url || '',
       portfolio_url: member.portfolio_url || '',
       image_url: member.image_url || '',
+      committee_id: member.committee_id || '',
       display_order: member.display_order || 0,
       is_active: member.is_active !== undefined ? member.is_active : true,
     });
@@ -166,7 +256,167 @@ export default function CommitteeMembersPage() {
         <h1 className="text-3xl font-hackwise text-white uppercase tracking-wider mb-2">
           Committee <span className="text-orange-500">Members</span>
         </h1>
-        <p className="text-white/60 font-mono text-sm">Manage organizing committee members</p>
+        <p className="text-white/60 font-mono text-sm">Manage organizing committee members and committees</p>
+      </div>
+
+      {/* Committees Management Section */}
+      <div className="mb-12 bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-hackwise text-white uppercase tracking-wider">
+            Committees
+          </h2>
+          {!isAddingCommittee && (
+            <button
+              onClick={() => setIsAddingCommittee(true)}
+              className="relative inline-flex items-center justify-center group cursor-pointer"
+            >
+              <div
+                className="absolute inset-0 bg-orange-500/80 group-hover:bg-orange-500 transition-colors duration-300"
+                style={{ clipPath: BTN_CLIP }}
+              />
+              <div
+                className="relative m-[1px] px-4 py-2 text-center transition-all duration-300"
+                style={{ clipPath: BTN_CLIP }}
+              >
+                <span className="relative text-white font-mono font-bold text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+                  <Plus size={14} />
+                  Add Committee
+                </span>
+              </div>
+            </button>
+          )}
+        </div>
+
+        {isAddingCommittee && (
+          <div className="mb-6 bg-white/5 border border-white/10 p-4 relative">
+            <div className="absolute top-0 right-0 p-2">
+              <button
+                onClick={resetCommitteeForm}
+                className="text-white/60 hover:text-white transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <form onSubmit={handleCommitteeSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                    Committee Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={committeeForm.name}
+                    onChange={(e) => setCommitteeForm({ ...committeeForm, name: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-mono focus:outline-none focus:border-orange-500/60"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                    Display Order
+                  </label>
+                  <input
+                    type="number"
+                    value={committeeForm.display_order}
+                    onChange={(e) => setCommitteeForm({ ...committeeForm, display_order: parseInt(e.target.value) || 0 })}
+                    className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-mono focus:outline-none focus:border-orange-500/60"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    value={committeeForm.description}
+                    onChange={(e) => setCommitteeForm({ ...committeeForm, description: e.target.value })}
+                    rows={2}
+                    className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-sans focus:outline-none focus:border-orange-500/60"
+                  />
+                </div>
+                <div>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={committeeForm.is_active}
+                      onChange={(e) => setCommitteeForm({ ...committeeForm, is_active: e.target.checked })}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-xs font-mono text-white/60 uppercase">Active</span>
+                  </label>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <button
+                  type="submit"
+                  className="relative inline-flex items-center justify-center group cursor-pointer"
+                >
+                  <div
+                    className="absolute inset-0 bg-orange-500/80 group-hover:bg-orange-500 transition-colors duration-300"
+                    style={{ clipPath: BTN_CLIP }}
+                  />
+                  <div
+                    className="relative m-[1px] px-4 py-2 text-center transition-all duration-300"
+                    style={{ clipPath: BTN_CLIP }}
+                  >
+                    <span className="relative text-white font-mono font-bold text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+                      <Save size={14} />
+                      {editingCommitteeId ? 'Update' : 'Create'} Committee
+                    </span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={resetCommitteeForm}
+                  className="px-4 py-2 bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition-colors font-mono text-xs uppercase"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {committees.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {committees.map((committee) => (
+              <div
+                key={committee.id}
+                className="bg-white/5 border border-white/10 p-4 backdrop-blur-sm relative group hover:border-orange-500/30 transition-colors duration-300"
+                style={{ clipPath: CARD_CLIP }}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h3 className="text-base font-hackwise text-white uppercase">{committee.name}</h3>
+                    {committee.description && (
+                      <p className="text-xs text-white/60 mt-1 line-clamp-2">{committee.description}</p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEditCommittee(committee)}
+                      className="p-1.5 bg-white/5 border border-white/10 hover:border-orange-500/50 hover:bg-orange-500/10 transition-all text-white/60 hover:text-white"
+                    >
+                      <Edit size={14} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCommittee(committee.id)}
+                      className="p-1.5 bg-white/5 border border-white/10 hover:border-red-500/50 hover:bg-red-500/10 transition-all text-white/60 hover:text-red-400"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-white/50 font-mono">
+                  <span>Order: {committee.display_order}</span>
+                  <span>•</span>
+                  <span className={committee.is_active ? 'text-green-400' : 'text-red-400'}>
+                    {committee.is_active ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Add/Edit Form */}
@@ -227,6 +477,23 @@ export default function CommitteeMembersPage() {
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-mono focus:outline-none focus:border-orange-500/60"
                 />
+              </div>
+              <div>
+                <label className="block text-xs font-mono text-white/60 uppercase mb-2">
+                  Committee
+                </label>
+                <select
+                  value={form.committee_id}
+                  onChange={(e) => setForm({ ...form, committee_id: e.target.value || '' })}
+                  className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-mono focus:outline-none focus:border-orange-500/60"
+                >
+                  <option value="">No Committee</option>
+                  {committees.filter(c => c.is_active).map((committee) => (
+                    <option key={committee.id} value={committee.id}>
+                      {committee.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-xs font-mono text-white/60 uppercase mb-2">
@@ -424,6 +691,9 @@ export default function CommitteeMembersPage() {
                 <div className="flex-1">
                   <h3 className="text-lg font-hackwise text-white uppercase mb-1">{member.name}</h3>
                   <p className="text-sm text-orange-400 font-mono">{member.role}</p>
+                  {member.committee_name && (
+                    <p className="text-xs text-white/50 font-mono mt-1">Committee: {member.committee_name}</p>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button

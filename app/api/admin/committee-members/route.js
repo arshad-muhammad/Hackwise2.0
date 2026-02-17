@@ -6,9 +6,10 @@ import { logAction } from '@/lib/logger';
 export async function GET() {
   try {
     const [members] = await pool.query(
-      `SELECT * FROM \`hw-committee-members\` 
-       WHERE is_active = TRUE 
-       ORDER BY display_order ASC, created_at ASC`
+      `SELECT m.*, c.name as committee_name 
+       FROM \`hw-committee-members\` m
+       LEFT JOIN \`hw-committees\` c ON m.committee_id = c.id
+       ORDER BY m.display_order ASC, m.created_at ASC`
     );
     return NextResponse.json({ members });
   } catch (error) {
@@ -31,6 +32,7 @@ export async function POST(request) {
       twitter_url,
       portfolio_url,
       image_url,
+      committee_id,
       display_order,
     } = body;
 
@@ -43,8 +45,8 @@ export async function POST(request) {
 
     const [result] = await pool.query(
       `INSERT INTO \`hw-committee-members\`
-       (name, role, bio, email, linkedin_url, github_url, twitter_url, portfolio_url, image_url, display_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (name, role, bio, email, linkedin_url, github_url, twitter_url, portfolio_url, image_url, committee_id, display_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         role,
@@ -55,6 +57,7 @@ export async function POST(request) {
         twitter_url || null,
         portfolio_url || null,
         image_url || null,
+        committee_id || null,
         display_order || 0,
       ]
     );
@@ -90,6 +93,7 @@ export async function PUT(request) {
       twitter_url,
       portfolio_url,
       image_url,
+      committee_id,
       display_order,
       is_active,
     } = body;
@@ -102,7 +106,7 @@ export async function PUT(request) {
       `UPDATE \`hw-committee-members\`
        SET name = ?, role = ?, bio = ?, email = ?, linkedin_url = ?,
            github_url = ?, twitter_url = ?, portfolio_url = ?, image_url = ?,
-           display_order = ?, is_active = ?
+           committee_id = ?, display_order = ?, is_active = ?
        WHERE id = ?`,
       [
         name,
@@ -114,6 +118,7 @@ export async function PUT(request) {
         twitter_url || null,
         portfolio_url || null,
         image_url || null,
+        committee_id || null,
         display_order || 0,
         is_active !== undefined ? is_active : true,
         id,

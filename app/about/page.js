@@ -15,7 +15,8 @@ const CARD_CLIP = 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% -
 
 export default function AboutPage() {
   const router = useRouter();
-  const [members, setMembers] = useState([]);
+  const [committees, setCommittees] = useState([]);
+  const [unassignedMembers, setUnassignedMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const headerRef = useRef(null);
   const titleRef = useRef(null);
@@ -24,20 +25,21 @@ export default function AboutPage() {
   const descriptionTitleRef = useRef(null);
   const descriptionTextRef = useRef(null);
   const descriptionDotRef = useRef(null);
-  const membersGridRef = useRef(null);
+  const committeesRef = useRef([]);
   const memberCardsRef = useRef([]);
 
   useEffect(() => {
-    fetchMembers();
+    fetchCommittees();
   }, []);
 
-  const fetchMembers = async () => {
+  const fetchCommittees = async () => {
     try {
-      const res = await fetch('/api/committee-members');
+      const res = await fetch('/api/committees');
       const data = await res.json();
-      setMembers(data.members || []);
+      setCommittees(data.committees || []);
+      setUnassignedMembers(data.unassignedMembers || []);
     } catch (error) {
-      console.error('Error fetching members:', error);
+      console.error('Error fetching committees:', error);
     } finally {
       setLoading(false);
     }
@@ -149,39 +151,38 @@ export default function AboutPage() {
         }
       }
 
-      // Simple and performant Members grid scroll animations
-      if (membersGridRef.current && membersGridRef.current.children.length > 0) {
-        const cards = Array.from(membersGridRef.current.children);
-        
-        cards.forEach((card, index) => {
-          // Set initial state - simple fade and slide up
-          gsap.set(card, {
-            opacity: 0,
-            y: 40,
-          });
+      // Animate committees sections
+      committeesRef.current.forEach((committeeSection, committeeIndex) => {
+        if (committeeSection) {
+          const cards = committeeSection.querySelectorAll('.member-card');
+          cards.forEach((card, index) => {
+            gsap.set(card, {
+              opacity: 0,
+              y: 40,
+            });
 
-          // Simple scroll trigger animation - no complex effects
-          gsap.to(card, {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            ease: 'power2.out',
-            delay: index * 0.08,
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
-            },
+            gsap.to(card, {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: 'power2.out',
+              delay: index * 0.08,
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+            });
           });
-        });
-      }
+        }
+      });
 
       // Simple card hover animations (CSS-based for better performance)
       // GSAP hover animations removed - using CSS transitions instead
     });
 
     return () => ctx.revert();
-  }, [loading, members]);
+  }, [loading, committees]);
 
   const handleMemberClick = (id) => {
     router.push(`/member/${id}`);
@@ -258,94 +259,237 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Organizing Committee Section */}
-        <div className="mb-12">
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="w-2 h-2 bg-orange-500 animate-pulse" />
-            <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider">
-              Organizing <span className="text-orange-500">Committee</span>
-            </h2>
-            <div className="w-2 h-2 bg-orange-500 animate-pulse" />
-          </div>
-        </div>
-
-        {/* Members Grid */}
+        {/* Committees Section */}
         {loading ? (
           <div className="text-center py-20">
             <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full mx-auto animate-spin" />
-            <p className="mt-4 text-white/60 font-mono">Loading members...</p>
-          </div>
-        ) : members.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-white/60 font-mono">No committee members found.</p>
+            <p className="mt-4 text-white/60 font-mono">Loading committees...</p>
           </div>
         ) : (
-          <div
-            ref={membersGridRef}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
-          >
-            {members.map((member, index) => (
-              <div
-                key={member.id}
-                ref={(el) => (memberCardsRef.current[index] = el)}
-                className="flex flex-col items-center group"
-              >
-                {/* Card Container */}
+          <>
+            {/* Display Committees */}
+            {committees.map((committee, committeeIndex) => {
+              if (!committee.members || committee.members.length === 0) return null;
+              
+              // Alternate styles for different committees
+              const isEven = committeeIndex % 2 === 0;
+              const cardStyles = [
+                'bg-gradient-to-br from-orange-500/10 to-transparent',
+                'bg-gradient-to-br from-blue-500/10 to-transparent',
+                'bg-gradient-to-br from-purple-500/10 to-transparent',
+                'bg-gradient-to-br from-green-500/10 to-transparent',
+              ];
+              const borderStyles = [
+                'border-orange-500/30',
+                'border-blue-500/30',
+                'border-purple-500/30',
+                'border-green-500/30',
+              ];
+              const accentColor = [
+                'text-orange-500',
+                'text-blue-400',
+                'text-purple-400',
+                'text-green-400',
+              ];
+              
+              const styleIndex = committeeIndex % cardStyles.length;
+              
+              return (
                 <div
-                  onClick={() => handleMemberClick(member.id)}
-                  className="relative group cursor-pointer w-full mb-4"
-                  style={{ clipPath: CARD_CLIP }}
+                  key={committee.id}
+                  ref={(el) => (committeesRef.current[committeeIndex] = el)}
+                  className={`mb-16 ${committeeIndex > 0 ? 'mt-16' : ''}`}
                 >
-                  <div className="absolute inset-0 bg-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
-                    <div
-                      className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
-                      style={{ clipPath: CARD_CLIP }}
-                    />
-                    <div
-                      className="relative bg-[#0A090F] overflow-hidden"
-                      style={{ clipPath: CARD_CLIP }}
-                    >
-                      {/* Member Image */}
-                      <div className="relative aspect-square overflow-hidden">
-                        <img
-                          src={getValidImageUrl(member.image_url)}
-                          alt={member.name}
-                          className="member-image w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-110"
-                        />
-                        <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100 opacity-70" />
-                      </div>
-
-                      {/* Member Bio and View Details - On Hover */}
-                      <div className="member-content absolute bottom-0 left-0 right-0 p-4 md:p-6 z-20 opacity-0 group-hover:opacity-100 translate-y-5 group-hover:translate-y-0 transition-all duration-300">
-                        {member.bio && (
-                          <p className="text-xs text-white/80 line-clamp-2 mb-3 drop-shadow-lg">
-                            {member.bio}
-                          </p>
-                        )}
-                        <div className="flex items-center gap-2 text-white/60">
-                          <span className="text-[10px] font-mono uppercase tracking-wider drop-shadow-lg">
-                            View Details
-                          </span>
-                          <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      </div>
+                  {/* Committee Header */}
+                  <div className="mb-8">
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                      <div className={`w-2 h-2 ${accentColor[styleIndex]} animate-pulse`} />
+                      <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider">
+                        {committee.name}
+                      </h2>
+                      <div className={`w-2 h-2 ${accentColor[styleIndex]} animate-pulse`} />
                     </div>
+                    {committee.description && (
+                      <p className="text-center text-white/60 font-sans text-sm md:text-base max-w-2xl mx-auto">
+                        {committee.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Members Grid - Different layouts per committee */}
+                  <div
+                    className={`grid grid-cols-1 ${
+                      committeeIndex % 3 === 0 
+                        ? 'md:grid-cols-2 lg:grid-cols-3' 
+                        : committeeIndex % 3 === 1
+                        ? 'md:grid-cols-2 lg:grid-cols-4'
+                        : 'md:grid-cols-1 lg:grid-cols-2'
+                    } gap-6 md:gap-8`}
+                  >
+                    {committee.members.map((member, memberIndex) => {
+                      // Alternate card styles within each committee
+                      const memberStyleIndex = (styleIndex + memberIndex) % cardStyles.length;
+                      const isMemberEven = memberIndex % 2 === 0;
+                      
+                      return (
+                        <div
+                          key={member.id}
+                          className={`member-card flex flex-col items-center group ${
+                            committeeIndex % 3 === 2 ? 'lg:flex-row lg:items-start lg:text-left' : ''
+                          }`}
+                        >
+                          {/* Card Container */}
+                          <div
+                            onClick={() => handleMemberClick(member.id)}
+                            className={`relative group cursor-pointer w-full mb-4 ${
+                              committeeIndex % 3 === 2 ? 'lg:mb-0 lg:mr-6 lg:w-48 lg:flex-shrink-0' : ''
+                            }`}
+                            style={{ clipPath: CARD_CLIP }}
+                          >
+                            <div className={`absolute inset-0 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                              styleIndex === 0 ? 'bg-orange-500/20' :
+                              styleIndex === 1 ? 'bg-blue-400/20' :
+                              styleIndex === 2 ? 'bg-purple-400/20' :
+                              'bg-green-400/20'
+                            }`} />
+                            <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
+                              <div
+                                className={`absolute inset-0 bg-white/20 transition-colors duration-300 ${
+                                  styleIndex === 0 ? 'group-hover:bg-orange-500/50' :
+                                  styleIndex === 1 ? 'group-hover:bg-blue-400/50' :
+                                  styleIndex === 2 ? 'group-hover:bg-purple-400/50' :
+                                  'group-hover:bg-green-400/50'
+                                }`}
+                                style={{ clipPath: CARD_CLIP }}
+                              />
+                              <div
+                                className={`relative bg-[#0A090F] overflow-hidden ${cardStyles[memberStyleIndex]}`}
+                                style={{ clipPath: CARD_CLIP }}
+                              >
+                                {/* Member Image */}
+                                <div className="relative aspect-square overflow-hidden">
+                                  <img
+                                    src={getValidImageUrl(member.image_url)}
+                                    alt={member.name}
+                                    className="member-image w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-110"
+                                  />
+                                  <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100 opacity-70" />
+                                </div>
+
+                                {/* Member Bio and View Details - On Hover */}
+                                <div className="member-content absolute bottom-0 left-0 right-0 p-4 md:p-6 z-20 opacity-0 group-hover:opacity-100 translate-y-5 group-hover:translate-y-0 transition-all duration-300">
+                                  {member.bio && (
+                                    <p className="text-xs text-white/80 line-clamp-2 mb-3 drop-shadow-lg">
+                                      {member.bio}
+                                    </p>
+                                  )}
+                                  <div className="flex items-center gap-2 text-white/60">
+                                    <span className="text-[10px] font-mono uppercase tracking-wider drop-shadow-lg">
+                                      View Details
+                                    </span>
+                                    <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Member Name and Role */}
+                          <div className={`text-center w-full mt-2 space-y-1 ${
+                            committeeIndex % 3 === 2 ? 'lg:text-left lg:flex-1' : ''
+                          }`}>
+                            <h3 className={`text-lg md:text-xl font-hackwise text-white uppercase transition-colors duration-300 ${
+                              isMemberEven ? '' : accentColor[styleIndex]
+                            }`}>
+                              {member.name}
+                            </h3>
+                            <p className={`text-sm ${accentColor[styleIndex]} font-mono tracking-wider`}>
+                              {member.role}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
+              );
+            })}
 
-                {/* Member Name and Role - Outside Card, Centered */}
-                <div className="text-center w-full mt-2 space-y-1">
-                  <h3 className="text-lg md:text-xl font-hackwise text-white uppercase transition-colors duration-300">
-                    {member.name}
-                  </h3>
-                  <p className="text-sm text-orange-400 font-mono tracking-wider">
-                    {member.role}
-                  </p>
+            {/* Unassigned Members (if any) */}
+            {unassignedMembers.length > 0 && (
+              <div className="mb-16 mt-16">
+                <div className="flex items-center justify-center gap-4 mb-8">
+                  <div className="w-2 h-2 bg-orange-500 animate-pulse" />
+                  <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider">
+                    Other <span className="text-orange-500">Members</span>
+                  </h2>
+                  <div className="w-2 h-2 bg-orange-500 animate-pulse" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                  {unassignedMembers.map((member, index) => (
+                    <div
+                      key={member.id}
+                      className="member-card flex flex-col items-center group"
+                    >
+                      <div
+                        onClick={() => handleMemberClick(member.id)}
+                        className="relative group cursor-pointer w-full mb-4"
+                        style={{ clipPath: CARD_CLIP }}
+                      >
+                        <div className="absolute inset-0 bg-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
+                          <div
+                            className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
+                            style={{ clipPath: CARD_CLIP }}
+                          />
+                          <div
+                            className="relative bg-[#0A090F] overflow-hidden"
+                            style={{ clipPath: CARD_CLIP }}
+                          >
+                            <div className="relative aspect-square overflow-hidden">
+                              <img
+                                src={getValidImageUrl(member.image_url)}
+                                alt={member.name}
+                                className="member-image w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-110"
+                              />
+                              <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100 opacity-70" />
+                            </div>
+                            <div className="member-content absolute bottom-0 left-0 right-0 p-4 md:p-6 z-20 opacity-0 group-hover:opacity-100 translate-y-5 group-hover:translate-y-0 transition-all duration-300">
+                              {member.bio && (
+                                <p className="text-xs text-white/80 line-clamp-2 mb-3 drop-shadow-lg">
+                                  {member.bio}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-2 text-white/60">
+                                <span className="text-[10px] font-mono uppercase tracking-wider drop-shadow-lg">
+                                  View Details
+                                </span>
+                                <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-center w-full mt-2 space-y-1">
+                        <h3 className="text-lg md:text-xl font-hackwise text-white uppercase transition-colors duration-300">
+                          {member.name}
+                        </h3>
+                        <p className="text-sm text-orange-400 font-mono tracking-wider">
+                          {member.role}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            )}
+
+            {committees.length === 0 && unassignedMembers.length === 0 && (
+              <div className="text-center py-20">
+                <p className="text-white/60 font-mono">No committee members found.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>
