@@ -13,7 +13,8 @@ import {
   UserCheck,
   ShieldCheck,
   UserCircle,
-  Bed
+  Bed,
+  Image
 } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
@@ -35,6 +36,7 @@ export default function AdminLayout({ children }) {
     { href: '/admin/submissions', label: 'Project Submissions', icon: FileText },
     { href: '/admin/accommodation', label: 'Accommodation', icon: Bed },
     { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
+    { href: '/admin/gallery', label: 'Gallery', icon: Image },
     { href: '/admin/faq', label: 'Manage FAQ', icon: FileText },
     { href: '/admin/certificates', label: 'Certificates', icon: ShieldCheck },
     { href: '/admin/committee-members', label: 'Committee Members', icon: UserCircle },

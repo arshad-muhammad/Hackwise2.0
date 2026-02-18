@@ -378,7 +378,7 @@ export default function MemberEditPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="@ArshadIsBest (default)"
+                placeholder="Enter Your Password"
                 className="w-full bg-white/5 border border-white/10 px-4 py-2 text-white font-mono focus:outline-none focus:border-orange-500/60"
               />
               <p className="mt-1 text-[11px] text-white/40 font-mono">
