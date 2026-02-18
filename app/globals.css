@@ -42,3 +42,14 @@ body {
 a, button, [role="button"], input, select, textarea {
   cursor: url('/cursors/cursor.svg') 2 2, pointer;
 }
+
+/* Premium cut-corner buttons (border stroke + inner fill) */
+.cut-btn {
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  -webkit-clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  overflow: hidden; /* ensures the stroke layer stays cut as well */
+}
+.cut-btn-inner {
+  clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+  -webkit-clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+}

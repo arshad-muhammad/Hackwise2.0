@@ -6,7 +6,7 @@ import { uploadGalleryMedia, deleteGalleryMedia } from '@/lib/cloudinary-gallery
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category') || 'All';
+    const type = (searchParams.get('type') || 'all').toLowerCase(); // all | image | video
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const featured = searchParams.get('featured') === 'true';
@@ -37,9 +37,9 @@ export async function GET(request) {
       query += ' AND is_featured = TRUE';
     }
 
-    if (category && category !== 'All') {
-      query += ' AND category = ?';
-      queryParams.push(category);
+    if (type === 'image' || type === 'video') {
+      query += ' AND media_type = ?';
+      queryParams.push(type);
     }
 
     query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
@@ -55,19 +55,26 @@ export async function GET(request) {
       countQuery += ' AND is_featured = TRUE';
     }
 
-    if (category && category !== 'All') {
-      countQuery += ' AND category = ?';
-      countParams.push(category);
+    if (type === 'image' || type === 'video') {
+      countQuery += ' AND media_type = ?';
+      countParams.push(type);
     }
 
     const [countResult] = await pool.execute(countQuery, countParams);
     const total = countResult[0]?.total || 0;
 
-    // Get total count for stats
+    // Get counts for stats (for badges)
     const [statsResult] = await pool.execute(
-      'SELECT COUNT(*) as total FROM `hw-gallery-media` WHERE is_approved = TRUE'
+      `SELECT
+         COUNT(*) as total,
+         SUM(media_type = 'image') as images,
+         SUM(media_type = 'video') as videos
+       FROM \`hw-gallery-media\`
+       WHERE is_approved = TRUE`
     );
     const totalMedia = statsResult[0]?.total || 0;
+    const totalImages = Number(statsResult[0]?.images || 0);
+    const totalVideos = Number(statsResult[0]?.videos || 0);
 
     return NextResponse.json({
       media,
@@ -79,6 +86,8 @@ export async function GET(request) {
       },
       stats: {
         totalMedia,
+        totalImages,
+        totalVideos,
       },
     });
   } catch (error) {
