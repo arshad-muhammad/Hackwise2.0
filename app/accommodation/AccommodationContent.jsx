@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import DecryptedText from "../components/DecryptedText";
+import DatePicker from "../components/DatePicker";
 import { CheckCircle2, Calendar, Users, Mail, Phone, FileText, Loader2, CreditCard, Download, XCircle } from "lucide-react";
 
 const CARD_CLIP = 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)';
@@ -26,7 +27,7 @@ export default function AccommodationContent() {
   const [paymentFailed, setPaymentFailed] = useState(false);
   const [queryId, setQueryId] = useState(null);
   const [error, setError] = useState('');
-  
+
   const [formData, setFormData] = useState({
     team_name: '',
     team_lead_name: '',
@@ -54,10 +55,10 @@ export default function AccommodationContent() {
   const calculateTotalPrice = () => {
     const nights = calculateNights();
     if (nights === 0) return 0;
-    
+
     const pricePerNight = settings.price;
     const totalForNights = pricePerNight * nights;
-    
+
     if (settings.pricingType === 'per_person') {
       return totalForNights * formData.total_members;
     }
@@ -179,7 +180,7 @@ export default function AccommodationContent() {
           color: '#FF7A1A',
         },
         modal: {
-          ondismiss: async function() {
+          ondismiss: async function () {
             // Payment cancelled/failed
             await handlePaymentFailure(orderData.orderId);
           },
@@ -281,33 +282,33 @@ export default function AccommodationContent() {
               Stay Tuned
             </span>
           </div>
-          
+
           <h1 className="font-hackwise text-4xl md:text-6xl lg:text-8xl text-white tracking-wide uppercase mb-6">
             COMING <span className="text-orange-500">SOON</span>
           </h1>
-          
+
           <p className="text-white/60 font-mono text-lg md:text-xl max-w-2xl mx-auto mb-12">
-            We are finalizing the accommodation arrangements for Hackwise 2.0. 
-            <br className="hidden md:block"/>
+            We are finalizing the accommodation arrangements for Hackwise 2.0.
+            <br className="hidden md:block" />
             Details regarding stay and logistics will be updated shortly.
           </p>
 
-          <div 
+          <div
             className="relative inline-block group"
             style={{ clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)" }}
           >
             <div className="absolute inset-0 bg-orange-500/50 group-hover:bg-orange-500 transition-colors duration-300" />
-            <div 
+            <div
               className="relative bg-[#0A090F] px-8 py-4 m-px w-[calc(100%-2px)] h-[calc(100%-2px)] flex items-center justify-center backdrop-blur-md"
-              style={{ 
+              style={{
                 clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)"
               }}
             >
               <div className="absolute inset-0 bg-orange-500/10 transition-colors duration-300" />
               <div className="relative z-10 text-center w-full flex justify-center">
-                <DecryptedText 
-                  text="SYSTEM.UPDATE_PENDING..." 
-                  speed={80} 
+                <DecryptedText
+                  text="SYSTEM.UPDATE_PENDING..."
+                  speed={80}
                   className="text-orange-500 font-mono tracking-widest text-sm md:text-base inline-block text-center"
                 />
               </div>
@@ -365,7 +366,7 @@ export default function AccommodationContent() {
                 style={{ clipPath: CARD_CLIP }}
               >
                 <h2 className="text-xl font-hackwise text-white uppercase mb-6">Booking Details</h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <p className="text-xs font-mono text-white/40 uppercase mb-1">Team Name</p>
@@ -466,7 +467,7 @@ export default function AccommodationContent() {
           <p className="text-white/60 font-mono text-sm md:text-base mb-6">
             Book your stay for Hackwise 2.0
           </p>
-          {settings.price > 0 && (
+          {settings.price > 0 && calculateTotalPrice() > 0 && (
             <div className="inline-flex flex-col items-center gap-2 px-6 py-3 bg-orange-500/10 border border-orange-500/30">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-mono text-white/60 uppercase">Total Price:</span>
@@ -606,17 +607,14 @@ export default function AccommodationContent() {
 
                   {/* Check-in Date */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-mono text-white/60 uppercase tracking-wider flex items-center gap-2">
-                      <Calendar size={14} />
-                      Check-in Date <span className="text-orange-500">*</span>
-                    </label>
-                    <input
-                      type="date"
+                    <DatePicker
+                      label="Check-in Date"
                       name="check_in_date"
                       value={formData.check_in_date}
                       onChange={handleChange}
                       required
-                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/60 placeholder:text-white/25"
+                      placeholder="Select check-in date"
+                      icon={<Calendar size={14} />}
                     />
                     {formData.check_in_date && formData.check_out_date && calculateNights() > 0 && (
                       <p className="text-xs font-mono text-orange-400/80">
@@ -627,18 +625,15 @@ export default function AccommodationContent() {
 
                   {/* Check-out Date */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-mono text-white/60 uppercase tracking-wider flex items-center gap-2">
-                      <Calendar size={14} />
-                      Check-out Date <span className="text-orange-500">*</span>
-                    </label>
-                    <input
-                      type="date"
+                    <DatePicker
+                      label="Check-out Date"
                       name="check_out_date"
                       value={formData.check_out_date}
                       onChange={handleChange}
                       required
-                      min={formData.check_in_date}
-                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/60 placeholder:text-white/25"
+                      minDate={formData.check_in_date}
+                      placeholder="Select check-out date"
+                      icon={<Calendar size={14} />}
                     />
                     {formData.check_in_date && formData.check_out_date && calculateNights() === 0 && (
                       <p className="text-xs font-mono text-red-400/80">
