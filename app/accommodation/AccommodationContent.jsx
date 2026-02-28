@@ -100,6 +100,11 @@ export default function AccommodationContent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    const mv = parseInt(formData.total_members);
+    if (!mv || mv < 1 || mv > 4) {
+      setError('Number of members must be between 1 and 4.');
+      return;
+    }
     setSubmitting(true);
 
     try {
@@ -257,12 +262,16 @@ export default function AccommodationContent() {
   };
 
   const handleMembersBlur = () => {
-    // On blur, coerce to a valid integer >= 1
+    // On blur, clamp to valid range 1–4
+    const parsed = parseInt(formData.total_members) || 1;
     setFormData(prev => ({
       ...prev,
-      total_members: Math.max(1, parseInt(prev.total_members) || 1),
+      total_members: Math.min(4, Math.max(1, parsed)),
     }));
   };
+
+  const membersValue = parseInt(formData.total_members);
+  const membersInvalid = formData.total_members !== '' && (isNaN(membersValue) || membersValue < 1 || membersValue > 4);
 
   const downloadInvoice = () => {
     if (queryId) {
@@ -603,8 +612,19 @@ export default function AccommodationContent() {
                       onBlur={handleMembersBlur}
                       required
                       min="1"
-                      className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/60 placeholder:text-white/25"
+                      max="4"
+                      className={`w-full bg-white/5 border px-4 py-3 text-white font-mono focus:outline-none placeholder:text-white/25 ${membersInvalid
+                          ? 'border-red-500/70 focus:border-red-500'
+                          : 'border-white/10 focus:border-orange-500/60'
+                        }`}
                     />
+                    {membersInvalid && (
+                      <p className="text-xs font-mono text-red-400 mt-1">
+                        {membersValue < 1 || membersValue === 0
+                          ? 'Minimum 1 member required.'
+                          : 'Maximum 4 members allowed.'}
+                      </p>
+                    )}
                     {settings.price > 0 && calculateNights() > 0 && (
                       <div className="text-xs font-mono text-orange-400/80 space-y-1">
                         <p>
