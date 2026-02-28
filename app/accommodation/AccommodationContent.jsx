@@ -58,9 +58,10 @@ export default function AccommodationContent() {
 
     const pricePerNight = settings.price;
     const totalForNights = pricePerNight * nights;
+    const members = Math.max(1, parseInt(formData.total_members) || 1);
 
     if (settings.pricingType === 'per_person') {
-      return totalForNights * formData.total_members;
+      return totalForNights * members;
     }
     return totalForNights;
   };
@@ -250,7 +251,16 @@ export default function AccommodationContent() {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'total_members' ? parseInt(value) || 1 : value,
+      // Keep raw string while typing so the user can clear and retype freely
+      [name]: value,
+    }));
+  };
+
+  const handleMembersBlur = () => {
+    // On blur, coerce to a valid integer >= 1
+    setFormData(prev => ({
+      ...prev,
+      total_members: Math.max(1, parseInt(prev.total_members) || 1),
     }));
   };
 
@@ -590,6 +600,7 @@ export default function AccommodationContent() {
                       name="total_members"
                       value={formData.total_members}
                       onChange={handleChange}
+                      onBlur={handleMembersBlur}
                       required
                       min="1"
                       className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-orange-500/60 placeholder:text-white/25"
@@ -598,7 +609,7 @@ export default function AccommodationContent() {
                       <div className="text-xs font-mono text-orange-400/80 space-y-1">
                         <p>
                           {calculateNights()} night{calculateNights() !== 1 ? 's' : ''} × {formatPrice(settings.price)} per night
-                          {settings.pricingType === 'per_person' && ` × ${formData.total_members} member${formData.total_members !== 1 ? 's' : ''}`}
+                          {settings.pricingType === 'per_person' && ` × ${parseInt(formData.total_members) || 1} member${(parseInt(formData.total_members) || 1) !== 1 ? 's' : ''}`}
                         </p>
                         <p className="font-bold">Total: {formatPrice(calculateTotalPrice())}</p>
                       </div>
