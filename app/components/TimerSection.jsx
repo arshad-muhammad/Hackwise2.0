@@ -3,7 +3,7 @@ import CountdownTimer from "./CountdownTimer";
 
 const TimerSection = () => {
   // Set target date to February 28, 2026
-  const targetDate = new Date("2026-02-28T11:11:11");
+  const targetDate = new Date("2026-02-28T05:41:00Z");
 
   return (
     <section className="w-full py-12 flex flex-col items-center justify-center border-b border-white/10 relative overflow-hidden">
