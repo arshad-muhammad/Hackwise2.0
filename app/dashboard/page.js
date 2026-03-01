@@ -145,15 +145,37 @@ export default function Dashboard() {
       // Handle logo upload if a file is selected
       const logoInput = document.getElementById('team-logo-upload');
       if (logoInput?.files?.length > 0) {
+        const file = logoInput.files[0];
+        
+        // Validate file size on client side (max 5MB to avoid 413 errors)
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+          alert(`File size too large. Maximum size is 5MB. Your file is ${(file.size / 1024 / 1024).toFixed(2)}MB. Please compress the image or choose a smaller file.`);
+          return;
+        }
+        
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+          alert('Invalid file type. Only images (JPEG, PNG, WebP, GIF) are allowed.');
+          return;
+        }
+        
         const formData = new FormData();
-        formData.append('file', logoInput.files[0]);
+        formData.append('file', file);
         
         const uploadRes = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         });
         
-        if (!uploadRes.ok) throw new Error('Logo upload failed');
+        if (!uploadRes.ok) {
+          const errorData = await uploadRes.json().catch(() => ({}));
+          if (uploadRes.status === 413) {
+            throw new Error('File is too large. Maximum size is 5MB. Please compress the image or choose a smaller file.');
+          }
+          throw new Error(errorData.error || 'Logo upload failed');
+        }
         const { url } = await uploadRes.json();
         logoUrl = url;
       }
@@ -169,12 +191,26 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error(error);
-      alert('Failed to update team details');
+      alert(error.message || 'Failed to update team details');
     }
   };
 
   const submitPayment = async (transaction_id, file) => {
     if (!transaction_id || !file) return alert('Please enter Transaction ID and upload a screenshot');
+    
+    // Validate file size on client side (max 5MB to avoid 413 errors)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      alert(`File size too large. Maximum size is 5MB. Your file is ${(file.size / 1024 / 1024).toFixed(2)}MB. Please compress the image or choose a smaller file.`);
+      return;
+    }
+    
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Invalid file type. Only images (JPEG, PNG, WebP, GIF) are allowed.');
+      return;
+    }
     
     setLoading(true); // Show global loading or handle locally
     try {
@@ -187,7 +223,13 @@ export default function Dashboard() {
         body: formData,
       });
       
-      if (!uploadRes.ok) throw new Error('Upload failed');
+      if (!uploadRes.ok) {
+        const errorData = await uploadRes.json().catch(() => ({}));
+        if (uploadRes.status === 413) {
+          throw new Error('File is too large. Maximum size is 5MB. Please compress the image or choose a smaller file.');
+        }
+        throw new Error(errorData.error || 'Upload failed');
+      }
       const { url } = await uploadRes.json();
       
       // 2. Update Team
@@ -203,7 +245,7 @@ export default function Dashboard() {
       fetchDashboard();
     } catch (error) {
       console.error(error);
-      alert('Failed to submit payment proof');
+      alert(error.message || 'Failed to submit payment proof');
     } finally {
       setLoading(false);
     }
@@ -621,6 +663,7 @@ export default function Dashboard() {
                                   accept="image/*"
                                   className="w-full bg-black/20 border border-white/20 px-4 py-3 text-white/70 font-mono file:mr-4 file:py-2 file:px-4 file:bg-orange-500 file:text-black file:font-bold file:border-0 hover:file:bg-orange-600 transition-colors cursor-pointer"
                                 />
+                                <p className="text-[10px] text-white/30 font-mono mt-1">Max size: 5MB (JPEG, PNG, WebP, GIF)</p>
                               </div>
                               
                               {identity?.role === 'LEAD' ? (
@@ -959,12 +1002,15 @@ export default function Dashboard() {
                             {teamForm.logo_url && (
                                 <img src={teamForm.logo_url} alt="Logo" className="w-12 h-12 rounded object-cover bg-white/10" />
                             )}
-                            <input 
-                                id="team-logo-upload"
-                                type="file" 
-                                accept="image/*"
-                                className="flex-1 bg-white/5 border border-white/10 p-2 rounded-xl text-sm font-mono text-white/60 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-orange-500 file:text-black hover:file:bg-orange-600"
-                            />
+                            <div className="flex-1">
+                                <input 
+                                    id="team-logo-upload"
+                                    type="file" 
+                                    accept="image/*"
+                                    className="w-full bg-white/5 border border-white/10 p-2 rounded-xl text-sm font-mono text-white/60 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-orange-500 file:text-black hover:file:bg-orange-600"
+                                />
+                                <p className="text-[10px] text-white/30 font-mono mt-1">Max size: 5MB (JPEG, PNG, WebP, GIF)</p>
+                            </div>
                         </div>
                     </div>
                 </div>

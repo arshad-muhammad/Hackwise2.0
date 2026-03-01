@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 
+// Configure route for longer uploads
+export const maxDuration = 30;
+
 export async function POST(request) {
   try {
     const formData = await request.formData();
@@ -16,10 +19,13 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid file type. Only images are allowed.' }, { status: 400 });
     }
 
-    // Validate file size (max 10MB)
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    // Validate file size (max 5MB to prevent 413 errors)
+    const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      return NextResponse.json({ error: 'File size too large. Maximum size is 10MB.' }, { status: 400 });
+      return NextResponse.json({ 
+        error: 'File size too large. Maximum size is 5MB. Please compress the image or choose a smaller file.',
+        code: 'FILE_TOO_LARGE'
+      }, { status: 400 });
     }
 
     // Check if Cloudinary is configured
@@ -96,6 +102,15 @@ export async function POST(request) {
     }
   } catch (error) {
     console.error('Upload error:', error);
+    
+    // Handle 413 errors specifically
+    if (error.message && error.message.includes('413') || error.message && error.message.includes('too large')) {
+      return NextResponse.json({ 
+        error: 'File is too large. Maximum size is 5MB. Please compress the image or choose a smaller file.',
+        code: 'FILE_TOO_LARGE'
+      }, { status: 413 });
+    }
+    
     return NextResponse.json({ 
       error: 'Upload failed', 
       details: process.env.NODE_ENV === 'development' ? error.message : undefined,
