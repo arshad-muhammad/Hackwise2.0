@@ -7,14 +7,14 @@ import Timeline from "./Timeline/page";
 import Prizes from "./Prizes/page";
 import Sponsors from "./Sponsors/page";
 import Brochure from "./Brochure/page";
-import TimerSection from "./components/TimerSection";
+import LandingRegistrationSection from "./components/LandingRegistrationSection";
 import FAQ from "./components/FAQ";
 
 const page = () => {
   return (
     <>
       <Home />
-      <TimerSection />
+      <LandingRegistrationSection />
       <AboutH />
       <Flow />
       <Timeline />
