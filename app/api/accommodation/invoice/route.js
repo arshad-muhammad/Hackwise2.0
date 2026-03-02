@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import pool from '@/lib/db';
+import { safeDrawText, sanitizePdfText } from '@/lib/pdfText';
 import fs from 'fs';
 import path from 'path';
 
@@ -165,7 +166,7 @@ export async function GET(request) {
     });
 
     yPosition -= 20;
-    page.drawText(query.team_lead_name, {
+    safeDrawText(page, query.team_lead_name, {
       x: 50,
       y: yPosition,
       size: 11,
@@ -174,7 +175,7 @@ export async function GET(request) {
     });
 
     yPosition -= 15;
-    page.drawText(query.team_name, {
+    safeDrawText(page, query.team_name, {
       x: 50,
       y: yPosition,
       size: 10,
@@ -183,7 +184,7 @@ export async function GET(request) {
     });
 
     yPosition -= 12;
-    page.drawText(`Email: ${query.team_lead_email}`, {
+    safeDrawText(page, `Email: ${sanitizePdfText(query.team_lead_email)}`, {
       x: 50,
       y: yPosition,
       size: 9,
@@ -192,7 +193,7 @@ export async function GET(request) {
     });
 
     yPosition -= 12;
-    page.drawText(`Phone: ${query.team_lead_phone}`, {
+    safeDrawText(page, `Phone: ${sanitizePdfText(query.team_lead_phone)}`, {
       x: 50,
       y: yPosition,
       size: 9,
@@ -362,7 +363,7 @@ export async function GET(request) {
     });
 
     yPosition -= 18;
-    page.drawText(`Payment ID: ${query.razorpay_payment_id || 'N/A'}`, {
+    safeDrawText(page, `Payment ID: ${query.razorpay_payment_id || 'N/A'}`, {
       x: 50,
       y: yPosition,
       size: 9,
@@ -371,7 +372,7 @@ export async function GET(request) {
     });
 
     yPosition -= 15;
-    page.drawText(`Order ID: ${query.razorpay_order_id || 'N/A'}`, {
+    safeDrawText(page, `Order ID: ${query.razorpay_order_id || 'N/A'}`, {
       x: 50,
       y: yPosition,
       size: 9,
@@ -380,7 +381,7 @@ export async function GET(request) {
     });
 
     yPosition -= 15;
-    page.drawText(`Payment Status: ${query.payment_status}`, {
+    safeDrawText(page, `Payment Status: ${query.payment_status}`, {
       x: 50,
       y: yPosition,
       size: 9,
