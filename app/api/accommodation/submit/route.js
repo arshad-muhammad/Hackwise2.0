@@ -1,8 +1,52 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
 
+// Ensure accommodation table exists on first use
+let tableChecked = false;
+
+async function ensureTableExists() {
+  if (tableChecked) return;
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS \`hw-accommodation-queries\` (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        team_name VARCHAR(255) NOT NULL,
+        team_lead_name VARCHAR(255) NOT NULL,
+        team_lead_email VARCHAR(255) NOT NULL,
+        team_lead_phone VARCHAR(50) NOT NULL,
+        total_members INT NOT NULL,
+        check_in_date DATE NOT NULL,
+        check_out_date DATE NOT NULL,
+        special_requirements TEXT,
+        qr_code_data TEXT,
+        razorpay_order_id VARCHAR(255),
+        razorpay_payment_id VARCHAR(255),
+        razorpay_signature VARCHAR(255),
+        payment_status ENUM('PENDING', 'SUCCESS', 'FAILED') DEFAULT 'PENDING',
+        amount DECIMAL(10, 2),
+        invoice_url VARCHAR(500),
+        status ENUM('PENDING', 'CONFIRMED', 'CANCELLED') DEFAULT 'PENDING',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_team_name (team_name),
+        INDEX idx_status (status),
+        INDEX idx_payment_status (payment_status),
+        INDEX idx_razorpay_order_id (razorpay_order_id),
+        INDEX idx_created_at (created_at)
+      )
+    `);
+    tableChecked = true;
+  } catch (err) {
+    // If table already exists this is fine, mark as checked
+    tableChecked = true;
+  }
+}
+
 export async function POST(request) {
   try {
+    // Ensure the accommodation table exists
+    await ensureTableExists();
+
     const body = await request.json();
     const {
       team_name,
@@ -126,10 +170,27 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error('Error submitting accommodation query:', error);
+
+    // Provide a more descriptive error for common cases
+    if (error.code === 'ECONNREFUSED') {
+      return NextResponse.json(
+        { error: 'Database connection failed. Please try again later.' },
+        { status: 503 }
+      );
+    }
+
+    if (error.code === 'ER_NO_SUCH_TABLE') {
+      // Reset the table check flag so next request retries
+      tableChecked = false;
+      return NextResponse.json(
+        { error: 'System is initializing. Please try again in a moment.' },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
-

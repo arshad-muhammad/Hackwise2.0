@@ -166,10 +166,11 @@ export default function AccommodationContent() {
       }
 
       // Open Razorpay checkout
+      // Note: amount and currency are intentionally omitted here because
+      // they are already attached to the order_id on Razorpay's server.
+      // Passing them separately triggers a deprecation warning in the SDK.
       const options = {
         key: orderData.key,
-        amount: orderData.amount * 100, // Convert to paise
-        currency: orderData.currency,
         name: 'Hackwise 2.0',
         description: `Accommodation Fee - ${formData.team_name}`,
         order_id: orderData.orderId,

@@ -2,10 +2,19 @@ import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import pool from '@/lib/db';
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+function getRazorpayInstance() {
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+  if (
+    !keyId || keyId === 'your_razorpay_key_id' ||
+    !keySecret || keySecret === 'your_razorpay_key_secret'
+  ) {
+    throw new Error('Razorpay API keys are not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your environment variables.');
+  }
+
+  return new Razorpay({ key_id: keyId, key_secret: keySecret });
+}
 
 export async function POST(request) {
   try {
@@ -39,6 +48,18 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'Payment already completed' },
         { status: 400 }
+      );
+    }
+
+    // Get Razorpay instance (validates keys)
+    let razorpay;
+    try {
+      razorpay = getRazorpayInstance();
+    } catch (keyError) {
+      console.error('Razorpay configuration error:', keyError.message);
+      return NextResponse.json(
+        { error: 'Payment gateway is not configured. Please contact support.' },
+        { status: 503 }
       );
     }
 
@@ -79,4 +100,3 @@ export async function POST(request) {
     );
   }
 }
-
