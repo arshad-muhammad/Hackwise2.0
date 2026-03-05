@@ -43,7 +43,7 @@ Instead, report vulnerabilities responsibly through one of the following channel
 
 | Channel | Contact |
 |---------|---------|
-| 📧 **Email** | `security@spherehive.in` |
+| 📧 **Email** | `spherehive@kvgce.ac.in` |
 | 🔒 **GitHub** | Use [GitHub Private Vulnerability Reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability) |
 
 ### What to Include in Your Report
@@ -353,8 +353,8 @@ We thank the security researchers and open-source community members who have res
 
 <div align="center">
 
-**Hackwise 2.0** · Built by [Sphere Hive](https://spherehive.in) · KVG College of Engineering  
-Questions? Reach us at `security@spherehive.in`
+**Hackwise 2.0** · Built by [Muhammad Arshad R A](https://spherehive.in/member/sh001) · SPHERE HIVE  
+Questions? Reach us at `spherehive@kvgce.ac.in`
 
 </div>
 
