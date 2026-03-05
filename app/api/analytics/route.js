@@ -1,6 +1,39 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
 
+let tablesReady = false;
+
+async function ensureAnalyticsTables() {
+  if (tablesReady) return;
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS \`hw-visitors\` (
+        visitor_id VARCHAR(64) PRIMARY KEY,
+        first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        user_agent TEXT
+      )
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS \`hw-analytics\` (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        visitor_id VARCHAR(64) NOT NULL,
+        event_name VARCHAR(100) NOT NULL,
+        page_url VARCHAR(255),
+        referrer VARCHAR(255),
+        details JSON,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_visitor (visitor_id),
+        INDEX idx_event (event_name),
+        INDEX idx_created_at (created_at)
+      )
+    `);
+    tablesReady = true;
+  } catch {
+    tablesReady = true; // Don't retry indefinitely
+  }
+}
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const range = searchParams.get('range') || '24h'; // 24h, 7d, 30d
@@ -10,6 +43,8 @@ export async function GET(request) {
   if (range === '30d') timeFilter = 'INTERVAL 30 DAY';
 
   try {
+    await ensureAnalyticsTables();
+
     const stats = {};
 
     // Page Views
@@ -36,7 +71,8 @@ export async function GET(request) {
 
     return NextResponse.json(stats);
   } catch (error) {
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    console.error('Analytics GET error:', error);
+    return NextResponse.json({ pageViews: [], events: [] }, { status: 200 });
   }
 }
 
@@ -48,6 +84,9 @@ export async function POST(request) {
     if (!visitor_id || !event_name) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
+
+    // Ensure tables exist before writing
+    await ensureAnalyticsTables();
 
     // Update or Insert Visitor
     await pool.query(
@@ -80,8 +119,9 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Analytics error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    // Analytics failures are non-critical — return 200 so the client
+    // does not keep retrying and flooding the console with errors.
+    console.error('Analytics POST error:', error.message);
+    return NextResponse.json({ success: false }, { status: 200 });
   }
 }
-
