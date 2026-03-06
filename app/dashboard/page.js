@@ -21,7 +21,8 @@ import {
   Calendar,
   Phone,
   QrCode,
-  X
+  X,
+  AlertTriangle
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,6 +37,7 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [identity, setIdentity] = useState(null);
   const [showIdentityModal, setShowIdentityModal] = useState(false);
+  const [showPaymentError, setShowPaymentError] = useState(false);
   
   // Forms state
   const [msgInput, setMsgInput] = useState('');
@@ -351,7 +353,12 @@ export default function Dashboard() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                if (tab.id === 'payment') {
+                  setShowPaymentError(true);
+                }
+              }}
               className={`flex items-center gap-2 px-6 py-3 transition-all text-sm font-bold font-mono uppercase tracking-wider ${
                 activeTab === tab.id 
                   ? 'bg-orange-500 text-black shadow-[0_0_20px_rgba(249,115,22,0.4)]' 
@@ -577,7 +584,7 @@ export default function Dashboard() {
           )}
 
           {/* PAYMENT TAB */}
-          {activeTab === 'payment' && (
+          {activeTab === 'payment' && !showPaymentError && (
             <motion.div 
                key="payment"
                initial={{ opacity: 0, scale: 0.95 }}
@@ -929,6 +936,24 @@ export default function Dashboard() {
       </div>
 
       {/* MODALS */}
+      {/* Payment Error Modal */}
+      {showPaymentError && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1B0B0B] border border-red-500/40 p-8 rounded-3xl w-full max-w-md relative">
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/40 flex items-center justify-center mb-2">
+                <AlertTriangle size={32} className="text-red-400" />
+              </div>
+              <h2 className="text-2xl font-display font-bold text-red-400 uppercase tracking-widest">
+                INTERNET ERROR
+              </h2>
+              <p className="text-sm text-white/60 font-mono">
+                There seems to be a problem with your internet connection. Please check your connection and try the payment again.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Identity Modal */}
       {showIdentityModal && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
