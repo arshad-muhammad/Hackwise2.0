@@ -592,6 +592,31 @@ export default function Dashboard() {
                exit={{ opacity: 0, scale: 1.05 }}
                className="w-full h-full flex flex-col items-center justify-center min-h-[500px]"
             >
+               {data.paymentWindowClosed ? (
+                 <div className="max-w-2xl w-full">
+                   <div className="relative bg-white/10 p-[1px] backdrop-blur-md"
+                        style={{ clipPath: "polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)" }}
+                   >
+                     <div className="relative h-full w-full bg-black/80 p-16 flex flex-col items-center justify-center text-center"
+                          style={{ clipPath: "polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)" }}
+                     >
+                       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+                       <div className="absolute top-0 left-0 w-2 h-2 bg-red-500 z-10 shadow-[0_0_10px_rgba(239,68,68,0.8)]"/>
+                       <div className="absolute bottom-0 right-0 w-2 h-2 bg-red-500 z-10 shadow-[0_0_10px_rgba(239,68,68,0.8)]"/>
+                       <div className="w-24 h-24 bg-red-500/10 border-2 border-red-500/40 rounded-full flex items-center justify-center mb-8 relative z-10">
+                         <div className="absolute inset-0 bg-red-500/20 blur-xl rounded-full animate-pulse" />
+                         <CreditCard size={40} className="text-red-400 relative z-10" />
+                       </div>
+                       <h2 className="font-display text-4xl font-bold uppercase tracking-tight text-red-400 mb-4 relative z-10 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+                         PAYMENT WINDOW CLOSED
+                       </h2>
+                       <p className="text-white/50 font-mono text-sm relative z-10 max-w-md leading-relaxed">
+                         The payment submission window is currently closed by the admin. Please check back later or contact the organizers.
+                       </p>
+                     </div>
+                   </div>
+                 </div>
+               ) : (
                <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* QR Code Section */}
                   <div className="relative bg-white/10 p-[1px] backdrop-blur-md flex flex-col items-center justify-center text-center group transition-all"
@@ -699,6 +724,7 @@ export default function Dashboard() {
                      </div>
                   </div>
                </div>
+               )}
             </motion.div>
           )}
 

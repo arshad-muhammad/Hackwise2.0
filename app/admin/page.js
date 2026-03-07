@@ -1,6 +1,7 @@
 import pool from '@/lib/db';
 import Link from 'next/link';
 import RegistrationStatusToggle from './components/RegistrationStatusToggle';
+import PaymentWindowToggle from './components/PaymentWindowToggle';
 
 async function getStats() {
   const stats = {
@@ -105,6 +106,7 @@ export default async function AdminDashboard() {
                <span className="text-green-500">Enforced</span>
              </div>
              <RegistrationStatusToggle />
+             <PaymentWindowToggle />
            </div>
         </div>
       </div>

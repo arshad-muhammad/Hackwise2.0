@@ -34,11 +34,18 @@ export async function GET(request) {
       ORDER BY created_at ASC
     `, [team_id]);
 
+    // Fetch payment window status
+    const [paymentRows] = await pool.query(
+      "SELECT setting_value FROM `hw-settings` WHERE setting_key = 'payment_window_closed'"
+    );
+    const paymentWindowClosed = paymentRows[0]?.setting_value === 'true';
+
     return NextResponse.json({
       team,
       members,
       announcements,
-      chat
+      chat,
+      paymentWindowClosed
     });
 
   } catch (error) {
