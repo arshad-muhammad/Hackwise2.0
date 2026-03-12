@@ -96,90 +96,6 @@ export async function POST(request) {
       );
     }
 
-    // Check for an existing booking from the same email (any payment status)
-    const [existing] = await pool.query(
-      `SELECT id, payment_status, amount, check_in_date, check_out_date
-       FROM \`hw-accommodation-queries\`
-       WHERE team_lead_email = ?
-       ORDER BY created_at DESC
-       LIMIT 1`,
-      [team_lead_email]
-    );
-
-    if (existing.length > 0) {
-      const existingRecord = existing[0];
-
-      // If already paid, block a new booking
-      if (existingRecord.payment_status === 'SUCCESS') {
-        return NextResponse.json(
-          { error: 'You already have a confirmed accommodation booking. Please contact support if you need to make changes.' },
-          { status: 409 }
-        );
-      }
-
-      // If PENDING or FAILED, reuse the existing record so the user can retry payment
-      // Update it with the latest submitted details and reset to PENDING
-      await pool.query(
-        `UPDATE \`hw-accommodation-queries\`
-         SET team_name = ?, team_lead_name = ?, team_lead_phone = ?,
-             total_members = ?, check_in_date = ?, check_out_date = ?,
-             special_requirements = ?, payment_status = 'PENDING',
-             razorpay_order_id = NULL, razorpay_payment_id = NULL,
-             razorpay_signature = NULL, updated_at = CURRENT_TIMESTAMP
-         WHERE id = ?`,
-        [
-          team_name,
-          team_lead_name,
-          team_lead_phone,
-          total_members,
-          check_in_date,
-          check_out_date,
-          special_requirements || null,
-          existingRecord.id,
-        ]
-      );
-
-      // Recalculate price for the updated booking
-      const [priceSettingsRetry] = await pool.query(
-        `SELECT setting_key, setting_value FROM \`hw-settings\`
-         WHERE setting_key IN ('accommodation_price', 'accommodation_pricing_type')`
-      );
-      const settingsMapRetry = {};
-      priceSettingsRetry.forEach(row => { settingsMapRetry[row.setting_key] = row.setting_value; });
-
-      const basePriceRetry = settingsMapRetry.accommodation_price ? parseFloat(settingsMapRetry.accommodation_price) : 0;
-      const pricingTypeRetry = settingsMapRetry.accommodation_pricing_type || 'per_team';
-
-      const checkInRetry = new Date(check_in_date);
-      const checkOutRetry = new Date(check_out_date);
-      const nightsRetry = Math.ceil(Math.abs(checkOutRetry - checkInRetry) / (1000 * 60 * 60 * 24));
-      const priceForNightsRetry = basePriceRetry * nightsRetry;
-      const finalPriceRetry = pricingTypeRetry === 'per_person'
-        ? priceForNightsRetry * total_members
-        : priceForNightsRetry;
-
-      await pool.query(
-        `UPDATE \`hw-accommodation-queries\` SET amount = ? WHERE id = ?`,
-        [finalPriceRetry, existingRecord.id]
-      );
-
-      pool.query(
-        'INSERT INTO `hw-logs` (level, message, details) VALUES (?, ?, ?)',
-        ['INFO', 'Accommodation Query Resubmitted (retry)', JSON.stringify({ team_name, team_lead_email, query_id: existingRecord.id })]
-      ).catch(console.error);
-
-      return NextResponse.json({
-        success: true,
-        id: existingRecord.id,
-        price: finalPriceRetry,
-        basePrice: basePriceRetry,
-        pricingType: pricingTypeRetry,
-        totalMembers: total_members,
-        nights: nightsRetry,
-        message: 'Existing accommodation query updated. Proceeding to payment.',
-      });
-    }
-
     // Get pricing settings for a new booking
     const [priceSettings] = await pool.query(
       `SELECT setting_key, setting_value FROM \`hw-settings\` 
@@ -267,14 +183,6 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'System is initializing. Please try again in a moment.' },
         { status: 503 }
-      );
-    }
-
-    // Fallback: catch any duplicate entry that slipped through
-    if (error.code === 'ER_DUP_ENTRY') {
-      return NextResponse.json(
-        { error: 'You already have an accommodation booking. Please refresh the page and try again.' },
-        { status: 409 }
       );
     }
 
