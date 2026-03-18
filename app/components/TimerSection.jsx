@@ -3,7 +3,7 @@ import CountdownTimer from "./CountdownTimer";
 
 const TimerSection = () => {
   // Set target date to February 28, 2026
-  const targetDate = new Date("2026-02-28T05:41:00Z");
+  const targetDate = new Date("2026-04-04T07:00:00Z");
 
   return (
     <section className="w-full py-12 flex flex-col items-center justify-center border-b border-white/10 relative overflow-hidden">
@@ -14,7 +14,7 @@ const TimerSection = () => {
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 bg-orange-500 animate-pulse rounded-full" />
           <p className="font-mono text-sm md:text-base text-white/70 uppercase tracking-[0.2em]">
-            Registration closes in
+            Get ready to build!
           </p>
           <div className="w-2 h-2 bg-orange-500 animate-pulse rounded-full" />
         </div>

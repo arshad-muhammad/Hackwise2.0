@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 const CountdownTimer = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState({
-    days: 0,
+    days: 17,
     hours: 0,
     minutes: 0,
     seconds: 0,
@@ -13,7 +13,7 @@ const CountdownTimer = ({ targetDate }) => {
   useEffect(() => {
     const calculateTimeLeft = () => {
       const difference = +new Date(targetDate) - +new Date();
-      
+
       if (difference > 0) {
         return {
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -40,7 +40,7 @@ const CountdownTimer = ({ targetDate }) => {
         {/* Decorative corners */}
         <div className="absolute top-0 left-0 w-1.5 h-1.5 bg-white/30 group-hover:bg-orange-500 transition-colors" />
         <div className="absolute bottom-0 right-0 w-1.5 h-1.5 bg-white/30 group-hover:bg-orange-500 transition-colors" />
-        
+
         <span className="font-display text-3xl md:text-4xl font-bold text-white">
           {String(value).padStart(2, "0")}
         </span>
@@ -62,4 +62,3 @@ const CountdownTimer = ({ targetDate }) => {
 };
 
 export default CountdownTimer;
-
