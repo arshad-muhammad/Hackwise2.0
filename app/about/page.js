@@ -11,7 +11,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const CARD_CLIP = 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)';
+const CARD_CLIP = 'polygon(14px 0%, 100% 0%, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0% 100%, 0% 14px)';
 
 export default function AboutPage() {
   const router = useRouter();
@@ -273,14 +273,14 @@ export default function AboutPage() {
   };
 
   return (
-    <section className="section-container border-t border-white/10 pb-24 pt-28">
-      <div className="max-w-7xl mx-auto">
+    <section className="section-container border-t border-white/10 pb-12 sm:pb-16 md:pb-24 pt-20 sm:pt-24 md:pt-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div ref={headerRef} className="w-full flex justify-center mb-16">
-          <div className="inline-block border border-white/20 bg-[#0A090F]/90 px-8 py-4 backdrop-blur-md">
+        <div ref={headerRef} className="w-full flex justify-center mb-10 sm:mb-12 md:mb-16">
+          <div className="inline-block border border-white/20 bg-[#0A090F]/90 px-4 sm:px-6 md:px-8 py-3 md:py-4 backdrop-blur-md">
             <h1
               ref={titleRef}
-              className="text-3xl md:text-5xl font-hackwise text-white uppercase tracking-wider text-center"
+              className="text-2xl sm:text-3xl md:text-5xl font-hackwise text-white uppercase tracking-wider text-center"
             >
               About <span className="text-orange-500">Sphere Hive</span>
             </h1>
@@ -290,16 +290,16 @@ export default function AboutPage() {
         {/* Sphere Hive Description Section */}
         <div
           ref={descriptionRef}
-          className="max-w-6xl mx-auto mb-24"
+          className="max-w-6xl mx-auto mb-14 md:mb-24"
         >
-          <div className="flex items-center justify-center gap-4 mb-10">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-8 md:mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
-            <div className="flex items-center gap-3 px-6">
-              <Cpu className="w-6 h-6 text-orange-500" />
-              <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider whitespace-nowrap">
+            <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-6">
+              <Cpu className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 flex-shrink-0" />
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider text-center">
                 Who We <span className="text-orange-500">Are</span>
               </h2>
-              <Cpu className="w-6 h-6 text-orange-500" />
+              <Cpu className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 flex-shrink-0" />
             </div>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
           </div>
@@ -323,17 +323,17 @@ export default function AboutPage() {
                 <div className="absolute bottom-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl translate-y-1/3 translate-x-1/3" />
                 <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-orange-400/3 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
 
-                <div className="relative z-10 p-8 md:p-12 lg:p-16">
-                  <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
-                    <div className="flex-1 space-y-6">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Rocket className="w-5 h-5 text-orange-500" />
-                        <span className="text-orange-500 font-mono text-xs uppercase tracking-[0.3em]">Tech Community</span>
+                <div className="relative z-10 p-5 sm:p-8 md:p-12 lg:p-16">
+                  <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
+                    <div className="flex-1 space-y-4 sm:space-y-6">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                        <Rocket className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 flex-shrink-0" />
+                        <span className="text-orange-500 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em]">Tech Community</span>
                       </div>
 
                       <h3
                         ref={descriptionTitleRef}
-                        className="text-3xl md:text-4xl lg:text-5xl font-hackwise text-white uppercase leading-tight"
+                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-hackwise text-white uppercase leading-tight"
                       >
                         <span>The Foundry of</span>
                         <br />
@@ -345,25 +345,25 @@ export default function AboutPage() {
                       <div className="flex items-center gap-2 text-white/50">
                         <div
                           ref={descriptionDotRef}
-                          className="w-3 h-3 bg-orange-500 rounded-full shadow-[0_0_15px_rgba(249,115,22,0.6)]"
+                          className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-orange-500 rounded-full shadow-[0_0_15px_rgba(249,115,22,0.6)] flex-shrink-0"
                         />
-                        <span className="font-mono text-sm">Innovation Driven &middot; Community Powered</span>
+                        <span className="font-mono text-xs sm:text-sm">Innovation Driven &middot; Community Powered</span>
                       </div>
 
-                      <div ref={descriptionTextRef} className="space-y-4 pt-2">
-                        <p className="text-base md:text-lg leading-relaxed text-white/85 font-sans">
+                      <div ref={descriptionTextRef} className="space-y-3 sm:space-y-4 pt-1 sm:pt-2">
+                        <p className="text-sm sm:text-base md:text-lg leading-relaxed text-white/85 font-sans">
                           Sphere Hive is the crucible of innovation. We don&apos;t just teach technology — we forge the leaders who will define it. By fusing bleeding-edge tech with radical creativity, we empower you to solve the unsolvable.
                         </p>
-                        <p className="text-base md:text-lg leading-relaxed text-white/65 font-sans">
+                        <p className="text-sm sm:text-base md:text-lg leading-relaxed text-white/65 font-sans">
                           Our organizing committee is a diverse group of passionate individuals dedicated to creating transformative experiences and pushing the boundaries of what&apos;s possible in technology and innovation.
                         </p>
-                        <p className="text-base md:text-lg leading-relaxed text-white/65 font-sans">
+                        <p className="text-sm sm:text-base md:text-lg leading-relaxed text-white/65 font-sans">
                           From hackathons to workshops, from ideation sprints to real-world problem solving — Sphere Hive is where curiosity meets execution, and ideas become impact.
                         </p>
                       </div>
                     </div>
 
-                    <div className="lg:w-80 w-full flex-shrink-0">
+                    <div className="lg:w-80 w-full max-w-[280px] mx-auto lg:max-w-none lg:mx-0 flex-shrink-0">
                       <div
                         className="relative overflow-hidden border border-white/10 group/img"
                         style={{ clipPath: CARD_CLIP }}
@@ -371,7 +371,7 @@ export default function AboutPage() {
                         <img
                           src="/assets/logo.png"
                           alt="Sphere Hive"
-                          className="w-full aspect-square object-contain bg-white/5 p-8 transition-transform duration-500 group-hover/img:scale-105"
+                          className="w-full aspect-square object-contain bg-white/5 p-6 sm:p-8 transition-transform duration-500 group-hover/img:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0A090F] via-transparent to-transparent opacity-40" />
                       </div>
@@ -380,7 +380,7 @@ export default function AboutPage() {
 
                   <div
                     ref={sphereStatsRef}
-                    className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-10 border-t border-white/10"
+                    className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 pt-6 sm:mt-12 sm:pt-10 border-t border-white/10"
                   >
                     {[
                       { icon: Zap, label: 'Hackathons', value: 'Hackwise', desc: 'Flagship Event' },
@@ -390,14 +390,14 @@ export default function AboutPage() {
                     ].map((stat) => (
                       <div
                         key={stat.label}
-                        className="sphere-stat relative group/stat p-5 border border-white/5 hover:border-orange-500/30 transition-all duration-300 text-center"
-                        style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}
+                        className="sphere-stat relative group/stat p-3 sm:p-5 border border-white/5 hover:border-orange-500/30 transition-all duration-300 text-center"
+                        style={{ clipPath: 'polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px)' }}
                       >
                         <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover/stat:opacity-100 transition-opacity duration-300" />
-                        <stat.icon className="w-6 h-6 text-orange-500/70 mx-auto mb-3 group-hover/stat:text-orange-400 transition-colors" />
-                        <div className="text-2xl md:text-3xl font-hackwise text-white mb-1">{stat.value}</div>
-                        <div className="text-xs font-mono text-orange-500/80 uppercase tracking-wider mb-1">{stat.label}</div>
-                        <div className="text-[11px] text-white/40 font-sans">{stat.desc}</div>
+                        <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500/70 mx-auto mb-2 sm:mb-3 group-hover/stat:text-orange-400 transition-colors" />
+                        <div className="text-xl sm:text-2xl md:text-3xl font-hackwise text-white mb-0.5 sm:mb-1">{stat.value}</div>
+                        <div className="text-[10px] sm:text-xs font-mono text-orange-500/80 uppercase tracking-wider mb-0.5 sm:mb-1">{stat.label}</div>
+                        <div className="text-[10px] sm:text-[11px] text-white/40 font-sans">{stat.desc}</div>
                       </div>
                     ))}
                   </div>
@@ -408,15 +408,15 @@ export default function AboutPage() {
         </div>
 
         {/* KVG College of Engineering Section */}
-        <div ref={collegeSectionRef} className="max-w-6xl mx-auto mb-24">
-          <div className="flex items-center justify-center gap-4 mb-10">
+        <div ref={collegeSectionRef} className="max-w-6xl mx-auto mb-14 md:mb-24">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-8 md:mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
-            <div className="flex items-center gap-3 px-6">
-              <GraduationCap className="w-6 h-6 text-orange-500" />
-              <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider whitespace-nowrap">
+            <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-6">
+              <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 flex-shrink-0" />
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider text-center">
                 Our <span className="text-orange-500">Institution</span>
               </h2>
-              <GraduationCap className="w-6 h-6 text-orange-500" />
+              <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 flex-shrink-0" />
             </div>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
           </div>
@@ -439,15 +439,15 @@ export default function AboutPage() {
                 <div className="absolute top-0 right-0 w-72 h-72 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                 <div className="absolute bottom-0 left-0 w-56 h-56 bg-blue-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
-                <div className="relative z-10 p-8 md:p-12 lg:p-16">
-                  <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
-                    <div className="flex-1 space-y-6">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Building2 className="w-5 h-5 text-orange-500" />
-                        <span className="text-orange-500 font-mono text-xs uppercase tracking-[0.3em]">Est. 1986</span>
+                <div className="relative z-10 p-5 sm:p-8 md:p-12 lg:p-16">
+                  <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
+                    <div className="flex-1 space-y-4 sm:space-y-6">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                        <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 flex-shrink-0" />
+                        <span className="text-orange-500 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em]">Est. 1986</span>
                       </div>
 
-                      <h3 className="text-3xl md:text-4xl lg:text-5xl font-hackwise text-white uppercase leading-tight">
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-hackwise text-white uppercase leading-tight">
                         KVG College of
                         <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500">
@@ -456,24 +456,24 @@ export default function AboutPage() {
                       </h3>
 
                       <div className="flex items-center gap-2 text-white/50">
-                        <MapPin className="w-4 h-4 text-orange-500/70" />
-                        <span className="font-mono text-sm">Sullia, Dakshina Kannada, Karnataka</span>
+                        <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500/70 flex-shrink-0" />
+                        <span className="font-mono text-xs sm:text-sm">Sullia, Dakshina Kannada, Karnataka</span>
                       </div>
 
-                      <div className="space-y-4 pt-2">
-                        <p className="text-base md:text-lg leading-relaxed text-white/85 font-sans">
+                      <div className="space-y-3 sm:space-y-4 pt-1 sm:pt-2">
+                        <p className="text-sm sm:text-base md:text-lg leading-relaxed text-white/85 font-sans">
                           KVG College of Engineering, Sullia, is a premier technical institution established under the KVG Educational Trust. Affiliated to Visvesvaraya Technological University (VTU), Belagavi, and approved by AICTE, the college has been nurturing engineering talent for over seven decades.
                         </p>
-                        <p className="text-base md:text-lg leading-relaxed text-white/65 font-sans">
+                        <p className="text-sm sm:text-base md:text-lg leading-relaxed text-white/65 font-sans">
                           Nestled in the serene Western Ghats, the campus offers a perfect blend of academic rigor and natural beauty. With state-of-the-art laboratories, a well-stocked library, and dedicated faculty, KVGCE provides a transformative learning environment that molds students into industry-ready professionals and innovative thinkers.
                         </p>
-                        <p className="text-base md:text-lg leading-relaxed text-white/65 font-sans">
+                        <p className="text-sm sm:text-base md:text-lg leading-relaxed text-white/65 font-sans">
                           The institution is committed to fostering research, entrepreneurship, and holistic development — empowering students to make meaningful contributions to society and the ever-evolving world of technology.
                         </p>
                       </div>
                     </div>
 
-                    <div className="lg:w-80 w-full flex-shrink-0">
+                    <div className="lg:w-80 w-full max-w-[280px] mx-auto lg:max-w-none lg:mx-0 flex-shrink-0">
                       <div
                         className="relative overflow-hidden border border-white/10 group/img"
                         style={{ clipPath: CARD_CLIP }}
@@ -481,7 +481,7 @@ export default function AboutPage() {
                         <img
                           src="/assets/kvg-logo.png"
                           alt="KVG College of Engineering"
-                          className="w-full aspect-square object-contain bg-white/5 p-8 transition-transform duration-500 group-hover/img:scale-105"
+                          className="w-full aspect-square object-contain bg-white/5 p-6 sm:p-8 transition-transform duration-500 group-hover/img:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0A090F] via-transparent to-transparent opacity-40" />
                       </div>
@@ -490,7 +490,7 @@ export default function AboutPage() {
 
                   <div
                     ref={collegeStatsRef}
-                    className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-10 border-t border-white/10"
+                    className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-8 pt-6 sm:mt-12 sm:pt-10 border-t border-white/10"
                   >
                     {[
                       { icon: BookOpen, label: 'Programs', value: '6+', desc: 'UG & PG Courses' },
@@ -500,14 +500,14 @@ export default function AboutPage() {
                     ].map((stat, i) => (
                       <div
                         key={stat.label}
-                        className="college-stat relative group/stat p-5 border border-white/5 hover:border-orange-500/30 transition-all duration-300 text-center"
-                        style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}
+                        className="college-stat relative group/stat p-3 sm:p-5 border border-white/5 hover:border-orange-500/30 transition-all duration-300 text-center"
+                        style={{ clipPath: 'polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px)' }}
                       >
                         <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover/stat:opacity-100 transition-opacity duration-300" />
-                        <stat.icon className="w-6 h-6 text-orange-500/70 mx-auto mb-3 group-hover/stat:text-orange-400 transition-colors" />
-                        <div className="text-2xl md:text-3xl font-hackwise text-white mb-1">{stat.value}</div>
-                        <div className="text-xs font-mono text-orange-500/80 uppercase tracking-wider mb-1">{stat.label}</div>
-                        <div className="text-[11px] text-white/40 font-sans">{stat.desc}</div>
+                        <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500/70 mx-auto mb-2 sm:mb-3 group-hover/stat:text-orange-400 transition-colors" />
+                        <div className="text-xl sm:text-2xl md:text-3xl font-hackwise text-white mb-0.5 sm:mb-1">{stat.value}</div>
+                        <div className="text-[10px] sm:text-xs font-mono text-orange-500/80 uppercase tracking-wider mb-0.5 sm:mb-1">{stat.label}</div>
+                        <div className="text-[10px] sm:text-[11px] text-white/40 font-sans">{stat.desc}</div>
                       </div>
                     ))}
                   </div>
@@ -541,38 +541,38 @@ export default function AboutPage() {
                 <div
                   key={committee.id}
                   ref={(el) => (committeesRef.current[committeeIndex] = el)}
-                  className="mb-20"
+                  className="mb-12 md:mb-20"
                 >
                   {/* Committee Header */}
-                  <div className="committee-header mb-12">
-                    <div className="flex items-center justify-center gap-4 mb-4">
+                  <div className="committee-header mb-8 md:mb-12">
+                    <div className="flex items-center justify-center gap-2 sm:gap-4 mb-3 sm:mb-4">
                       <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                      <div className="flex items-center gap-3 px-4">
-                        <div className={`w-2 h-2 ${accent.bg} rounded-full animate-pulse shadow-lg`} />
-                        <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider whitespace-nowrap">
+                      <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 min-w-0">
+                        <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${accent.bg} rounded-full animate-pulse shadow-lg flex-shrink-0`} />
+                        <h2 className="text-base sm:text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wide sm:tracking-wider text-center">
                           {committee.name}
                         </h2>
-                        <div className={`w-2 h-2 ${accent.bg} rounded-full animate-pulse shadow-lg`} />
+                        <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${accent.bg} rounded-full animate-pulse shadow-lg flex-shrink-0`} />
                       </div>
                       <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
                     </div>
                     {committee.description && (
-                      <p className="text-center text-white/50 font-sans text-sm md:text-base max-w-2xl mx-auto">
+                      <p className="text-center text-white/50 font-sans text-xs sm:text-sm md:text-base max-w-2xl mx-auto px-2">
                         {committee.description}
                       </p>
                     )}
                   </div>
 
                   {/* Members — flexbox centered */}
-                  <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+                  <div className="flex flex-wrap justify-center gap-3 sm:gap-5 md:gap-6 lg:gap-8">
                     {committee.members.map((member) => (
                       <div
                         key={member.id}
-                        className="member-card flex flex-col items-center w-[calc(50%-0.75rem)] sm:w-[calc(33.33%-1.35rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(20%-1.6rem)] max-w-[220px]"
+                        className="member-card flex flex-col items-center w-[calc(50%-0.375rem)] sm:w-[calc(33.33%-1.1rem)] md:w-[calc(25%-1.15rem)] lg:w-[calc(20%-1.6rem)] max-w-[220px]"
                       >
                         <div
                           onClick={() => handleMemberClick(member.id)}
-                          className="relative group cursor-pointer w-full mb-3"
+                          className="relative group cursor-pointer w-full mb-2 sm:mb-3"
                           style={{ clipPath: CARD_CLIP }}
                         >
                           <div className={`absolute inset-0 ${accent.glow} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
@@ -594,26 +594,27 @@ export default function AboutPage() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                               </div>
 
-                              <div className="absolute bottom-0 left-0 right-0 p-4 z-20 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                              <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 md:p-4 z-20 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
                                 {member.bio && (
-                                  <p className="text-[11px] text-white/80 line-clamp-2 mb-2 drop-shadow-lg">
+                                  <p className="text-[10px] sm:text-[11px] text-white/80 line-clamp-2 mb-1.5 sm:mb-2 drop-shadow-lg">
                                     {member.bio}
                                   </p>
                                 )}
-                                <div className="flex items-center gap-1.5 text-white/60">
-                                  <span className="text-[10px] font-mono uppercase tracking-wider">View Profile</span>
-                                  <ExternalLink size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                                <div className="flex items-center gap-1 sm:gap-1.5 text-white/60">
+                                  <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider">View Profile</span>
+                                  <ExternalLink size={10} className="sm:hidden group-hover:translate-x-0.5 transition-transform" />
+                                  <ExternalLink size={12} className="hidden sm:block group-hover:translate-x-0.5 transition-transform" />
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <div className="text-center w-full space-y-0.5 px-1">
-                          <h3 className="text-sm md:text-base font-hackwise text-white uppercase leading-tight transition-colors duration-300 group-hover:text-white">
+                        <div className="text-center w-full space-y-0.5 px-0.5 sm:px-1">
+                          <h3 className="text-xs sm:text-sm md:text-base font-hackwise text-white uppercase leading-tight">
                             {member.name}
                           </h3>
-                          <p className={`text-xs ${accent.text} font-mono tracking-wider`}>
+                          <p className={`text-[10px] sm:text-xs ${accent.text} font-mono tracking-wider`}>
                             {member.role}
                           </p>
                         </div>
@@ -628,31 +629,31 @@ export default function AboutPage() {
             {unassignedMembers.length > 0 && (
               <div
                 ref={(el) => (committeesRef.current[committees.length] = el)}
-                className="mb-20"
+                className="mb-12 md:mb-20"
               >
-                <div className="committee-header mb-12">
-                  <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="committee-header mb-8 md:mb-12">
+                  <div className="flex items-center justify-center gap-2 sm:gap-4 mb-3 sm:mb-4">
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                    <div className="flex items-center gap-3 px-4">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-lg" />
-                      <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider whitespace-nowrap">
+                    <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-orange-500 rounded-full animate-pulse shadow-lg flex-shrink-0" />
+                      <h2 className="text-base sm:text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wide sm:tracking-wider text-center">
                         Other <span className="text-orange-500">Members</span>
                       </h2>
-                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-lg" />
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-orange-500 rounded-full animate-pulse shadow-lg flex-shrink-0" />
                     </div>
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
                   </div>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+                <div className="flex flex-wrap justify-center gap-3 sm:gap-5 md:gap-6 lg:gap-8">
                   {unassignedMembers.map((member) => (
                     <div
                       key={member.id}
-                      className="member-card flex flex-col items-center w-[calc(50%-0.75rem)] sm:w-[calc(33.33%-1.35rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(20%-1.6rem)] max-w-[220px]"
+                      className="member-card flex flex-col items-center w-[calc(50%-0.375rem)] sm:w-[calc(33.33%-1.1rem)] md:w-[calc(25%-1.15rem)] lg:w-[calc(20%-1.6rem)] max-w-[220px]"
                     >
                       <div
                         onClick={() => handleMemberClick(member.id)}
-                        className="relative group cursor-pointer w-full mb-3"
+                        className="relative group cursor-pointer w-full mb-2 sm:mb-3"
                         style={{ clipPath: CARD_CLIP }}
                       >
                         <div className="absolute inset-0 bg-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -674,26 +675,27 @@ export default function AboutPage() {
                               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                             </div>
 
-                            <div className="absolute bottom-0 left-0 right-0 p-4 z-20 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                            <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 md:p-4 z-20 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
                               {member.bio && (
-                                <p className="text-[11px] text-white/80 line-clamp-2 mb-2 drop-shadow-lg">
+                                <p className="text-[10px] sm:text-[11px] text-white/80 line-clamp-2 mb-1.5 sm:mb-2 drop-shadow-lg">
                                   {member.bio}
                                 </p>
                               )}
-                              <div className="flex items-center gap-1.5 text-white/60">
-                                <span className="text-[10px] font-mono uppercase tracking-wider">View Profile</span>
-                                <ExternalLink size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                              <div className="flex items-center gap-1 sm:gap-1.5 text-white/60">
+                                <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider">View Profile</span>
+                                <ExternalLink size={10} className="sm:hidden group-hover:translate-x-0.5 transition-transform" />
+                                <ExternalLink size={12} className="hidden sm:block group-hover:translate-x-0.5 transition-transform" />
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="text-center w-full space-y-0.5 px-1">
-                        <h3 className="text-sm md:text-base font-hackwise text-white uppercase leading-tight">
+                      <div className="text-center w-full space-y-0.5 px-0.5 sm:px-1">
+                        <h3 className="text-xs sm:text-sm md:text-base font-hackwise text-white uppercase leading-tight">
                           {member.name}
                         </h3>
-                        <p className="text-xs text-orange-500 font-mono tracking-wider">
+                        <p className="text-[10px] sm:text-xs text-orange-500 font-mono tracking-wider">
                           {member.role}
                         </p>
                       </div>
