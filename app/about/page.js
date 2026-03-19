@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import DecryptedText from '../components/DecryptedText';
-import { Linkedin, Github, Twitter, ExternalLink, Mail } from 'lucide-react';
+import { Linkedin, Github, Twitter, ExternalLink, Mail, MapPin, GraduationCap, Building2, Award, BookOpen, Users, Zap, Lightbulb, Code2, Target, Rocket, Cpu } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -25,6 +25,10 @@ export default function AboutPage() {
   const descriptionTitleRef = useRef(null);
   const descriptionTextRef = useRef(null);
   const descriptionDotRef = useRef(null);
+  const sphereStatsRef = useRef(null);
+  const collegeSectionRef = useRef(null);
+  const collegeCardRef = useRef(null);
+  const collegeStatsRef = useRef(null);
   const committeesRef = useRef([]);
   const memberCardsRef = useRef([]);
 
@@ -149,36 +153,108 @@ export default function AboutPage() {
             ease: 'power2.out',
           });
         }
-      }
 
-      // Animate committees sections
-      committeesRef.current.forEach((committeeSection, committeeIndex) => {
-        if (committeeSection) {
-          const cards = committeeSection.querySelectorAll('.member-card');
-          cards.forEach((card, index) => {
-            gsap.set(card, {
+        if (sphereStatsRef.current) {
+          const items = sphereStatsRef.current.querySelectorAll('.sphere-stat');
+          items.forEach((item, index) => {
+            gsap.from(item, {
               opacity: 0,
-              y: 40,
-            });
-
-            gsap.to(card, {
-              opacity: 1,
-              y: 0,
-              duration: 0.5,
-              ease: 'power2.out',
-              delay: index * 0.08,
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none none',
-              },
+              y: 30,
+              scale: 0.9,
+              duration: 0.6,
+              delay: 1.5 + index * 0.12,
+              ease: 'back.out(1.4)',
             });
           });
         }
-      });
+      }
 
-      // Simple card hover animations (CSS-based for better performance)
-      // GSAP hover animations removed - using CSS transitions instead
+      // College section animations
+      if (collegeSectionRef.current) {
+        gsap.from(collegeSectionRef.current, {
+          opacity: 0,
+          y: 60,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: collegeSectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        });
+      }
+
+      if (collegeCardRef.current) {
+        gsap.from(collegeCardRef.current, {
+          opacity: 0,
+          scale: 0.95,
+          y: 40,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: collegeCardRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        });
+      }
+
+      if (collegeStatsRef.current) {
+        const statItems = collegeStatsRef.current.querySelectorAll('.college-stat');
+        statItems.forEach((item, index) => {
+          gsap.from(item, {
+            opacity: 0,
+            y: 30,
+            scale: 0.9,
+            duration: 0.6,
+            delay: index * 0.1,
+            ease: 'back.out(1.4)',
+            scrollTrigger: {
+              trigger: collegeStatsRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          });
+        });
+      }
+
+      // Animate committees sections
+      committeesRef.current.forEach((committeeSection) => {
+        if (!committeeSection) return;
+
+        const header = committeeSection.querySelector('.committee-header');
+        if (header) {
+          gsap.from(header, {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: header,
+              start: 'top 88%',
+              toggleActions: 'play none none none',
+            },
+          });
+        }
+
+        const cards = committeeSection.querySelectorAll('.member-card');
+        cards.forEach((card, index) => {
+          gsap.set(card, { opacity: 0, y: 50, scale: 0.95 });
+          gsap.to(card, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            ease: 'power3.out',
+            delay: index * 0.1,
+            scrollTrigger: {
+              trigger: committeeSection,
+              start: 'top 75%',
+              toggleActions: 'play none none none',
+            },
+          });
+        });
+      });
     });
 
     return () => ctx.revert();
@@ -211,47 +287,229 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Description Section */}
+        {/* Sphere Hive Description Section */}
         <div
           ref={descriptionRef}
-          className="max-w-4xl mx-auto mb-20"
+          className="max-w-6xl mx-auto mb-24"
         >
+          <div className="flex items-center justify-center gap-4 mb-10">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
+            <div className="flex items-center gap-3 px-6">
+              <Cpu className="w-6 h-6 text-orange-500" />
+              <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider whitespace-nowrap">
+                Who We <span className="text-orange-500">Are</span>
+              </h2>
+              <Cpu className="w-6 h-6 text-orange-500" />
+            </div>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
+          </div>
+
           <div
             ref={descriptionCardRef}
             className="relative group"
             style={{ clipPath: CARD_CLIP }}
           >
-            <div className="absolute inset-0 bg-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 15px rgba(0,0,0,0.5))' }}>
+            <div className="absolute inset-0 bg-orange-500/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 20px rgba(0,0,0,0.5))' }}>
               <div
-                className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
+                className="absolute inset-0 bg-white/15 group-hover:bg-orange-500/40 transition-colors duration-500"
                 style={{ clipPath: CARD_CLIP }}
               />
               <div
-                className="relative bg-[#0A090F]/95 backdrop-blur-md p-8 md:p-12 border border-white/10"
+                className="relative bg-[#0A090F]/95 backdrop-blur-md overflow-hidden"
                 style={{ clipPath: CARD_CLIP }}
               >
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-8">
-                    <div
-                      ref={descriptionDotRef}
-                      className="w-4 h-4 bg-orange-500 rounded-full shadow-[0_0_20px_rgba(249,115,22,0.6)]"
-                    />
-                    <h2
-                      ref={descriptionTitleRef}
-                      className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-white uppercase"
-                    >
-                      <span>The Foundry of </span>
-                      <span className="text-orange-500">Future Tech Leaders</span>
-                    </h2>
+                <div className="absolute top-0 left-0 w-80 h-80 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/3 -translate-x-1/3" />
+                <div className="absolute bottom-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl translate-y-1/3 translate-x-1/3" />
+                <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-orange-400/3 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
+
+                <div className="relative z-10 p-8 md:p-12 lg:p-16">
+                  <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+                    <div className="flex-1 space-y-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Rocket className="w-5 h-5 text-orange-500" />
+                        <span className="text-orange-500 font-mono text-xs uppercase tracking-[0.3em]">Tech Community</span>
+                      </div>
+
+                      <h3
+                        ref={descriptionTitleRef}
+                        className="text-3xl md:text-4xl lg:text-5xl font-hackwise text-white uppercase leading-tight"
+                      >
+                        <span>The Foundry of</span>
+                        <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500">
+                          Future Tech Leaders
+                        </span>
+                      </h3>
+
+                      <div className="flex items-center gap-2 text-white/50">
+                        <div
+                          ref={descriptionDotRef}
+                          className="w-3 h-3 bg-orange-500 rounded-full shadow-[0_0_15px_rgba(249,115,22,0.6)]"
+                        />
+                        <span className="font-mono text-sm">Innovation Driven &middot; Community Powered</span>
+                      </div>
+
+                      <div ref={descriptionTextRef} className="space-y-4 pt-2">
+                        <p className="text-base md:text-lg leading-relaxed text-white/85 font-sans">
+                          Sphere Hive is the crucible of innovation. We don&apos;t just teach technology — we forge the leaders who will define it. By fusing bleeding-edge tech with radical creativity, we empower you to solve the unsolvable.
+                        </p>
+                        <p className="text-base md:text-lg leading-relaxed text-white/65 font-sans">
+                          Our organizing committee is a diverse group of passionate individuals dedicated to creating transformative experiences and pushing the boundaries of what&apos;s possible in technology and innovation.
+                        </p>
+                        <p className="text-base md:text-lg leading-relaxed text-white/65 font-sans">
+                          From hackathons to workshops, from ideation sprints to real-world problem solving — Sphere Hive is where curiosity meets execution, and ideas become impact.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="lg:w-80 w-full flex-shrink-0">
+                      <div
+                        className="relative overflow-hidden border border-white/10 group/img"
+                        style={{ clipPath: CARD_CLIP }}
+                      >
+                        <img
+                          src="/assets/logo.png"
+                          alt="Sphere Hive"
+                          className="w-full aspect-square object-contain bg-white/5 p-8 transition-transform duration-500 group-hover/img:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A090F] via-transparent to-transparent opacity-40" />
+                      </div>
+                    </div>
                   </div>
-                  <div ref={descriptionTextRef} className="space-y-6">
-                    <p className="text-body font-sans text-base md:text-lg leading-relaxed text-white/90">
-                      Sphere Hive is the crucible of innovation. We don't just teach technology; we forge the leaders who will define it. By fusing bleeding-edge tech with radical creativity, we empower you to solve the unsolvable.
-                    </p>
-                    <p className="text-body font-sans text-base md:text-lg leading-relaxed text-white/70">
-                      Our organizing committee is a diverse group of passionate individuals dedicated to creating transformative experiences and pushing the boundaries of what's possible in technology and innovation.
-                    </p>
+
+                  <div
+                    ref={sphereStatsRef}
+                    className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-10 border-t border-white/10"
+                  >
+                    {[
+                      { icon: Zap, label: 'Hackathons', value: 'Hackwise', desc: 'Flagship Event' },
+                      { icon: Lightbulb, label: 'Innovation', value: '10+', desc: 'Ideas Incubated' },
+                      { icon: Code2, label: 'Workshops', value: '5+', desc: 'Sessions Conducted' },
+                      { icon: Target, label: 'Mission', value: 'Build', desc: 'Learn & Grow' },
+                    ].map((stat) => (
+                      <div
+                        key={stat.label}
+                        className="sphere-stat relative group/stat p-5 border border-white/5 hover:border-orange-500/30 transition-all duration-300 text-center"
+                        style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}
+                      >
+                        <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover/stat:opacity-100 transition-opacity duration-300" />
+                        <stat.icon className="w-6 h-6 text-orange-500/70 mx-auto mb-3 group-hover/stat:text-orange-400 transition-colors" />
+                        <div className="text-2xl md:text-3xl font-hackwise text-white mb-1">{stat.value}</div>
+                        <div className="text-xs font-mono text-orange-500/80 uppercase tracking-wider mb-1">{stat.label}</div>
+                        <div className="text-[11px] text-white/40 font-sans">{stat.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* KVG College of Engineering Section */}
+        <div ref={collegeSectionRef} className="max-w-6xl mx-auto mb-24">
+          <div className="flex items-center justify-center gap-4 mb-10">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
+            <div className="flex items-center gap-3 px-6">
+              <GraduationCap className="w-6 h-6 text-orange-500" />
+              <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider whitespace-nowrap">
+                Our <span className="text-orange-500">Institution</span>
+              </h2>
+              <GraduationCap className="w-6 h-6 text-orange-500" />
+            </div>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
+          </div>
+
+          <div
+            ref={collegeCardRef}
+            className="relative group"
+            style={{ clipPath: CARD_CLIP }}
+          >
+            <div className="absolute inset-0 bg-orange-500/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 20px rgba(0,0,0,0.5))' }}>
+              <div
+                className="absolute inset-0 bg-white/15 group-hover:bg-orange-500/40 transition-colors duration-500"
+                style={{ clipPath: CARD_CLIP }}
+              />
+              <div
+                className="relative bg-[#0A090F]/95 backdrop-blur-md overflow-hidden"
+                style={{ clipPath: CARD_CLIP }}
+              >
+                <div className="absolute top-0 right-0 w-72 h-72 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-56 h-56 bg-blue-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+                <div className="relative z-10 p-8 md:p-12 lg:p-16">
+                  <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+                    <div className="flex-1 space-y-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Building2 className="w-5 h-5 text-orange-500" />
+                        <span className="text-orange-500 font-mono text-xs uppercase tracking-[0.3em]">Est. 1986</span>
+                      </div>
+
+                      <h3 className="text-3xl md:text-4xl lg:text-5xl font-hackwise text-white uppercase leading-tight">
+                        KVG College of
+                        <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500">
+                          Engineering
+                        </span>
+                      </h3>
+
+                      <div className="flex items-center gap-2 text-white/50">
+                        <MapPin className="w-4 h-4 text-orange-500/70" />
+                        <span className="font-mono text-sm">Sullia, Dakshina Kannada, Karnataka</span>
+                      </div>
+
+                      <div className="space-y-4 pt-2">
+                        <p className="text-base md:text-lg leading-relaxed text-white/85 font-sans">
+                          KVG College of Engineering, Sullia, is a premier technical institution established under the KVG Educational Trust. Affiliated to Visvesvaraya Technological University (VTU), Belagavi, and approved by AICTE, the college has been nurturing engineering talent for over seven decades.
+                        </p>
+                        <p className="text-base md:text-lg leading-relaxed text-white/65 font-sans">
+                          Nestled in the serene Western Ghats, the campus offers a perfect blend of academic rigor and natural beauty. With state-of-the-art laboratories, a well-stocked library, and dedicated faculty, KVGCE provides a transformative learning environment that molds students into industry-ready professionals and innovative thinkers.
+                        </p>
+                        <p className="text-base md:text-lg leading-relaxed text-white/65 font-sans">
+                          The institution is committed to fostering research, entrepreneurship, and holistic development — empowering students to make meaningful contributions to society and the ever-evolving world of technology.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="lg:w-80 w-full flex-shrink-0">
+                      <div
+                        className="relative overflow-hidden border border-white/10 group/img"
+                        style={{ clipPath: CARD_CLIP }}
+                      >
+                        <img
+                          src="/assets/kvg-logo.png"
+                          alt="KVG College of Engineering"
+                          className="w-full aspect-square object-contain bg-white/5 p-8 transition-transform duration-500 group-hover/img:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A090F] via-transparent to-transparent opacity-40" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    ref={collegeStatsRef}
+                    className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-10 border-t border-white/10"
+                  >
+                    {[
+                      { icon: BookOpen, label: 'Programs', value: '6+', desc: 'UG & PG Courses' },
+                      { icon: Users, label: 'Students', value: '2000+', desc: 'Enrolled Learners' },
+                      { icon: Award, label: 'Accredited', value: 'NAAC', desc: 'Quality Assured' },
+                      { icon: GraduationCap, label: 'Legacy', value: '41+', desc: 'Years of Excellence' },
+                    ].map((stat, i) => (
+                      <div
+                        key={stat.label}
+                        className="college-stat relative group/stat p-5 border border-white/5 hover:border-orange-500/30 transition-all duration-300 text-center"
+                        style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}
+                      >
+                        <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover/stat:opacity-100 transition-opacity duration-300" />
+                        <stat.icon className="w-6 h-6 text-orange-500/70 mx-auto mb-3 group-hover/stat:text-orange-400 transition-colors" />
+                        <div className="text-2xl md:text-3xl font-hackwise text-white mb-1">{stat.value}</div>
+                        <div className="text-xs font-mono text-orange-500/80 uppercase tracking-wider mb-1">{stat.label}</div>
+                        <div className="text-[11px] text-white/40 font-sans">{stat.desc}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -270,215 +528,172 @@ export default function AboutPage() {
             {/* Display Committees */}
             {committees.map((committee, committeeIndex) => {
               if (!committee.members || committee.members.length === 0) return null;
-              
-              // Alternate styles for different committees
-              const isEven = committeeIndex % 2 === 0;
-              const cardStyles = [
-                'bg-gradient-to-br from-orange-500/10 to-transparent',
-                'bg-gradient-to-br from-blue-500/10 to-transparent',
-                'bg-gradient-to-br from-purple-500/10 to-transparent',
-                'bg-gradient-to-br from-green-500/10 to-transparent',
+
+              const accentColors = [
+                { text: 'text-orange-500', bg: 'bg-orange-500', glow: 'bg-orange-500/20', hoverBorder: 'group-hover:bg-orange-500/50', gradient: 'from-orange-500/10' },
+                { text: 'text-blue-400', bg: 'bg-blue-400', glow: 'bg-blue-400/20', hoverBorder: 'group-hover:bg-blue-400/50', gradient: 'from-blue-400/10' },
+                { text: 'text-purple-400', bg: 'bg-purple-400', glow: 'bg-purple-400/20', hoverBorder: 'group-hover:bg-purple-400/50', gradient: 'from-purple-400/10' },
+                { text: 'text-emerald-400', bg: 'bg-emerald-400', glow: 'bg-emerald-400/20', hoverBorder: 'group-hover:bg-emerald-400/50', gradient: 'from-emerald-400/10' },
               ];
-              const borderStyles = [
-                'border-orange-500/30',
-                'border-blue-500/30',
-                'border-purple-500/30',
-                'border-green-500/30',
-              ];
-              const accentColor = [
-                'text-orange-500',
-                'text-blue-400',
-                'text-purple-400',
-                'text-green-400',
-              ];
-              
-              const styleIndex = committeeIndex % cardStyles.length;
-              
+              const accent = accentColors[committeeIndex % accentColors.length];
+
               return (
                 <div
                   key={committee.id}
                   ref={(el) => (committeesRef.current[committeeIndex] = el)}
-                  className={`mb-16 ${committeeIndex > 0 ? 'mt-16' : ''}`}
+                  className="mb-20"
                 >
                   {/* Committee Header */}
-                  <div className="mb-8">
+                  <div className="committee-header mb-12">
                     <div className="flex items-center justify-center gap-4 mb-4">
-                      <div className={`w-2 h-2 ${accentColor[styleIndex]} animate-pulse`} />
-                      <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider">
-                        {committee.name}
-                      </h2>
-                      <div className={`w-2 h-2 ${accentColor[styleIndex]} animate-pulse`} />
+                      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                      <div className="flex items-center gap-3 px-4">
+                        <div className={`w-2 h-2 ${accent.bg} rounded-full animate-pulse shadow-lg`} />
+                        <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider whitespace-nowrap">
+                          {committee.name}
+                        </h2>
+                        <div className={`w-2 h-2 ${accent.bg} rounded-full animate-pulse shadow-lg`} />
+                      </div>
+                      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
                     </div>
                     {committee.description && (
-                      <p className="text-center text-white/60 font-sans text-sm md:text-base max-w-2xl mx-auto">
+                      <p className="text-center text-white/50 font-sans text-sm md:text-base max-w-2xl mx-auto">
                         {committee.description}
                       </p>
                     )}
                   </div>
 
-                  {/* Members Grid - Different layouts per committee */}
-                  <div
-                    className={`grid grid-cols-2 ${
-                      committeeIndex % 3 === 0 
-                        ? 'md:grid-cols-3 lg:grid-cols-4' 
-                        : committeeIndex % 3 === 1
-                        ? 'md:grid-cols-4 lg:grid-cols-5'
-                        : 'md:grid-cols-2 lg:grid-cols-3'
-                    } gap-4 sm:gap-6 md:gap-8`}
-                  >
-                    {committee.members.map((member, memberIndex) => {
-                      // Alternate card styles within each committee
-                      const memberStyleIndex = (styleIndex + memberIndex) % cardStyles.length;
-                      const isMemberEven = memberIndex % 2 === 0;
-                      const spanClass =
-                        memberIndex === 0 && committee.members.length > 2
-                          ? 'col-span-2 md:col-span-1'
-                          : '';
-                      
-                      return (
+                  {/* Members — flexbox centered */}
+                  <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+                    {committee.members.map((member) => (
+                      <div
+                        key={member.id}
+                        className="member-card flex flex-col items-center w-[calc(50%-0.75rem)] sm:w-[calc(33.33%-1.35rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(20%-1.6rem)] max-w-[220px]"
+                      >
                         <div
-                          key={member.id}
-                          className={`member-card flex flex-col items-center group ${spanClass} ${
-                            committeeIndex % 3 === 2 ? 'lg:flex-row lg:items-start lg:text-left' : ''
-                          }`}
+                          onClick={() => handleMemberClick(member.id)}
+                          className="relative group cursor-pointer w-full mb-3"
+                          style={{ clipPath: CARD_CLIP }}
                         >
-                          {/* Card Container */}
-                          <div
-                            onClick={() => handleMemberClick(member.id)}
-                            className={`relative group cursor-pointer w-full mb-4 ${
-                              committeeIndex % 3 === 2 ? 'lg:mb-0 lg:mr-6 lg:w-48 lg:flex-shrink-0' : ''
-                            }`}
-                            style={{ clipPath: CARD_CLIP }}
-                          >
-                            <div className={`absolute inset-0 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
-                              styleIndex === 0 ? 'bg-orange-500/20' :
-                              styleIndex === 1 ? 'bg-blue-400/20' :
-                              styleIndex === 2 ? 'bg-purple-400/20' :
-                              'bg-green-400/20'
-                            }`} />
-                            <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
-                              <div
-                                className={`absolute inset-0 bg-white/20 transition-colors duration-300 ${
-                                  styleIndex === 0 ? 'group-hover:bg-orange-500/50' :
-                                  styleIndex === 1 ? 'group-hover:bg-blue-400/50' :
-                                  styleIndex === 2 ? 'group-hover:bg-purple-400/50' :
-                                  'group-hover:bg-green-400/50'
-                                }`}
-                                style={{ clipPath: CARD_CLIP }}
-                              />
-                              <div
-                                className={`relative bg-[#0A090F] overflow-hidden ${cardStyles[memberStyleIndex]}`}
-                                style={{ clipPath: CARD_CLIP }}
-                              >
-                                {/* Member Image */}
-                                <div className="relative aspect-square overflow-hidden">
-                                  <img
-                                    src={getValidImageUrl(member.image_url)}
-                                    alt={member.name}
-                                    className="member-image w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-110"
-                                  />
-                                  <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100 opacity-70" />
-                                </div>
+                          <div className={`absolute inset-0 ${accent.glow} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                          <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
+                            <div
+                              className={`absolute inset-0 bg-white/10 ${accent.hoverBorder} transition-colors duration-300`}
+                              style={{ clipPath: CARD_CLIP }}
+                            />
+                            <div
+                              className={`relative bg-[#0A090F] overflow-hidden bg-gradient-to-br ${accent.gradient} to-transparent`}
+                              style={{ clipPath: CARD_CLIP }}
+                            >
+                              <div className="relative aspect-[3/4] overflow-hidden">
+                                <img
+                                  src={getValidImageUrl(member.image_url)}
+                                  alt={member.name}
+                                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                              </div>
 
-                                {/* Member Bio and View Details - On Hover */}
-                                <div className="member-content absolute bottom-0 left-0 right-0 p-4 md:p-6 z-20 opacity-0 group-hover:opacity-100 translate-y-5 group-hover:translate-y-0 transition-all duration-300">
-                                  {member.bio && (
-                                    <p className="text-xs text-white/80 line-clamp-2 mb-3 drop-shadow-lg">
-                                      {member.bio}
-                                    </p>
-                                  )}
-                                  <div className="flex items-center gap-2 text-white/60">
-                                    <span className="text-[10px] font-mono uppercase tracking-wider drop-shadow-lg">
-                                      View Details
-                                    </span>
-                                    <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform" />
-                                  </div>
+                              <div className="absolute bottom-0 left-0 right-0 p-4 z-20 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                {member.bio && (
+                                  <p className="text-[11px] text-white/80 line-clamp-2 mb-2 drop-shadow-lg">
+                                    {member.bio}
+                                  </p>
+                                )}
+                                <div className="flex items-center gap-1.5 text-white/60">
+                                  <span className="text-[10px] font-mono uppercase tracking-wider">View Profile</span>
+                                  <ExternalLink size={12} className="group-hover:translate-x-0.5 transition-transform" />
                                 </div>
                               </div>
                             </div>
                           </div>
-
-                          {/* Member Name and Role */}
-                          <div className={`text-center w-full mt-2 space-y-1 ${
-                            committeeIndex % 3 === 2 ? 'lg:text-left lg:flex-1' : ''
-                          }`}>
-                            <h3 className={`text-lg md:text-xl font-hackwise text-white uppercase transition-colors duration-300 ${
-                              isMemberEven ? '' : accentColor[styleIndex]
-                            }`}>
-                              {member.name}
-                            </h3>
-                            <p className={`text-sm ${accentColor[styleIndex]} font-mono tracking-wider`}>
-                              {member.role}
-                            </p>
-                          </div>
                         </div>
-                      );
-                    })}
+
+                        <div className="text-center w-full space-y-0.5 px-1">
+                          <h3 className="text-sm md:text-base font-hackwise text-white uppercase leading-tight transition-colors duration-300 group-hover:text-white">
+                            {member.name}
+                          </h3>
+                          <p className={`text-xs ${accent.text} font-mono tracking-wider`}>
+                            {member.role}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               );
             })}
 
-            {/* Unassigned Members (if any) */}
+            {/* Unassigned Members */}
             {unassignedMembers.length > 0 && (
-              <div className="mb-16 mt-16">
-                <div className="flex items-center justify-center gap-4 mb-8">
-                  <div className="w-2 h-2 bg-orange-500 animate-pulse" />
-                  <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider">
-                    Other <span className="text-orange-500">Members</span>
-                  </h2>
-                  <div className="w-2 h-2 bg-orange-500 animate-pulse" />
+              <div
+                ref={(el) => (committeesRef.current[committees.length] = el)}
+                className="mb-20"
+              >
+                <div className="committee-header mb-12">
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                    <div className="flex items-center gap-3 px-4">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-lg" />
+                      <h2 className="text-2xl md:text-3xl font-hackwise text-white uppercase tracking-wider whitespace-nowrap">
+                        Other <span className="text-orange-500">Members</span>
+                      </h2>
+                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-lg" />
+                    </div>
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-                  {unassignedMembers.map((member, index) => (
+
+                <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+                  {unassignedMembers.map((member) => (
                     <div
                       key={member.id}
-                      className="member-card flex flex-col items-center group"
+                      className="member-card flex flex-col items-center w-[calc(50%-0.75rem)] sm:w-[calc(33.33%-1.35rem)] md:w-[calc(25%-1.5rem)] lg:w-[calc(20%-1.6rem)] max-w-[220px]"
                     >
                       <div
                         onClick={() => handleMemberClick(member.id)}
-                        className="relative group cursor-pointer w-full mb-4"
+                        className="relative group cursor-pointer w-full mb-3"
                         style={{ clipPath: CARD_CLIP }}
                       >
                         <div className="absolute inset-0 bg-orange-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="relative p-px" style={{ filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
                           <div
-                            className="absolute inset-0 bg-white/20 group-hover:bg-orange-500/50 transition-colors duration-300"
+                            className="absolute inset-0 bg-white/10 group-hover:bg-orange-500/50 transition-colors duration-300"
                             style={{ clipPath: CARD_CLIP }}
                           />
                           <div
-                            className="relative bg-[#0A090F] overflow-hidden"
+                            className="relative bg-[#0A090F] overflow-hidden bg-gradient-to-br from-orange-500/10 to-transparent"
                             style={{ clipPath: CARD_CLIP }}
                           >
-                            <div className="relative aspect-square overflow-hidden">
+                            <div className="relative aspect-[3/4] overflow-hidden">
                               <img
                                 src={getValidImageUrl(member.image_url)}
                                 alt={member.name}
-                                className="member-image w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-110"
+                                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
                               />
-                              <div className="member-overlay absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent transition-opacity duration-300 group-hover:opacity-100 opacity-70" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                             </div>
-                            <div className="member-content absolute bottom-0 left-0 right-0 p-4 md:p-6 z-20 opacity-0 group-hover:opacity-100 translate-y-5 group-hover:translate-y-0 transition-all duration-300">
+
+                            <div className="absolute bottom-0 left-0 right-0 p-4 z-20 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
                               {member.bio && (
-                                <p className="text-xs text-white/80 line-clamp-2 mb-3 drop-shadow-lg">
+                                <p className="text-[11px] text-white/80 line-clamp-2 mb-2 drop-shadow-lg">
                                   {member.bio}
                                 </p>
                               )}
-                              <div className="flex items-center gap-2 text-white/60">
-                                <span className="text-[10px] font-mono uppercase tracking-wider drop-shadow-lg">
-                                  View Details
-                                </span>
-                                <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform" />
+                              <div className="flex items-center gap-1.5 text-white/60">
+                                <span className="text-[10px] font-mono uppercase tracking-wider">View Profile</span>
+                                <ExternalLink size={12} className="group-hover:translate-x-0.5 transition-transform" />
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div className="text-center w-full mt-2 space-y-1">
-                        <h3 className="text-lg md:text-xl font-hackwise text-white uppercase transition-colors duration-300">
+
+                      <div className="text-center w-full space-y-0.5 px-1">
+                        <h3 className="text-sm md:text-base font-hackwise text-white uppercase leading-tight">
                           {member.name}
                         </h3>
-                        <p className="text-sm text-orange-400 font-mono tracking-wider">
+                        <p className="text-xs text-orange-500 font-mono tracking-wider">
                           {member.role}
                         </p>
                       </div>
